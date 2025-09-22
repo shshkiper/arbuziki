@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Цветовая палитра в стиле уютного кафе
-  static const Color primaryBrown = Color(0xFF8B4513); // Коричневый кофе
-  static const Color lightBrown = Color(0xFFD2B48C); // Светло-коричневый
-  static const Color creamWhite = Color(0xFFFFF8DC); // Кремовый белый
-  static const Color warmBeige = Color(0xFFF5F5DC); // Теплый бежевый
-  static const Color darkBrown = Color(0xFF5D4037); // Темно-коричневый
-  static const Color accentGold = Color(0xFFFFD700); // Золотой акцент
+  // Цветовая палитра точно как в Drinkit - голубые тона и минимализм
+  static const Color primaryBrown = Color(0xFF5B7EF7); // Основной синий как в Drinkit
+  static const Color lightBrown = Color(0xFF8B5CF6); // Фиолетовый акцент
+  static const Color creamWhite = Color(0xFFFFFFFF); // Белые карточки
+  static const Color warmBeige = Color(0xFFE8F0FF); // Светло-голубой фон
+  static const Color darkBrown = Color(0xFF1A1D29); // Темный текст
+  static const Color accentGold = Color(0xFF10B981); // Зеленый
   static const Color softGreen = Color(0xFF8FBC8F); // Мягкий зеленый для чая
-  static const Color errorRed = Color(0xFFD32F2F); // Красный для ошибок
-  static const Color successGreen = Color(0xFF388E3C); // Зеленый для успеха
+  static const Color errorRed = Color(0xFFEF4444); // Красный
+  static const Color successGreen = Color(0xFF10B981); // Зеленый
 
-  // Градиенты
+  // Градиенты как в Drinkit
   static const LinearGradient warmGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [creamWhite, warmBeige],
+    colors: [Color(0xFFE8F0FF), Color(0xFFDFECFF)],
   );
 
   static const LinearGradient coffeeGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [lightBrown, primaryBrown],
+    colors: [Color(0xFF5B7EF7), Color(0xFF8B5CF6)],
   );
 
   // Светлая тема
@@ -31,7 +31,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       primaryColor: primaryBrown,
-      scaffoldBackgroundColor: creamWhite,
+      scaffoldBackgroundColor: warmBeige,
       
       colorScheme: const ColorScheme.light(
         primary: primaryBrown,
@@ -40,12 +40,12 @@ class AppTheme {
         background: warmBeige,
         error: errorRed,
         onPrimary: creamWhite,
-        onSecondary: darkBrown,
+        onSecondary: creamWhite,
         onSurface: darkBrown,
         onBackground: darkBrown,
         onError: creamWhite,
         tertiary: accentGold,
-        outline: lightBrown,
+        outline: Color(0xFF6B7280),
       ),
 
       // Типографика

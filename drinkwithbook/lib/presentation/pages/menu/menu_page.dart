@@ -580,7 +580,6 @@ class _CartItem extends StatelessWidget {
     );
   }
 }
-
 // Данные для меню
 final _coffeeItems = [
   {
@@ -688,3 +687,4 @@ final _bookItems = [
     'rating': 4.5,
   },
 ];
+
