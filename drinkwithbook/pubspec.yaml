@@ -9,7 +9,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.7.2 <4.0.0' # Небольшое уточнение версии Dart
-  flutter: '3.29.3' # Фиксированная версия Flutter для синхронизации с командой
+  flutter: '3.35.0' 
 
 dependencies:
   flutter:

@@ -142,12 +142,12 @@ class AppTheme {
       ),
 
       // Карточки
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         color: creamWhite,
         elevation: 4,
-        shadowColor: primaryBrown.withOpacity(0.2),
+        shadowColor: Color(0x335B7EF7), // primaryBrown с прозрачностью
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
 
@@ -244,12 +244,12 @@ class AppTheme {
       ),
 
       // Диалоги
-      dialogTheme: DialogTheme(
+      dialogTheme: const DialogThemeData(
         backgroundColor: creamWhite,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
-        titleTextStyle: const TextStyle(
+        titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: darkBrown,
@@ -382,12 +382,12 @@ class AppTheme {
         ),
       ),
 
-      cardTheme: CardTheme(
-        color: const Color(0xFF3E2723),
+      cardTheme: const CardThemeData(
+        color: Color(0xFF3E2723),
         elevation: 4,
-        shadowColor: Colors.black.withOpacity(0.3),
+        shadowColor: Color(0x4D000000), // Colors.black с прозрачностью 0.3
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
 
