@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'settings_dialog.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final VoidCallback? onNavigateToClubs;
@@ -242,7 +243,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   }
 
   void _showSettingsDialog(BuildContext context) {
-    // TODO: Implement settings
+    showDialog(
+      context: context,
+      builder: (context) => const SettingsDialog(),
+    );
   }
 
   void _showOrderHistory(BuildContext context) {
