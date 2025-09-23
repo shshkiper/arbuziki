@@ -35,107 +35,63 @@ class _SplashPageState extends State<SplashPage> {
     final theme = Theme.of(context);
     
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.primary.withOpacity(0.8),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Логотип
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Логотип - без рамок и обрезки
+            Image.asset(
+              'assets/images/logo.png',
+              width: 150,
+              height: 150,
+              fit: BoxFit.contain,
+            )
+                .animate()
+                .scale(
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.elasticOut,
+                )
+                .fadeIn(duration: const Duration(milliseconds: 400)),
+
+            const SizedBox(height: 32),
+
+            // Подзаголовок
+            Text(
+              'Уютное место для души и вкуса',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            )
+                .animate(delay: const Duration(milliseconds: 600))
+                .slideY(
+                  begin: 0.3,
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeOutQuart,
+                )
+                .fadeIn(duration: const Duration(milliseconds: 600)),
+
+            const SizedBox(height: 64),
+
+            // Индикатор загрузки
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  theme.colorScheme.primary.withOpacity(0.8),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.cover,
-                  ),
+              ),
+            )
+                .animate(delay: const Duration(milliseconds: 900))
+                .fadeIn(duration: const Duration(milliseconds: 400))
+                .scale(
+                  begin: const Offset(0.8, 0.8),
+                  duration: const Duration(milliseconds: 400),
                 ),
-              )
-                  .animate()
-                  .scale(
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.elasticOut,
-                  )
-                  .fadeIn(duration: const Duration(milliseconds: 400)),
-
-              const SizedBox(height: 32),
-
-              // Название приложения
-              Text(
-                'Drink with Book',
-                style: theme.textTheme.displayMedium?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-                  .animate(delay: const Duration(milliseconds: 300))
-                  .slideY(
-                    begin: 0.5,
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutQuart,
-                  )
-                  .fadeIn(duration: const Duration(milliseconds: 600)),
-
-              const SizedBox(height: 16),
-
-              // Подзаголовок
-              Text(
-                'Уютное место для души и вкуса',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary.withOpacity(0.9),
-                ),
-                textAlign: TextAlign.center,
-              )
-                  .animate(delay: const Duration(milliseconds: 600))
-                  .slideY(
-                    begin: 0.3,
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutQuart,
-                  )
-                  .fadeIn(duration: const Duration(milliseconds: 600)),
-
-              const SizedBox(height: 64),
-
-              // Индикатор загрузки
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.colorScheme.onPrimary.withOpacity(0.8),
-                  ),
-                ),
-              )
-                  .animate(delay: const Duration(milliseconds: 900))
-                  .fadeIn(duration: const Duration(milliseconds: 400))
-                  .scale(
-                    begin: const Offset(0.8, 0.8),
-                    duration: const Duration(milliseconds: 400),
-                  ),
-            ],
-          ),
+          ],
         ),
       ),
     );
