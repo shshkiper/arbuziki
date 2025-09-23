@@ -31,7 +31,14 @@ class _ChatPageState extends ConsumerState<ChatPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Общение'),
+        title: SizedBox(
+          height: 40,
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

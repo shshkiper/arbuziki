@@ -128,16 +128,33 @@ class AppTheme {
         ),
       ),
 
-      // AppBar тема
+      // AppBar тема - минималистичный стиль
       appBarTheme: const AppBarTheme(
-        backgroundColor: primaryBrown,
-        foregroundColor: creamWhite,
-        elevation: 0,
+        backgroundColor: creamWhite,
+        foregroundColor: darkBrown,
+        elevation: 2,
+        shadowColor: Color(0x1A000000), // Легкая тень
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          fontSize: 20,
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: darkBrown,
+        ),
+      ),
+
+      // TabBar тема - для белого AppBar
+      tabBarTheme: const TabBarThemeData(
+        labelColor: primaryBrown, // Синий цвет для активной вкладки
+        unselectedLabelColor: Color(0x80000000), // Серый для неактивной вкладки
+        indicatorColor: primaryBrown, // Синий индикатор
+        labelStyle: TextStyle(
+          fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: creamWhite,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
         ),
       ),
 
@@ -371,14 +388,31 @@ class AppTheme {
       ),
 
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF3E2723),
+        backgroundColor: Color(0xFF1A1A2E),
         foregroundColor: creamWhite,
-        elevation: 0,
+        elevation: 2,
+        shadowColor: Color(0x40000000),
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
           color: creamWhite,
+        ),
+      ),
+
+      // TabBar тема для темной темы
+      tabBarTheme: const TabBarThemeData(
+        labelColor: primaryBrown, // Синий цвет для активной вкладки
+        unselectedLabelColor: Color(0xB3FFFFFF), // Белый с прозрачностью для неактивной
+        indicatorColor: primaryBrown, // Синий индикатор
+        labelStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
         ),
       ),
 

@@ -29,7 +29,14 @@ class _ClubsPageState extends ConsumerState<ClubsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Клубы'),
+        title: SizedBox(
+          height: 40,
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),

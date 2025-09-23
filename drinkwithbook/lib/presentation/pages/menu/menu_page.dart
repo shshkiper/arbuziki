@@ -77,7 +77,14 @@ class _MenuPageState extends ConsumerState<MenuPage>
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Меню'),
+        title: SizedBox(
+          height: 40,
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           Stack(
             children: [

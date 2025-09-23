@@ -22,8 +22,8 @@ void main() async {
   
   // Инициализируем Supabase
   await Supabase.initialize(
-    url: dotenv.env['https://vgmgklqaiivsuxmqczkf.supabase.co'] ?? '',
-    anonKey: dotenv.env['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnbWdrbHFhaWl2c3V4bXFjemtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NTYxNzgsImV4cCI6MjA3NDAzMjE3OH0.CNBIsH9EHRyZrpOMKAlbpnlXIEElSovaRnMp6nZ4WHs'] ?? '',
+    url: dotenv.env['SUPABASE_URL'] ?? '',
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
   );
 
   runApp(const ProviderScope(child: DrinkWithBookApp()));

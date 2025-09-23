@@ -29,7 +29,14 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Программа лояльности'),
+        title: SizedBox(
+          height: 40,
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

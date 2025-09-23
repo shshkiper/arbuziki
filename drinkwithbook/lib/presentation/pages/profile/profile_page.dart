@@ -22,7 +22,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Профиль'),
+        title: SizedBox(
+          height: 40,
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
