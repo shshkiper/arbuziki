@@ -229,9 +229,9 @@ class _HomeTab extends StatelessWidget {
                     ),
                     child: _DrinkCard(
                       name: drink['name'] as String,
-                      price: drink['price'] as String,
+                      price: '₽${drink['price']}',
                       image: drink['image'] as String,
-                      rating: drink['rating'] as double,
+                      onTap: () => _showDrinkDetails(context, drink),
                     ),
                   );
                 },
@@ -325,77 +325,88 @@ class _DrinkCard extends StatelessWidget {
   final String name;
   final String price;
   final String image;
-  final double rating;
+  final VoidCallback onTap;
 
   const _DrinkCard({
     required this.name,
     required this.price,
     required this.image,
-    required this.rating,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/$image'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          image: DecorationImage(
+            image: AssetImage('assets/images/$image'),
+            fit: BoxFit.cover,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.transparent,
+                Colors.black.withOpacity(0.7),
+              ],
             ),
           ),
-          Padding(
+          child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
                   name,
-                  style: theme.textTheme.titleSmall,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 2,
+                      ),
+                    ],
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      price,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
+                Text(
+                  price,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 2,
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          size: 16,
-                          color: Colors.amber,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          rating.toString(),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -491,32 +502,402 @@ class _ActivityCard extends StatelessWidget {
   }
 }
 
+void _showDrinkDetails(BuildContext context, Map<String, dynamic> drink) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => _ItemDetailsBottomSheet(
+      item: drink,
+      onAddToCart: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${drink['name']} добавлен в корзину'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+class _ItemDetailsBottomSheet extends StatefulWidget {
+  final Map<String, dynamic> item;
+  final VoidCallback onAddToCart;
+
+  const _ItemDetailsBottomSheet({
+    required this.item,
+    required this.onAddToCart,
+  });
+
+  @override
+  State<_ItemDetailsBottomSheet> createState() => _ItemDetailsBottomSheetState();
+}
+
+class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
+  bool isFavorite = false;
+  String selectedSize = 'M';
+  int basePrice = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    basePrice = widget.item['price'] as int;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final screenHeight = MediaQuery.of(context).size.height;
+    
+    return Container(
+      height: screenHeight * 0.93, // 93% экрана
+      decoration: BoxDecoration(
+        color: theme.colorScheme.background,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Stack(
+        children: [
+          // Прокручиваемый контент
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outline.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                
+                // Header с кнопками
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Кнопка избранного
+                      Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.outline.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isFavorite = !isFavorite;
+                            });
+                          },
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : theme.colorScheme.onSurface,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                      
+                      // Кнопка закрытия
+                      Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.outline.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(
+                            Icons.close,
+                            color: theme.colorScheme.onSurface,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Изображение (теперь прокручивается)
+                Container(
+                  width: double.infinity,
+                  height: screenHeight * 0.4,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/${widget.item['image']}'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.7),
+                        ],
+                        stops: const [0.0, 0.6, 1.0],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.item['name'],
+                            style: theme.textTheme.displaySmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'настрой как любишь',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                
+                // Контент в белой области
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Размеры
+                      _buildSizeSelection(theme),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Описание
+                      Text(
+                        widget.item['description'],
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                        ),
+                      ),
+                      
+                      if (widget.item['ingredients'] != null) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          'Состав: ${(widget.item['ingredients'] as List<String>).join(', ')}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                      
+                      const SizedBox(height: 120), // Отступ для кнопки корзины
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Закрепленная кнопка добавления в корзину
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    widget.onAddToCart();
+                  },
+                  borderRadius: BorderRadius.circular(25),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${_getCurrentPrice()} ₽',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  int _getCurrentPrice() {
+    int price = basePrice;
+    if (selectedSize == 'L') {
+      price += 50;
+    }
+    return price;
+  }
+
+  Widget _buildSizeSelection(ThemeData theme) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => selectedSize = 'M'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: selectedSize == 'M' 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: selectedSize == 'M' 
+                      ? theme.colorScheme.primary 
+                      : theme.colorScheme.outline.withOpacity(0.3),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'M',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: selectedSize == 'M' 
+                          ? Colors.white 
+                          : theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '350 мл',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: selectedSize == 'M' 
+                          ? Colors.white.withOpacity(0.8) 
+                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => selectedSize = 'L'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: selectedSize == 'L' 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: selectedSize == 'L' 
+                      ? theme.colorScheme.primary 
+                      : theme.colorScheme.outline.withOpacity(0.3),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'L',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: selectedSize == 'L' 
+                          ? Colors.white 
+                          : theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '450 мл',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: selectedSize == 'L' 
+                          ? Colors.white.withOpacity(0.8) 
+                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 
 // Данные для примера
 final _popularDrinks = [
   {
+    'id': 'coffee_1',
     'name': 'Капучино',
-    'price': '₽250',
+    'description': 'Классический итальянский кофе с молочной пенкой',
+    'price': 250,
     'image': 'capuchino.jpg',
-    'rating': 4.8,
+    'ingredients': ['Эспрессо', 'Молоко', 'Молочная пенка'],
   },
   {
+    'id': 'coffee_2',
     'name': 'Латте',
-    'price': '₽280',
+    'description': 'Нежный кофе с большим количеством молока',
+    'price': 280,
     'image': 'latte.jpg',
-    'rating': 4.7,
+    'ingredients': ['Эспрессо', 'Молоко', 'Молочная пенка'],
   },
   {
+    'id': 'coffee_3',
     'name': 'Flat White',
-    'price': '₽320',
+    'description': 'Крепкий кофе с микропенкой',
+    'price': 320,
     'image': 'Flat White.jpg',
-    'rating': 4.9,
+    'ingredients': ['Двойной эспрессо', 'Молоко'],
   },
   {
+    'id': 'coffee_4',
     'name': 'Айс Латте',
-    'price': '₽300',
+    'description': 'Освежающий холодный латте',
+    'price': 300,
     'image': 'ice latte.jpg',
-    'rating': 4.6,
+    'ingredients': ['Эспрессо', 'Молоко', 'Лед'],
   },
 ];
 

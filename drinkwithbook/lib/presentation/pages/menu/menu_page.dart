@@ -178,8 +178,8 @@ class _MenuSection extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = items[index];
         return _MenuItem(
-          item: item,
-          onAddToCart: () => onAddToCart(item),
+            item: item,
+            onAddToCart: () => onAddToCart(item),
         )
             .animate(delay: Duration(milliseconds: index * 100))
             .fadeIn(duration: const Duration(milliseconds: 400))
@@ -203,9 +203,12 @@ class _MenuItem extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A2E), // Темный фон карточки
+              decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
+                image: DecorationImage(
+                  image: AssetImage('assets/images/${item['image']}'),
+                  fit: BoxFit.cover,
+                ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -217,166 +220,643 @@ class _MenuItem extends StatelessWidget {
       child: InkWell(
         onTap: () => _showItemDetails(context),
         borderRadius: BorderRadius.circular(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Большое изображение
-            Expanded(
-              flex: 3,
-              child: Container(
-                margin: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/${item['image']}'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.transparent,
+                Colors.black.withOpacity(0.7),
+              ],
             ),
-            
-            // Информация внизу
-            Expanded(
-              flex: 1,
+          ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
                       item['name'],
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 2,
                       ),
-                      maxLines: 1,
+                    ],
+                      ),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${item['price']} ₽',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: Colors.white.withOpacity(0.8),
-                            fontWeight: FontWeight.w400,
+                      '${item['price']} ₽',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 2,
                           ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: onAddToCart,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
-                        GestureDetector(
-                          onTap: onAddToCart,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primary,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
         ),
       ),
     );
   }
 
   void _showItemDetails(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => _ItemDetailsDialog(item: item),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _ItemDetailsBottomSheet(
+        item: item,
+        onAddToCart: onAddToCart,
+      ),
     );
   }
 }
 
-class _ItemDetailsDialog extends StatelessWidget {
+class _ItemDetailsBottomSheet extends StatefulWidget {
   final Map<String, dynamic> item;
+  final VoidCallback onAddToCart;
 
-  const _ItemDetailsDialog({required this.item});
+  const _ItemDetailsBottomSheet({
+    required this.item,
+    required this.onAddToCart,
+  });
+
+  @override
+  State<_ItemDetailsBottomSheet> createState() => _ItemDetailsBottomSheetState();
+}
+
+class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
+  bool isFavorite = false;
+  String selectedSize = 'M';
+  int basePrice = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    basePrice = widget.item['price'] as int;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final screenHeight = MediaQuery.of(context).size.height;
     
-    return Dialog(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Изображение
-            Container(
-              width: double.infinity,
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                image: DecorationImage(
-                  image: AssetImage('assets/images/${item['image']}'),
-                  fit: BoxFit.cover,
+    return Container(
+      height: screenHeight * 0.93, // 93% экрана
+      decoration: BoxDecoration(
+        color: theme.colorScheme.background,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Stack(
+        children: [
+          // Прокручиваемый контент
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.outline.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item['name'],
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    item['description'],
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  if (item['ingredients'] != null) ...[
-                    const SizedBox(height: 16),
-                    Text(
-                      'Состав:',
-                      style: theme.textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      (item['ingredients'] as List<String>).join(', '),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ],
-                  const SizedBox(height: 20),
-                  Row(
+                
+                // Header с кнопками
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // Кнопка избранного
+                      Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.outline.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isFavorite = !isFavorite;
+                            });
+                          },
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : theme.colorScheme.onSurface,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                      
+                      // Кнопка закрытия
+                      Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.outline.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(
+                            Icons.close,
+                            color: theme.colorScheme.onSurface,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Изображение (теперь прокручивается)
+                Container(
+                  width: double.infinity,
+                  height: screenHeight * 0.4,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/${widget.item['image']}'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.7),
+                        ],
+                        stops: const [0.0, 0.6, 1.0],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.item['name'],
+                            style: theme.textTheme.displaySmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'настрой как любишь',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                
+                // Контент в белой области
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Кастомизация (только для кофе)
+                      if (widget.item['id'].toString().startsWith('coffee')) ...[
+                        _buildCustomizationOptions(theme),
+                        const SizedBox(height: 20),
+                        _buildNutritionInfo(theme),
+                        const SizedBox(height: 20),
+                      ],
+                      
+                      // Размеры
+                      _buildSizeSelection(theme),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Описание
                       Text(
-                        '₽${item['price']}',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          color: theme.colorScheme.primary,
+                        widget.item['description'],
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                        ),
+                      ),
+                      
+                      if (widget.item['ingredients'] != null) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          'Состав: ${(widget.item['ingredients'] as List<String>).join(', ')}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Блок "Вместе вкуснее"
+                      Text(
+                        'Вместе вкуснее',
+                        style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Добавить в корзину'),
-                      ),
+                      const SizedBox(height: 12),
+                      
+                      // Предложения
+                      _buildSuggestions(theme),
+                      
+                      const SizedBox(height: 120), // Отступ для кнопки корзины
                     ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Закрепленная кнопка добавления в корзину
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    widget.onAddToCart();
+                  },
+                  borderRadius: BorderRadius.circular(25),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                      Text(
+                          '${_getCurrentPrice()} ₽',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  int _getCurrentPrice() {
+    int price = basePrice;
+    if (selectedSize == 'L') {
+      price += 50;
+    }
+    return price;
+  }
+
+  Widget _buildCustomizationOptions(ThemeData theme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildCustomizationItem(
+          theme,
+          Icons.add_circle_outline,
+          'Полезные\nдобавки',
+        ),
+        _buildCustomizationItem(
+          theme,
+          Icons.add_circle_outline,
+          'Сырная\nпенка и мусс',
+        ),
+        _buildCustomizationItem(
+          theme,
+          Icons.local_drink_outlined,
+          'Молоко\nкоровье',
+        ),
+        _buildCustomizationItem(
+          theme,
+          Icons.coffee_outlined,
+          'Эспрессо\nДринкит',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCustomizationItem(ThemeData theme, IconData icon, String label) {
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.outline.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Icon(
+            icon,
+            color: theme.colorScheme.onSurface,
+            size: 28,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withOpacity(0.8),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNutritionInfo(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildNutritionItem('156 ккал', 'Энергия', theme),
+          _buildNutritionItem('7,7 г', 'Белки', theme),
+          _buildNutritionItem('8,0 г', 'Жиры', theme),
+          _buildNutritionItem('11,9 г', 'Углеводы', theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNutritionItem(String value, String label, ThemeData theme) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSizeSelection(ThemeData theme) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => selectedSize = 'M'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: selectedSize == 'M' 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: selectedSize == 'M' 
+                      ? theme.colorScheme.primary 
+                      : theme.colorScheme.outline.withOpacity(0.3),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'M',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                      color: selectedSize == 'M' 
+                          ? Colors.white 
+                          : theme.colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  Text(
+                    '350 мл',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: selectedSize == 'M' 
+                          ? Colors.white.withOpacity(0.8) 
+                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => selectedSize = 'L'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: selectedSize == 'L' 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: selectedSize == 'L' 
+                      ? theme.colorScheme.primary 
+                      : theme.colorScheme.outline.withOpacity(0.3),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'L',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: selectedSize == 'L' 
+                          ? Colors.white 
+                          : theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '450 мл',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: selectedSize == 'L' 
+                          ? Colors.white.withOpacity(0.8) 
+                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+              ),
+            ),
+          ],
+    );
+  }
+
+  Widget _buildSuggestions(ThemeData theme) {
+    // Примерные предложения в зависимости от типа товара
+    List<Map<String, dynamic>> suggestions = [];
+    
+    if (widget.item['id'].toString().startsWith('coffee')) {
+      suggestions = [
+        {'name': 'Круассан', 'price': 180, 'image': 'donat1.jpg'},
+        {'name': 'Чизкейк', 'price': 320, 'image': 'donat2.jpg'},
+      ];
+    } else if (widget.item['id'].toString().startsWith('dessert')) {
+      suggestions = [
+        {'name': 'Капучино', 'price': 250, 'image': 'capuchino.jpg'},
+        {'name': 'Латте', 'price': 280, 'image': 'latte.jpg'},
+      ];
+    } else if (widget.item['id'].toString().startsWith('book')) {
+      suggestions = [
+        {'name': 'Чай', 'price': 150, 'image': '1.jpg'},
+        {'name': 'Печенье', 'price': 120, 'image': 'donat3.jpg'},
+      ];
+    }
+    
+    return SizedBox(
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: suggestions.length,
+        itemBuilder: (context, index) {
+          final suggestion = suggestions[index];
+          return Container(
+            width: 100,
+            margin: EdgeInsets.only(right: index < suggestions.length - 1 ? 12 : 0),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: theme.colorScheme.outline.withOpacity(0.2),
+              ),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/${suggestion['image']}'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Text(
+                        suggestion['name'],
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        '₽${suggestion['price']}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
