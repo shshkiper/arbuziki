@@ -166,21 +166,24 @@ class _MenuSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return GridView.builder(
       padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _MenuItem(
-            item: item,
-            onAddToCart: () => onAddToCart(item),
-          ),
+        return _MenuItem(
+          item: item,
+          onAddToCart: () => onAddToCart(item),
         )
             .animate(delay: Duration(milliseconds: index * 100))
             .fadeIn(duration: const Duration(milliseconds: 400))
-            .slideX(begin: 0.2, duration: const Duration(milliseconds: 400));
+            .scale(begin: const Offset(0.8, 0.8), duration: const Duration(milliseconds: 400));
       },
     );
   }
@@ -199,83 +202,82 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Card(
-      clipBehavior: Clip.antiAlias,
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A2E), // Темный фон карточки
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: InkWell(
         onTap: () => _showItemDetails(context),
-        child: Row(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Изображение
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/${item['image']}'),
-                  fit: BoxFit.cover,
+            // Большое изображение
+            Expanded(
+              flex: 3,
+              child: Container(
+                margin: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/${item['image']}'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
             
-            // Информация о товаре
+            // Информация внизу
             Expanded(
+              flex: 1,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       item['name'],
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      item['description'],
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '₽${item['price']}',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
+                          '${item['price']} ₽',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: Colors.white.withOpacity(0.8),
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                        Row(
-                          children: [
-                            if (item['rating'] != null) ...[
-                              Icon(
-                                Icons.star,
-                                size: 16,
-                                color: Colors.amber,
-                              ),
-                              const SizedBox(width: 2),
-                              Text(
-                                item['rating'].toString(),
-                                style: theme.textTheme.bodySmall,
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                            ElevatedButton.icon(
-                              onPressed: onAddToCart,
-                              icon: const Icon(Icons.add, size: 16),
-                              label: const Text('В корзину'),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                textStyle: theme.textTheme.bodySmall,
-                              ),
+                        GestureDetector(
+                          onTap: onAddToCart,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                          ],
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
                         ),
                       ],
                     ),
