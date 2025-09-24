@@ -69,10 +69,16 @@ flutter:
     - .env # Добавляем файл .env в assets, чтобы он был доступен в приложении
 
   # Пример добавления кастомных шрифтов (раскомментируйте и настройте по необходимости)
-  # fonts:
-  #   - family: Inter
-  #     fonts:
-  #       - asset: assets/fonts/Inter-Regular.ttf
+  fonts:
+     - family: Gost-M
+       fonts:
+         - asset: assets/fonts/GOST-Medium.ttf
+     - family: Gost-R
+       fonts:
+         - asset: assets/fonts/GOST-Regular.ttf
+     - family: G
+       fonts:
+         - asset: assets/fonts/graphiklcweb_medium.ttf
   #       - asset: assets/fonts/Inter-Medium.ttf
   #         weight: 500
   #       - asset: assets/fonts/Inter-SemiBold.ttf

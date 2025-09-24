@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'settings_dialog.dart';
+import 'dart:ui';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final VoidCallback? onNavigateToClubs;
@@ -23,18 +24,39 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     
     return Scaffold(
       appBar: AppBar(
-        title: SizedBox(
-          height: 40,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          height: 120, // Высота размытой области
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+              child: Container(
+                color: Colors.white.withOpacity(0.00001),
+              ),
+            ),
+          ),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 1.0),
           child: Image.asset(
+            height: 45,
             'assets/images/logo.png',
             fit: BoxFit.contain,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => _showSettingsDialog(context),
+          Padding(
+            padding: const EdgeInsets.only(right: 13.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  iconSize: 27,
+                  onPressed: () => _showSettingsDialog(context),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -61,45 +83,75 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: theme.colorScheme.primary,
-                    child: Text(
-                      _getUserInitials(),
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
+                  // Первая строка: аватар, имя и почта
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Аватар
+                      CircleAvatar(
+                        radius: 27,
+                        backgroundColor: theme.colorScheme.primary,
+                        child: Text(
+                          _getUserInitials(),
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
+                      
+                      const SizedBox(width: 16),
+                      
+                      // Имя и почта
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _user?.userMetadata?['name'] ?? 'Пользователь',
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "G",
+                                fontSize: 21,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _user?.email ?? '',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                fontFamily: "G",
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    _user?.userMetadata?['name'] ?? 'Пользователь',
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _user?.email ?? '',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                  
+                  const SizedBox(height: 15),
+                  
+                  // Вторая строка: статистика
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _ProfileStat(
                         title: 'Визитов',
                         value: '47',
+                        status: 'none',
                       ),
                       _ProfileStat(
                         title: 'Баллов',
                         value: '2,450',
+                        status: 'none',
                       ),
                       _ProfileStat(
                         title: 'Уровень',
                         value: 'Золото',
+                        status: 'Золото',
                       ),
                     ],
                   ),
@@ -107,10 +159,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ),
             )
                 .animate()
-                .fadeIn(duration: const Duration(milliseconds: 600))
-                .slideY(begin: -0.2, duration: const Duration(milliseconds: 600)),
+                .fadeIn(duration: const Duration(milliseconds: 200))
+                .slideY(begin: -0.2, duration: const Duration(milliseconds: 400)),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 15),
 
             // Меню действий
             _MenuSection(
@@ -143,10 +195,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
             )
                 .animate(delay: const Duration(milliseconds: 200))
-                .fadeIn(duration: const Duration(milliseconds: 600))
-                .slideX(begin: -0.2, duration: const Duration(milliseconds: 600)),
+                .fadeIn(duration: const Duration(milliseconds: 150))
+                .slideX(begin: -0.2, duration: const Duration(milliseconds: 150)),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 15),
 
             _MenuSection(
               title: 'Настройки',
@@ -171,11 +223,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ],
             )
-                .animate(delay: const Duration(milliseconds: 400))
-                .fadeIn(duration: const Duration(milliseconds: 600))
-                .slideX(begin: 0.2, duration: const Duration(milliseconds: 600)),
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 150))
+                .slideX(begin: 0.2, duration: const Duration(milliseconds: 150)),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 15),
 
             _MenuSection(
               title: 'О приложении',
@@ -200,29 +252,37 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ],
             )
-                .animate(delay: const Duration(milliseconds: 600))
-                .fadeIn(duration: const Duration(milliseconds: 600))
-                .slideY(begin: 0.2, duration: const Duration(milliseconds: 600)),
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 150))
+                .slideY(begin: 0.2, duration: const Duration(milliseconds: 150)),
 
             const SizedBox(height: 24),
 
             // Кнопка выхода
-            SizedBox(
+            Container(
               width: double.infinity,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.error.withOpacity(0.3),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
               child: OutlinedButton.icon(
                 onPressed: () => _showLogoutDialog(context),
                 icon: const Icon(Icons.logout),
                 label: const Text('Выйти из аккаунта'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: theme.colorScheme.error,
+                  foregroundColor: theme.colorScheme.error.withOpacity(0.8),
                   side: BorderSide(color: theme.colorScheme.error),
                   padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Color.fromARGB(200, 231, 239, 255),
                 ),
               ),
             )
-                .animate(delay: const Duration(milliseconds: 800))
-                .fadeIn(duration: const Duration(milliseconds: 400))
-                .scale(begin: const Offset(0.8, 0.8)),
           ],
         ),
       ),
@@ -385,10 +445,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 class _ProfileStat extends StatelessWidget {
   final String title;
   final String value;
+  final String status;
 
   const _ProfileStat({
     required this.title,
     required this.value,
+    required this.status,
   });
 
   @override
@@ -398,17 +460,21 @@ class _ProfileStat extends StatelessWidget {
     return Column(
       children: [
         Text(
-          value,
+          value, 
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: theme.colorScheme.primary,
+            color: status == 'Золото'?Colors.yellow.shade700:theme.colorScheme.primary,
+            fontFamily: "G",
+            fontSize: 20,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           title,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            color:theme.colorScheme.onSurface.withOpacity(0.7),
+            fontFamily: "G",
+            fontSize: 14,
           ),
         ),
       ],
@@ -433,10 +499,12 @@ class _MenuSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12),
+          padding: const EdgeInsets.only(left: 4, bottom: 10),
           child: Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
+              fontFamily: "G",
+              fontSize: 22,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -485,8 +553,8 @@ class _MenuItem extends StatelessWidget {
     
     return ListTile(
       leading: Container(
-        width: 40,
-        height: 40,
+        width: 45,
+        height: 45,
         decoration: BoxDecoration(
           color: theme.colorScheme.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
@@ -494,22 +562,28 @@ class _MenuItem extends StatelessWidget {
         child: Icon(
           icon,
           color: theme.colorScheme.primary,
-          size: 20,
+          size: 22,
         ),
       ),
       title: Text(
         title,
-        style: theme.textTheme.titleSmall,
+        style: theme.textTheme.titleSmall?.copyWith(
+          fontFamily: "G",
+          fontSize: 20,
+        ),
       ),
       subtitle: Text(
         subtitle,
         style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface.withOpacity(0.7),
+          color: theme.colorScheme.onSurface.withOpacity(0.5),
+          fontFamily: "G",
+          fontSize: 14,
         ),
       ),
       trailing: Icon(
         Icons.chevron_right,
         color: theme.colorScheme.onSurface.withOpacity(0.4),
+        size: 25,
       ),
       onTap: onTap,
     );

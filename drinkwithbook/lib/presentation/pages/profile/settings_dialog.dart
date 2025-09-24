@@ -29,10 +29,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
               'Настройки профиля',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w500,
+                fontFamily: "G",
+                fontSize: 22,
               ),
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 10),
             
             // Изменить email
             _buildSettingItem(
@@ -58,9 +60,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
               () => _showChangeNameDialog(context),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             const Divider(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             
             // Уведомления
             _buildSwitchItem(
@@ -91,7 +93,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     icon: const Icon(Icons.logout, size: 18),
                     label: const Text('Выйти'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: theme.colorScheme.error,
+                      foregroundColor: theme.colorScheme.error.withOpacity(0.8),
                       side: BorderSide(color: theme.colorScheme.error),
                     ),
                   ),
