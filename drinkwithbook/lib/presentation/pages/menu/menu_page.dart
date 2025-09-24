@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 
 class MenuPage extends ConsumerStatefulWidget {
-  const MenuPage({super.key});
+  final int? initialTabIndex;
+  
+  const MenuPage({super.key, this.initialTabIndex});
 
   @override
   ConsumerState<MenuPage> createState() => _MenuPageState();
@@ -19,6 +20,9 @@ class _MenuPageState extends ConsumerState<MenuPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    if (widget.initialTabIndex != null) {
+      _tabController.animateTo(widget.initialTabIndex!);
+    }
   }
 
   @override
@@ -109,7 +113,7 @@ class _MenuPageState extends ConsumerState<MenuPage>
                   Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(right: 15.0, top: 26), // ← Добавь этот отступ
+                        padding: const EdgeInsets.only(right: 15.0, top: 26),
                         child: IconButton(
                           icon: const Icon(Icons.shopping_basket_outlined),
                           iconSize: 30,
@@ -220,7 +224,9 @@ class _MenuSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      cacheExtent: 1000, // Кэшируем больше элементов для плавной прокрутки
       padding: const EdgeInsets.all(16),
+      physics: const BouncingScrollPhysics(), // Более плавная прокрутка
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 0.75,
@@ -233,10 +239,7 @@ class _MenuSection extends StatelessWidget {
         return _MenuItem(
             item: item,
             onAddToCart: () => onAddToCart(item),
-        )
-            .animate(delay: Duration(milliseconds: index * 50))
-            .fadeIn(duration: const Duration(milliseconds: 10))
-            .scale(begin: const Offset(0.8, 0.8), duration: const Duration(milliseconds: 150));
+        );
       },
     );
   }
@@ -255,18 +258,19 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Container(
-              decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: AssetImage('assets/images/${item['image']}'),
-                  fit: BoxFit.cover,
-                ),
+    return RepaintBoundary(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          image: DecorationImage(
+            image: AssetImage('assets/images/${item['image']}'),
+            fit: BoxFit.cover,
+          ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -282,7 +286,7 @@ class _MenuItem extends StatelessWidget {
               colors: [
                 Colors.transparent,
                 Colors.transparent,
-                Colors.black.withOpacity(0.7),
+                Colors.black.withOpacity(0.5),
               ],
             ),
           ),
@@ -302,9 +306,9 @@ class _MenuItem extends StatelessWidget {
                         height: 1.3,
                         shadows: [
                           Shadow(
-                            color: Colors.black.withOpacity(0.8),
-                            blurRadius: 6,
-                            offset: Offset(1, 1),
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 2,
+                            offset: Offset(0, 1),
                           ),
                         ],
                       ),
@@ -357,9 +361,10 @@ class _MenuItem extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+          ),
         ),
-      ),
-    );
+      );
   }
 
   void _showItemDetails(BuildContext context) {
@@ -705,11 +710,6 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
           theme,
           Icons.local_drink_outlined,
           'Молоко\nкоровье',
-        ),
-        _buildCustomizationItem(
-          theme,
-          Icons.coffee_outlined,
-          'Эспрессо\nДринкит',
         ),
       ],
     );
@@ -1117,7 +1117,7 @@ class _CartBottomSheet extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        // TODO: Переход к оформлению заказа
+                       
                       },
                       child: const Text('Оформить заказ'),
                     ),
