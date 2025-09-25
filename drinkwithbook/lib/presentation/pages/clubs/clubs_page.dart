@@ -324,7 +324,39 @@ class _ClubCard extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            if (isMember)
+                            if (club['isOwner'] == true)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.orange,
+                                      Colors.orange.withOpacity(0.8),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.orange.withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  'Создатель',
+                                  style: TextStyle(
+                                    fontFamily: 'G',
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              )
+                            else if (isMember)
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
@@ -1355,6 +1387,71 @@ class _CreateClubDialogState extends State<_CreateClubDialog> {
     super.dispose();
   }
 
+  void _createClub(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      if (_nameController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Пожалуйста, введите название клуба'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (_descriptionController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Пожалуйста, введите описание клуба'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Создаем новый клуб
+      final newClub = {
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'name': _nameController.text.trim(),
+        'description': _descriptionController.text.trim(),
+        'type': _selectedType,
+        'members': 1,
+        'events': 0,
+        'isOwner': true,
+        'createdAt': DateTime.now(),
+        'image': _getClubImage(_selectedType),
+      };
+
+      // Добавляем клуб в списки
+      _addNewClub(newClub);
+
+      // Закрываем диалог
+      Navigator.of(context).pop();
+
+      // Показываем уведомление об успешном создании
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Клуб "${_nameController.text.trim()}" успешно создан!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  String _getClubImage(String type) {
+    switch (type) {
+      case 'coffee':
+        return 'coffee_club.jpg';
+      case 'tea':
+        return 'tea_club.jpg';
+      case 'book':
+        return 'book_club.jpg';
+      default:
+        return 'default_club.jpg';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -1475,6 +1572,15 @@ class _CreateClubDialogState extends State<_CreateClubDialog> {
                     ),
                     child: TextFormField(
                       controller: _nameController,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Введите название клуба';
+                        }
+                        if (value.trim().length < 3) {
+                          return 'Название должно содержать минимум 3 символа';
+                        }
+                        return null;
+                      },
                       style: TextStyle(
                         fontSize: 17,
                         fontFamily: 'G',
@@ -1520,6 +1626,15 @@ class _CreateClubDialogState extends State<_CreateClubDialog> {
                     ),
                     child: TextFormField(
                       controller: _descriptionController,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Введите описание клуба';
+                        }
+                        if (value.trim().length < 10) {
+                          return 'Описание должно содержать минимум 10 символов';
+                        }
+                        return null;
+                      },
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'G',
@@ -1655,9 +1770,7 @@ class _CreateClubDialogState extends State<_CreateClubDialog> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () {
-                          // сюда чтобы добавить клуб
-                        },
+                        onTap: () => _createClub(context),
                         borderRadius: BorderRadius.circular(14),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
@@ -1715,7 +1828,11 @@ Widget _buildPremiumTypeCard({
   final isSelected = _selectedType == type;
   
   return GestureDetector(
-    onTap: () => setState(() => _selectedType = type),
+    onTap: () {
+      setState(() {
+        _selectedType = type;
+      });
+    },
     child: AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(20),
@@ -1780,7 +1897,8 @@ Widget _buildPremiumTypeCard({
 }
 
 // Данные для примера
-final _myClubs = [
+// Глобальные списки клубов
+List<Map<String, dynamic>> _myClubs = [
   {
     'id': '1',
     'name': 'Кофейные гурманы',
@@ -1788,6 +1906,7 @@ final _myClubs = [
     'type': 'coffee',
     'members': 24,
     'events': 5,
+    'isOwner': false,
   },
   {
     'id': '2',
@@ -1796,10 +1915,11 @@ final _myClubs = [
     'type': 'book',
     'members': 18,
     'events': 8,
+    'isOwner': false,
   },
 ];
 
-final _allClubs = [
+List<Map<String, dynamic>> _allClubs = [
   ..._myClubs,
   {
     'id': '3',
@@ -1808,6 +1928,7 @@ final _allClubs = [
     'type': 'tea',
     'members': 15,
     'events': 3,
+    'isOwner': false,
   },
   {
     'id': '4',
@@ -1816,8 +1937,15 @@ final _allClubs = [
     'type': 'coffee',
     'members': 32,
     'events': 12,
+    'isOwner': false,
   },
 ];
+
+// Функция для добавления нового клуба
+void _addNewClub(Map<String, dynamic> newClub) {
+  _myClubs.insert(0, newClub); // Добавляем в начало списка "Мои клубы"
+  // НЕ добавляем в _allClubs, так как он уже содержит _myClubs через spread оператор
+}
 
 final _upcomingEvents = [
   {
