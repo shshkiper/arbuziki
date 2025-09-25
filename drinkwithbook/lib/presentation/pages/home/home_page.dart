@@ -17,6 +17,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
+  int? _menuInitialTabIndex;
 
   @override
   void dispose() {
@@ -24,8 +25,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.dispose();
   }
 
-  void _onTabTapped(int index) {
-    setState(() => _currentIndex = index);
+  void _onTabTapped(int index, {int? initialTabIndex}) {
+    setState(() {
+      _currentIndex = index;
+      _menuInitialTabIndex = initialTabIndex;
+    });
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
@@ -40,10 +44,18 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: (index) => setState(() => _currentIndex = index),
+        onPageChanged: (index) => setState(() {
+          _currentIndex = index;
+          if (index != 1) {
+            _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
+          }
+        }),
         children: [
-          _HomeTab(onNavigateToMenu: () => _onTabTapped(1)),
-          const MenuPage(),
+          _HomeTab(
+            onNavigateToMenu: () => _onTabTapped(1),
+            onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 3),
+          ),
+          MenuPage(initialTabIndex: _menuInitialTabIndex),
           const ClubsPage(),
           const LoyaltyPage(),
           ProfilePage(
@@ -114,9 +126,12 @@ class _HomePageState extends ConsumerState<HomePage> {
 
 class _HomeTab extends StatelessWidget {
   final VoidCallback onNavigateToMenu;
+  final VoidCallback onNavigateToBooks;
 
-
-  const _HomeTab({required this.onNavigateToMenu});
+  const _HomeTab({
+    required this.onNavigateToMenu,
+    required this.onNavigateToBooks,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +248,7 @@ class _HomeTab extends StatelessWidget {
                     child: _QuickActionCard(
                       icon: Icons.auto_stories,
                       title: 'Список книг',
-                      onTap: onNavigateToMenu,
+                      onTap: onNavigateToBooks,
                     ),
                   )
                   .animate(delay: const Duration(milliseconds: 120))
