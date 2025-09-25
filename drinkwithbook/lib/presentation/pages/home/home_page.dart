@@ -6,7 +6,11 @@ import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
+<<<<<<< HEAD
 import '../../widgets/notifications_modal.dart';
+=======
+// import '../../data/providers/simple_cart_provider.dart';
+>>>>>>> 20a1acc704c0cbf9456eebfdfbf287011f0bb5a6
 import 'dart:ui';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -127,7 +131,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 }
 
-class _HomeTab extends StatelessWidget {
+class _HomeTab extends ConsumerWidget {
   final VoidCallback onNavigateToMenu;
   final VoidCallback onNavigateToBooks;
 
@@ -146,7 +150,7 @@ class _HomeTab extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -177,6 +181,46 @@ class _HomeTab extends StatelessWidget {
             padding: const EdgeInsets.only(right: 13.0),
             child: Row(
               children: [
+                // Иконка корзины
+                Consumer(
+                  builder: (context, ref, child) {
+                    final cartItemsCount = ref.watch(cartItemsCountProvider);
+                    return Stack(
+                      children: [
+                        IconButton(
+                          iconSize: 27,
+                          icon: const Icon(Icons.shopping_basket_outlined),
+                          onPressed: () => _showCart(context, ref),
+                        ),
+                        if (cartItemsCount > 0)
+                          Positioned(
+                            right: 8,
+                            top: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.error,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                '$cartItemsCount',
+                                style: TextStyle(
+                                  color: theme.colorScheme.onError,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
                 IconButton(
                   iconSize: 27,
                   icon: const Icon(Icons.notifications_outlined),
@@ -312,7 +356,7 @@ class _HomeTab extends StatelessWidget {
                       name: drink['name'] as String,
                       price: '₽${drink['price']}',
                       image: drink['image'] as String,
-                      onTap: () => _showDrinkDetails(context, drink),
+                      onTap: () => _showDrinkDetails(context, drink, ref),
                     ),
                   );
                 },
@@ -600,7 +644,7 @@ class _ActivityCard extends StatelessWidget {
   }
 }
 
-void _showDrinkDetails(BuildContext context, Map<String, dynamic> drink) {
+void _showDrinkDetails(BuildContext context, Map<String, dynamic> drink, WidgetRef ref) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -608,6 +652,25 @@ void _showDrinkDetails(BuildContext context, Map<String, dynamic> drink) {
     builder: (context) => _ItemDetailsBottomSheet(
       item: drink,
       onAddToCart: () {
+        final currentCart = ref.read(cartItemsProvider);
+        final existingIndex = currentCart.indexWhere((item) => item.id == drink['id']);
+        
+        if (existingIndex >= 0) {
+          final updatedCart = List<CartItem>.from(currentCart);
+          updatedCart[existingIndex].quantity += 1;
+          ref.read(cartItemsProvider.notifier).state = updatedCart;
+        } else {
+          final newItem = CartItem(
+            id: drink['id'],
+            name: drink['name'],
+            price: drink['price'],
+            image: drink['image'],
+            description: drink['description'] ?? '',
+            ingredients: List<String>.from(drink['ingredients'] ?? []),
+            quantity: 1,
+          );
+          ref.read(cartItemsProvider.notifier).state = [...currentCart, newItem];
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${drink['name']} добавлен в корзину'),
@@ -617,6 +680,309 @@ void _showDrinkDetails(BuildContext context, Map<String, dynamic> drink) {
       },
     ),
   );
+}
+
+void _showCart(BuildContext context, WidgetRef ref) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => _CartBottomSheet(
+      onUpdateQuantity: (index, quantity) {
+        final currentCart = ref.read(cartItemsProvider);
+        if (quantity <= 0) {
+          final updatedCart = List<CartItem>.from(currentCart);
+          updatedCart.removeAt(index);
+          ref.read(cartItemsProvider.notifier).state = updatedCart;
+        } else {
+          final updatedCart = List<CartItem>.from(currentCart);
+          updatedCart[index].quantity = quantity;
+          ref.read(cartItemsProvider.notifier).state = updatedCart;
+        }
+      },
+      onClearCart: () {
+        ref.read(cartItemsProvider.notifier).state = [];
+      },
+    ),
+  );
+}
+
+class _CartBottomSheet extends ConsumerWidget {
+  final Function(int, int) onUpdateQuantity;
+  final VoidCallback onClearCart;
+
+  const _CartBottomSheet({
+    required this.onUpdateQuantity,
+    required this.onClearCart,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final cart = ref.watch(cartItemsProvider);
+    final total = cart.fold<double>(
+      0,
+      (sum, item) => sum + (item.price * item.quantity),
+    );
+    
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.7,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        children: [
+          // Заголовок
+          Container(
+            padding: cart.isEmpty
+            ?const EdgeInsets.only(right: 16, left: 20, bottom:15, top: 15)
+            :const EdgeInsets.only(right: 16, left: 20, bottom:5, top: 5),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: theme.colorScheme.outline.withOpacity(0.2),
+                ),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Корзина',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontFamily: 'G',
+                    fontSize: 22,
+                  ),
+                ),
+                if (cart.isNotEmpty)
+                  TextButton(
+                      onPressed: onClearCart,
+                    child: Text(
+                      'Очистить', 
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontFamily: 'G',
+                        fontSize: 17,
+                        color: theme.colorScheme.error,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          
+          // Список товаров
+          if (cart.isEmpty)
+             Expanded(
+              child: Center(
+                child: Text('Корзина пуста', 
+                style: theme.textTheme.headlineSmall?.copyWith(
+                    fontFamily: 'G',
+                    fontSize: 18,
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              ),
+            )
+          else ...[
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: cart.length,
+                itemBuilder: (context, index) {
+                  final item = cart[index];
+                  return _CartItem(
+                    item: item,
+                    onQuantityChanged: (quantity) {
+                      onUpdateQuantity(index, quantity);
+                    },
+                  );
+                },
+              ),
+            ),
+            
+            // Итого и кнопка заказа
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: theme.colorScheme.outline.withOpacity(0.2),
+                  ),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Итого:',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontFamily: 'G',
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        '₽${total.toInt()}',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'G',
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                       
+                      },
+                      child:  Text('Оформить заказ',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'G',
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _CartItem extends StatelessWidget {
+  final CartItem item;
+  final Function(int) onQuantityChanged;
+
+  const _CartItem({
+    required this.item,
+    required this.onQuantityChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Изображение
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                image: AssetImage('assets/images/${item.image}'),
+                fit: BoxFit.cover,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          
+          // Текст
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${item.price} ₽',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Счетчик
+          Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () => onQuantityChanged(item.quantity - 1),
+                  icon: Icon(Icons.remove, color: theme.colorScheme.primary),
+                  iconSize: 18,
+                  padding: const EdgeInsets.all(6),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    item.quantity.toString(),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => onQuantityChanged(item.quantity + 1),
+                  icon: Icon(Icons.add, color: theme.colorScheme.primary),
+                  iconSize: 18,
+                  padding: const EdgeInsets.all(6),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ItemDetailsBottomSheet extends StatefulWidget {
@@ -1274,3 +1640,37 @@ final _clubActivities = [
     'participants': 15,
   },
 ];
+
+// Класс для товара в корзине
+class CartItem {
+  final String id;
+  final String name;
+  final int price;
+  final String image;
+  final String description;
+  final List<String> ingredients;
+  int quantity;
+
+  CartItem({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.image,
+    required this.description,
+    required this.ingredients,
+    this.quantity = 1,
+  });
+}
+
+// Провайдеры для корзины
+final cartItemsProvider = StateProvider<List<CartItem>>((ref) => []);
+
+final cartItemsCountProvider = Provider<int>((ref) {
+  final cart = ref.watch(cartItemsProvider);
+  return cart.fold(0, (sum, item) => sum + item.quantity);
+});
+
+final cartTotalPriceProvider = Provider<double>((ref) {
+  final cart = ref.watch(cartItemsProvider);
+  return cart.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../home/home_page.dart'; // Импортируем CartItem и провайдеры из home_page.dart
 import 'dart:ui';
 
 class MenuPage extends ConsumerStatefulWidget {
@@ -14,7 +15,6 @@ class MenuPage extends ConsumerStatefulWidget {
 class _MenuPageState extends ConsumerState<MenuPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final List<Map<String, dynamic>> _cart = [];
 
   @override
   void initState() {
@@ -32,17 +32,25 @@ class _MenuPageState extends ConsumerState<MenuPage>
   }
 
   void _addToCart(Map<String, dynamic> item) {
-    setState(() {
-      final existingIndex = _cart.indexWhere(
-        (cartItem) => cartItem['id'] == item['id'],
+    final currentCart = ref.read(cartItemsProvider);
+    final existingIndex = currentCart.indexWhere((cartItem) => cartItem.id == item['id']);
+    
+    if (existingIndex >= 0) {
+      final updatedCart = List<CartItem>.from(currentCart);
+      updatedCart[existingIndex].quantity += 1;
+      ref.read(cartItemsProvider.notifier).state = updatedCart;
+    } else {
+      final newItem = CartItem(
+        id: item['id'],
+        name: item['name'],
+        price: item['price'],
+        image: item['image'],
+        description: item['description'] ?? '',
+        ingredients: List<String>.from(item['ingredients'] ?? []),
+        quantity: 1,
       );
-      
-      if (existingIndex >= 0) {
-        _cart[existingIndex]['quantity'] += 1;
-      } else {
-        _cart.add({...item, 'quantity': 1});
-      }
-    });
+      ref.read(cartItemsProvider.notifier).state = [...currentCart, newItem];
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -58,18 +66,20 @@ class _MenuPageState extends ConsumerState<MenuPage>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => _CartBottomSheet(
-        cart: _cart,
         onUpdateQuantity: (index, quantity) {
-          setState(() {
-            if (quantity <= 0) {
-              _cart.removeAt(index);
-            } else {
-              _cart[index]['quantity'] = quantity;
-            }
-          });
+          final currentCart = ref.read(cartItemsProvider);
+          if (quantity <= 0) {
+            final updatedCart = List<CartItem>.from(currentCart);
+            updatedCart.removeAt(index);
+            ref.read(cartItemsProvider.notifier).state = updatedCart;
+          } else {
+            final updatedCart = List<CartItem>.from(currentCart);
+            updatedCart[index].quantity = quantity;
+            ref.read(cartItemsProvider.notifier).state = updatedCart;
+          }
         },
         onClearCart: () {
-          setState(() => _cart.clear());
+          ref.read(cartItemsProvider.notifier).state = [];
         },
       ),
     );
@@ -78,7 +88,7 @@ class _MenuPageState extends ConsumerState<MenuPage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cartItemsCount = _cart.fold<int>(0, (sum, item) => sum + (item['quantity'] as int));
+    final cartItemsCount = ref.watch(cartItemsCountProvider);
     
     return Scaffold(
       appBar: AppBar(
@@ -982,54 +992,22 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
   }
 }
 
-class _CartBottomSheet extends StatefulWidget {
-  final List<Map<String, dynamic>> cart;
+class _CartBottomSheet extends ConsumerWidget {
   final Function(int, int) onUpdateQuantity;
   final VoidCallback onClearCart;
 
   const _CartBottomSheet({
-    required this.cart,
     required this.onUpdateQuantity,
     required this.onClearCart,
   });
 
   @override
-  State<_CartBottomSheet> createState() => _CartBottomSheetState();
-}
-
-class _CartBottomSheetState extends State<_CartBottomSheet> {
-  late List<Map<String, dynamic>> _localCart;
-
-  @override
-  void initState() {
-    super.initState();
-    _localCart = List.from(widget.cart);
-  }
-
-  void _updateQuantity(int index, int quantity) {
-    setState(() {
-      if (quantity <= 0) {
-        _localCart.removeAt(index);
-      } else {
-        _localCart[index]['quantity'] = quantity;
-      }
-    });
-    widget.onUpdateQuantity(index, quantity);
-  }
-
-  void _clearCart() {
-    setState(() {
-      _localCart.clear();
-    });
-    widget.onClearCart();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final total = _localCart.fold<double>(
+    final cart = ref.watch(cartItemsProvider);
+    final total = cart.fold<double>(
       0,
-      (sum, item) => sum + (item['price'] * item['quantity']),
+      (sum, item) => sum + (item.price * item.quantity),
     );
     
     return Container(
@@ -1042,7 +1020,7 @@ class _CartBottomSheetState extends State<_CartBottomSheet> {
         children: [
           // Заголовок
           Container(
-            padding: _localCart.isEmpty
+            padding: cart.isEmpty
             ?const EdgeInsets.only(right: 16, left: 20, bottom:15, top: 15)
             :const EdgeInsets.only(right: 16, left: 20, bottom:5, top: 5),
             decoration: BoxDecoration(
@@ -1062,9 +1040,9 @@ class _CartBottomSheetState extends State<_CartBottomSheet> {
                     fontSize: 22,
                   ),
                 ),
-                if (_localCart.isNotEmpty)
+                if (cart.isNotEmpty)
                   TextButton(
-                      onPressed: _clearCart,
+                      onPressed: onClearCart,
                     child: Text(
                       'Очистить', 
                       style: theme.textTheme.headlineSmall?.copyWith(
@@ -1079,7 +1057,7 @@ class _CartBottomSheetState extends State<_CartBottomSheet> {
           ),
           
           // Список товаров
-          if (_localCart.isEmpty)
+          if (cart.isEmpty)
              Expanded(
               child: Center(
                 child: Text('Корзина пуста', 
@@ -1095,13 +1073,13 @@ class _CartBottomSheetState extends State<_CartBottomSheet> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: _localCart.length,
+                itemCount: cart.length,
                 itemBuilder: (context, index) {
-                  final item = _localCart[index];
+                  final item = cart[index];
                   return _CartItem(
                     item: item,
                     onQuantityChanged: (quantity) {
-                      _updateQuantity(index, quantity);
+                      onUpdateQuantity(index, quantity);
                     },
                   );
                 },
@@ -1171,7 +1149,7 @@ class _CartBottomSheetState extends State<_CartBottomSheet> {
 }
 
 class _CartItem extends StatelessWidget {
-  final Map<String, dynamic> item;
+  final CartItem item;
   final Function(int) onQuantityChanged;
 
   const _CartItem({
@@ -1210,7 +1188,7 @@ class _CartItem extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
-                image: AssetImage('assets/images/${item['image']}'),
+                image: AssetImage('assets/images/${item.image}'),
                 fit: BoxFit.cover,
               ),
               boxShadow: [
@@ -1230,7 +1208,7 @@ class _CartItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['name'],
+                  item.name,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -1241,7 +1219,7 @@ class _CartItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '${item['price']} ₽',
+                  '${item.price} ₽',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w700,
@@ -1261,7 +1239,7 @@ class _CartItem extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () => onQuantityChanged(item['quantity'] - 1),
+                  onPressed: () => onQuantityChanged(item.quantity - 1),
                   icon: Icon(Icons.remove, color: theme.colorScheme.primary),
                   iconSize: 18,
                   padding: const EdgeInsets.all(6),
@@ -1269,7 +1247,7 @@ class _CartItem extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(
-                    item['quantity'].toString(),
+                    item.quantity.toString(),
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
@@ -1278,7 +1256,7 @@ class _CartItem extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => onQuantityChanged(item['quantity'] + 1),
+                  onPressed: () => onQuantityChanged(item.quantity + 1),
                   icon: Icon(Icons.add, color: theme.colorScheme.primary),
                   iconSize: 18,
                   padding: const EdgeInsets.all(6),
