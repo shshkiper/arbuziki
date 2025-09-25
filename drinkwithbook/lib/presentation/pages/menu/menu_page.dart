@@ -166,8 +166,7 @@ class _MenuPageState extends ConsumerState<MenuPage>
                       ),
                       tabs: const [
                         Tab(text: 'Кофе'),
-                        Tab(text: 'Чай'),
-                        Tab(text: 'Десерты'),
+                        Tab(text: 'Пончики'),
                         Tab(text: 'Книги'),
                       ],
                     ),
@@ -188,10 +187,6 @@ class _MenuPageState extends ConsumerState<MenuPage>
         children: [
           _MenuSection(
             items: _coffeeItems,
-            onAddToCart: _addToCart,
-          ),
-          _MenuSection(
-            items: _teaItems,
             onAddToCart: _addToCart,
           ),
           _MenuSection(
@@ -547,6 +542,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                       ],
                       
                       // Размеры
+                      if(widget.item['ingredients'] != null)
                       _buildSizeSelection(theme),
                       
                       const SizedBox(height: 13),
@@ -889,8 +885,8 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
       ];
     } else if (widget.item['id'].toString().startsWith('book')) {
       suggestions = [
-        {'name': 'Чай', 'price': 150, 'image': '1.jpg'},
-        {'name': 'Печенье', 'price': 120, 'image': 'donat3.jpg'},
+        {'name': 'Капучино', 'price': 250, 'image': 'capuchino.jpg'},
+        {'name': 'Пончик', 'price': 120, 'image': 'donat3.jpg'},
       ];
     }
     
@@ -1099,7 +1095,8 @@ class _CartBottomSheet extends StatelessWidget {
                       Text(
                         'Итого:',
                         style: theme.textTheme.titleLarge?.copyWith(
-                          fontFamily: 'G'
+                          fontFamily: 'G',
+                          fontSize: 23,
                         ),
                       ),
                       Text(
@@ -1107,11 +1104,13 @@ class _CartBottomSheet extends StatelessWidget {
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'G',
+                          fontSize: 20,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -1119,9 +1118,17 @@ class _CartBottomSheet extends StatelessWidget {
                         Navigator.of(context).pop();
                         // TODO: Переход к оформлению заказа
                       },
-                      child: const Text('Оформить заказ'),
+                      child:  Text('Оформить заказ',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'G',
+                          fontSize: 17,
+                        ),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -1145,70 +1152,110 @@ class _CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: AssetImage('assets/images/${item['image']}'),
-                  fit: BoxFit.cover,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Изображение
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                image: AssetImage('assets/images/${item['image']}'),
+                fit: BoxFit.cover,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item['name'],
-                    style: theme.textTheme.titleSmall,
+          ),
+          const SizedBox(width: 16),
+          
+          // Текст
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['name'],
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '₽${item['price']}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${item['price']} ₽',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Row(
+          ),
+          
+          // Счетчик
+          Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
               children: [
                 IconButton(
                   onPressed: () => onQuantityChanged(item['quantity'] - 1),
-                  icon: const Icon(Icons.remove),
-                  iconSize: 20,
+                  icon: Icon(Icons.remove, color: theme.colorScheme.primary),
+                  iconSize: 18,
+                  padding: const EdgeInsets.all(6),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: theme.colorScheme.outline),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(
                     item['quantity'].toString(),
-                    style: theme.textTheme.titleSmall,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
                 ),
                 IconButton(
                   onPressed: () => onQuantityChanged(item['quantity'] + 1),
-                  icon: const Icon(Icons.add),
-                  iconSize: 20,
+                  icon: Icon(Icons.add, color: theme.colorScheme.primary),
+                  iconSize: 18,
+                  padding: const EdgeInsets.all(6),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1262,35 +1309,6 @@ final _coffeeItems = [
   },
 ];
 
-final _teaItems = [
-  {
-    'id': 'tea_1',
-    'name': 'Айс Матча Латте',
-    'description': 'Освежающий японский зеленый чай матча с молоком',
-    'price': 350,
-    'image': 'ice matcha latte.jpg',
-    'rating': 4.7,
-    'ingredients': ['Матча', 'Молоко', 'Лед', 'Сироп'],
-  },
-  {
-    'id': 'tea_2',
-    'name': 'Рефрешер',
-    'description': 'Освежающий фруктовый напиток',
-    'price': 280,
-    'image': 'refresher.jpg',
-    'rating': 4.5,
-    'ingredients': ['Фруктовый сироп', 'Лед', 'Газированная вода'],
-  },
-  {
-    'id': 'tea_3',
-    'name': 'Далгона кофе',
-    'description': 'Трендовый взбитый кофе с молоком',
-    'price': 320,
-    'image': 'dalgona-сofe.jpg',
-    'rating': 4.6,
-    'ingredients': ['Растворимый кофе', 'Сахар', 'Молоко'],
-  },
-];
 
 final _dessertItems = [
   {

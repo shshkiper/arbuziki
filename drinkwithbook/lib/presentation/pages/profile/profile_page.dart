@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'settings_dialog.dart';
 import 'dart:ui';
@@ -66,135 +65,135 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           children: [
             // Профиль пользователя
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    theme.colorScheme.primary.withOpacity(0.1),
-                    theme.colorScheme.secondary.withOpacity(0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: theme.colorScheme.outline.withOpacity(0.2),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Первая строка: аватар, имя и почта
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Аватар
-                      CircleAvatar(
-                        radius: 27,
-                        backgroundColor: theme.colorScheme.primary,
-                        child: Text(
-                          _getUserInitials(),
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      
-                      const SizedBox(width: 16),
-                      
-                      // Имя и почта
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _user?.userMetadata?['name'] ?? 'Пользователь',
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "G",
-                                fontSize: 21,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _user?.email ?? '',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(0.7),
-                                fontFamily: "G",
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 15),
-                  
-                  // Вторая строка: статистика
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _ProfileStat(
-                        title: 'Визитов',
-                        value: '47',
-                        status: 'none',
-                      ),
-                      _ProfileStat(
-                        title: 'Баллов',
-                        value: '2,450',
-                        status: 'none',
-                      ),
-                      _ProfileStat(
-                        title: 'Уровень',
-                        value: 'Золото',
-                        status: 'Золото',
-                      ),
-                    ],
-                  ),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(20),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.1),
+        blurRadius: 20,
+        offset: const Offset(0, 8),
+      ),
+    ],
+  ),
+  padding: const EdgeInsets.all(24),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Первая строка: аватар, имя и почта
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Аватар с градиентом
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
                 ],
               ),
-            )
-                .animate()
-                .fadeIn(duration: const Duration(milliseconds: 200))
-                .slideY(begin: -0.2, duration: const Duration(milliseconds: 400)),
-
-            const SizedBox(height: 15),
-
-            // Меню действий
-            _MenuSection(
-              title: 'Мои активности',
-              items: [
-                _MenuItem(
-                  icon: Icons.history,
-                  title: 'История заказов',
-                  subtitle: 'Посмотреть все заказы',
-                  onTap: () => _showOrderHistory(context),
-                ),
-                _MenuItem(
-                  icon: Icons.favorite,
-                  title: 'Избранное',
-                  subtitle: 'Любимые напитки и книги',
-                  onTap: () => _showFavorites(context),
-                ),
-                _MenuItem(
-                  icon: Icons.group,
-                  title: 'Мои клубы',
-                  subtitle: 'Участие в сообществах',
-                  onTap: () {
-                    if (widget.onNavigateToClubs != null) {
-                      widget.onNavigateToClubs!();
-                    } else {
-                      context.go('/clubs');
-                    }
-                  },
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
-            )
-                .animate(delay: const Duration(milliseconds: 200))
+            ),
+            child: Center(
+              child: Text(
+                _getUserInitials(),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontFamily: 'G',
+                ),
+              ),
+            ),
+          ),
+          
+          const SizedBox(width: 16),
+          
+          // Имя и почта
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _user?.userMetadata?['name'] ?? 'Пользователь',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _user?.email ?? '',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                    fontFamily: 'G',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      
+      const SizedBox(height: 15),
+      
+      // Разделитель
+      Container(
+        height: 1,
+        color: Colors.grey.withOpacity(0.1),
+      ),
+      
+      const SizedBox(height: 10),
+      
+      // Вторая строка: статистика
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _PremiumProfileStat(
+            title: 'Визитов',
+            value: '47',
+            status: 'none',
+          ),
+          Container(
+            width: 1,
+            height: 40,
+            color: Colors.grey.withOpacity(0.1),
+          ),
+          _PremiumProfileStat(
+            title: 'Баллов',
+            value: '2,450',
+            status: 'none',
+          ),
+          Container(
+            width: 1,
+            height: 40,
+            color: Colors.grey.withOpacity(0.1),
+          ),
+          _PremiumProfileStat(
+            title: 'Уровень',
+            value: 'Золото',
+            status: 'Золото',
+          ),
+        ],
+      ),
+    ],
+  ),
+)                .animate(delay: const Duration(milliseconds: 200))
                 .fadeIn(duration: const Duration(milliseconds: 150))
                 .slideX(begin: -0.2, duration: const Duration(milliseconds: 150)),
 
@@ -309,19 +308,48 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     );
   }
 
-  void _showOrderHistory(BuildContext context) {
-    // TODO: Implement order history
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('История заказов - в разработке')),
-    );
-  }
 
-  void _showFavorites(BuildContext context) {
-    // TODO: Implement favorites
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Избранное - в разработке')),
-    );
+  Widget _PremiumProfileStat({
+  required String title,
+  required String value,
+  required String status,
+}) {
+  Color? valueColor;
+  if (status == 'Золото') {
+    valueColor = const Color(0xFFFFD700);
+  } else if (status == 'Серебро') {
+    valueColor = const Color(0xFFC0C0C0);
+  } else if (status == 'Бронза') {
+    valueColor = const Color(0xFFCD7F32);
   }
+  
+  return Expanded(
+    child: Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            color: valueColor ?? Colors.black87,
+            fontFamily: 'G',
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+            fontFamily: 'G',
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   void _showNotificationSettings(BuildContext context) {
     // TODO: Implement notification settings
@@ -412,75 +440,200 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   }
 
   void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Выход'),
-        content: const Text('Вы уверены, что хотите выйти из аккаунта?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Отмена'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await Supabase.instance.client.auth.signOut();
-              if (context.mounted) {
-                context.go('/auth');
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
+  
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.all(20),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 40,
+              offset: const Offset(0, 15),
             ),
-            child: const Text('Выйти'),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Заголовок
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.red,
+                              Colors.red.withOpacity(0.8),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.logout_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        'Выход',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black87,
+                          fontFamily: 'G',
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: Colors.grey[600],
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Текст подтверждения
+              Text(
+                'Вы уверены, что хотите выйти из аккаунта?',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[700],
+                  fontFamily: 'G',
+                ),
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // Кнопки
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Colors.grey.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        borderRadius: BorderRadius.circular(14),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 14,
+                          ),
+                          child: Text(
+                            'Отмена',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700],
+                              fontFamily: 'G',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.red,
+                          Colors.red.withOpacity(0.9),
+                        ],
+                        stops: const [0.0, 0.8],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.4),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () async {
+                          await Supabase.instance.client.auth.signOut();
+                          if (context.mounted) {
+                            Navigator.of(context).pop(); // Закрыть диалог
+                            Navigator.of(context).pop(); // Закрыть настройки
+                            Navigator.of(context).pushNamedAndRemoveUntil('/auth', (route) => false);
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(14),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 14,
+                          ),
+                          child: Text(
+                            'Выйти',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              fontFamily: 'G',
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
-class _ProfileStat extends StatelessWidget {
-  final String title;
-  final String value;
-  final String status;
-
-  const _ProfileStat({
-    required this.title,
-    required this.value,
-    required this.status,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Column(
-      children: [
-        Text(
-          value, 
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: status == 'Золото'?Colors.yellow.shade700:theme.colorScheme.primary,
-            fontFamily: "G",
-            fontSize: 20,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          title,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color:theme.colorScheme.onSurface.withOpacity(0.7),
-            fontFamily: "G",
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _MenuSection extends StatelessWidget {
   final String title;

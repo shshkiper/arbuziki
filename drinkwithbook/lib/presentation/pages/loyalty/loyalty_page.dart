@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:ui';
+
 
 class LoyaltyPage extends ConsumerStatefulWidget {
   const LoyaltyPage({super.key});
@@ -109,23 +111,64 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: SizedBox(
-          height: 40,
-          child: Image.asset(
-            'assets/images/logo.png',
-            fit: BoxFit.contain,
-          ),
-        ),
-        centerTitle: true,
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Моя карта'),
-            Tab(text: 'Подписки'),
-            Tab(text: 'Награды'),
-          ],
-        ),
-      ),
+        toolbarHeight: 100,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Container(),
+          centerTitle: false,
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+              child: Container(
+                color: Colors.white.withOpacity(0.00001),
+                child: Column(
+                  children: [
+                    // Верхняя часть с логотипом и корзиной
+                    Container(
+                      height: 80,
+                      child: Row(
+                        children: [
+                          // Логотип
+                          Padding(
+                            padding: const EdgeInsets.only(left: 17.0, top:24.0 ),
+                            child: Image.asset(
+                              height: 45,
+                              'assets/images/logo.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // TabBar
+                          Expanded(
+                            child: TabBar(
+                              dividerHeight: 0,
+                              controller: _tabController,
+                              labelStyle: TextStyle(
+                                fontSize: 16.4,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'G'
+                              ),
+                              unselectedLabelStyle: TextStyle(
+                                fontSize: 16.4,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: 'G',
+                              ),
+                              tabs: const [
+                                Tab(text: 'Моя карта'),
+                                Tab(text: 'Подписки'),
+                                Tab(text: 'Награды'),
+                              ],
+                            ),
+                            
+                          ),
+                        ],
+                      ),
+                    ),
+                ),
+              ),
+            ),
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -203,78 +246,225 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
     final qrData = 'LOYALTY_CARD:$userId:2450:GOLD';
     
     showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'QR-код карты лояльности',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 24),
-              
-              // QR-код
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: QrImageView(
-                  data: qrData,
-                  version: QrVersions.auto,
-                  size: 200.0,
-                  backgroundColor: Colors.white,
-                ),
-              ),
-              
-              const SizedBox(height: 16),
-              
-              Text(
-                userEmail,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 8),
-              
-              Text(
-                '2,450 баллов • Статус: ЗОЛОТО',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 24),
-              
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Закрыть'),
-              ),
-            ],
+  context: context,
+  builder: (context) => Dialog(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    insetPadding: const EdgeInsets.all(20),
+    child: Container(
+      constraints: const BoxConstraints(maxWidth: 400),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 40,
+            offset: const Offset(0, 15),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Заголовок с иконкой
+            Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    // Заголовок с иконкой слева
+    Row(
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(
+            Icons.qr_code_2_rounded,
+            color: Colors.white,
+            size: 24,
           ),
         ),
+        const SizedBox(width: 12),
+        Text(
+          'QR-код',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: Colors.black87,
+            fontFamily: 'G',
+          ),
+        ),
+      ],
+    ),
+    
+    // Крестик для выхода справа
+    IconButton(
+      onPressed: () => Navigator.of(context).pop(),
+      icon: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.close_rounded,
+          color: Colors.grey[600],
+          size: 20,
+        ),
       ),
-    );
+    ),
+  ],
+),
+            
+            const SizedBox(height: 28),
+            
+            // QR-код с оформлением
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.grey.withOpacity(0.03),
+                    Colors.grey.withOpacity(0.08),
+                ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.2),
+                  width: 1.5,
+                ),
+              ),
+              child: Column(
+                children: [
+                  QrImageView(
+                    data: qrData,
+                    version: QrVersions.auto,
+                    size: 180.0,
+                    backgroundColor: Colors.transparent,
+                    eyeStyle: const QrEyeStyle(
+                      eyeShape: QrEyeShape.square,
+                      color: Colors.black87,
+                    ),
+                    dataModuleStyle: const QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.square,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  // Информация под QR-кодом
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          userEmail,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[700],
+                            fontFamily: 'G',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '2,450 баллов • Статус: ЗОЛОТО',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.primary,
+                            fontFamily: 'G',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 28),
+            
+            // Кнопка закрытия
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withOpacity(0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Готово',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontFamily: 'G',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
   }
 }
 
@@ -288,254 +478,573 @@ class _LoyaltyCardTab extends StatelessWidget {
     final theme = Theme.of(context);
     
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Карта лояльности
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.primary.withOpacity(0.8),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.colorScheme.primary.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+  padding: const EdgeInsets.all(24),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Карта лояльности
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.primaryContainer,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withOpacity(0.4),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Верхняя строка с названием и статусом
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Drink with Book',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontFamily: 'G',
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.amber, Colors.orange],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.amber.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'ЗОЛОТО',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black,
+                      fontFamily: 'G',
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                 ),
               ],
             ),
-            child: Column(
+            
+            const SizedBox(height: 24),
+            
+            // Информация о пользователе
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Text(
+                  'Анна Смирнова',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    fontFamily: 'G',
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Участник с октября 2023',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white.withOpacity(0.9),
+                    fontFamily: 'G',
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 32),
+            
+            // Баллы и QR код
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Drink with Book',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
+                      '2,450',
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        fontFamily: 'G',
+                        letterSpacing: -1,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.tertiary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        'ЗОЛОТО',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Text(
+                      'Баллов',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white.withOpacity(0.8),
+                        fontFamily: 'G',
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  'Анна Смирнова',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: theme.colorScheme.onPrimary,
+                
+                // QR код
+                GestureDetector(
+                  onTap: onShowQRCode,
+                  child: Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.qr_code_2_rounded,
+                      size: 32,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
+              ],
+            ),
+          ],
+        ),
+      )
+      .animate()
+      .fadeIn(duration: const Duration(milliseconds: 200))
+      .slideY(begin: -0.2, duration: const Duration(milliseconds: 200)),
+
+      const SizedBox(height: 28),
+
+      // Прогресс до следующего уровня
+      Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 25,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Text(
-                  'Участник с октября 2023',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                  'Прогресс до следующего\nуровня',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                    fontFamily: 'G',
                   ),
                 ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '73%',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.grey[700],
+                      fontFamily: 'G',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Уровни
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text(
-                          '2,450',
-                          style: theme.textTheme.headlineLarge?.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Icon(
+                          Icons.star_rounded,
+                          size: 16,
+                          color: Colors.amber,
                         ),
+                        const SizedBox(width: 6),
                         Text(
-                          'Баллов',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                          'Золото',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.amber,
+                            fontFamily: 'G',
                           ),
                         ),
                       ],
                     ),
-                    GestureDetector(
-                      onTap: onShowQRCode,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          Icons.qr_code,
-                          size: 48,
-                          color: theme.colorScheme.onPrimary,
-                        ),
+                    Text(
+                      '2,450 / 3,000',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[600],
+                        fontFamily: 'G',
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          )
-              .animate()
-              .fadeIn(duration: const Duration(milliseconds: 600))
-              .slideY(begin: -0.2, duration: const Duration(milliseconds: 600)),
-
-          const SizedBox(height: 24),
-
-          // Прогресс до следующего уровня
-          Text(
-            'Прогресс до следующего уровня',
-            style: theme.textTheme.titleLarge,
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: theme.colorScheme.outline.withOpacity(0.2),
-              ),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      'Золото',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.tertiary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          size: 16,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Платина',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[500],
+                            fontFamily: 'G',
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
-                      'Платина',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      'Следующий уровень',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[500],
+                        fontFamily: 'G',
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                LinearProgressIndicator(
-                  value: 0.73,
-                  backgroundColor: theme.colorScheme.outline.withOpacity(0.2),
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.colorScheme.tertiary,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Осталось 550 баллов до уровня Платина',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  ),
-                ),
               ],
             ),
-          )
-              .animate(delay: const Duration(milliseconds: 200))
-              .fadeIn(duration: const Duration(milliseconds: 600))
-              .slideX(begin: -0.2, duration: const Duration(milliseconds: 600)),
-
-          const SizedBox(height: 24),
-
-          // Статистика
-          Text(
-            'Моя статистика',
-            style: theme.textTheme.titleLarge,
+            
+            const SizedBox(height: 16),
+            
+            // Прогресс бар
+            Container(
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.73,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.amber, Colors.orange],
+                      ),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    'Осталось 550 баллов до уровня Платина',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
+                      fontFamily: 'G',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+            ]
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  title: 'Визитов',
-                  value: '47',
-                  icon: Icons.store,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _StatCard(
-                  title: 'Потрачено',
-                  value: '₽12,340',
-                  icon: Icons.payments,
-                  color: theme.colorScheme.secondary,
-                ),
-              ),
-            ],
+        )
+      .animate(delay: const Duration(milliseconds: 200))
+      .fadeIn(duration: const Duration(milliseconds: 200))
+      .slideX(begin: -0.2, duration: const Duration(milliseconds: 200)),
+
+      const SizedBox(height: 28),
+
+      // Статистика
+      Text(
+        'Моя статистика',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w800,
+          color: Colors.black87,
+          fontFamily: 'G',
+        )
+      ).animate(delay: const Duration(milliseconds: 200))
+      .fadeIn(duration: const Duration(milliseconds: 200))
+      .slideX(begin: -0.2, duration: const Duration(milliseconds: 200)),
+      const SizedBox(height: 16),
+      
+      GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.2,
+        children: [
+          _ModernStatCard(
+            title: 'Визитов',
+            value: '47',
+            icon: Icons.store_rounded,
+            color: theme.colorScheme.primary,
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  title: 'Сэкономлено',
-                  value: '₽1,890',
-                  icon: Icons.savings,
-                  color: Colors.green,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _StatCard(
-                  title: 'Любимый напиток',
-                  value: 'Капучино',
-                  icon: Icons.local_cafe,
-                  color: Colors.brown,
-                ),
-              ),
-            ],
-          )
-              .animate(delay: const Duration(milliseconds: 400))
-              .fadeIn(duration: const Duration(milliseconds: 600))
-              .slideY(begin: 0.2, duration: const Duration(milliseconds: 600)),
+          _ModernStatCard(
+            title: 'Потрачено',
+            value: '₽12,340',
+            icon: Icons.credit_card_rounded,
+            color: theme.colorScheme.secondary,
+          ),
+          _ModernStatCard(
+            title: 'Сэкономлено',
+            value: '₽1,890',
+            icon: Icons.savings_rounded,
+            color: Colors.green,
+          ),
+          _ModernStatCard(
+            title: 'Любимый напиток',
+            value: 'Капучино',
+            icon: Icons.coffee_rounded,
+            color: Colors.brown,
+          ),
+        ],
+      )
+      .animate(delay: const Duration(milliseconds: 200))
+      .fadeIn(duration: const Duration(milliseconds: 200))
+      .slideY(begin: 0.2, duration: const Duration(milliseconds:200)),
 
-          const SizedBox(height: 24),
+      const SizedBox(height: 28),
 
-          // История транзакций
+      // История транзакций
+      Row(
+        children: [
+          Container(
+            width: 4,
+            height: 24,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+              ),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 12),
           Text(
             'Последние начисления',
-            style: theme.textTheme.titleLarge,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: Colors.black87,
+              fontFamily: 'G',
+            ),
           ),
-          const SizedBox(height: 16),
-          ..._loyaltyTransactions.map((transaction) => _TransactionCard(
-            transaction: transaction,
-          ))
-              .toList()
-              .animate(interval: const Duration(milliseconds: 100))
-              .fadeIn(duration: const Duration(milliseconds: 400))
-              .slideX(begin: 0.2, duration: const Duration(milliseconds: 400)),
         ],
+      ),
+      const SizedBox(height: 16),
+      
+      ..._loyaltyTransactions.map((transaction) => 
+        _ModernTransactionCard(transaction: transaction)
+      ).toList()
+      .animate(interval: const Duration(milliseconds: 100))
+      .fadeIn(duration: const Duration(milliseconds: 400))
+      .slideX(begin: 0.2, duration: const Duration(milliseconds: 400)),
+    ],
+  ),
+);
+
+// Современная карточка статистики
+
+  }
+}
+
+class _ModernStatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _ModernStatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                size: 22,
+                color: color,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                  ),
+                ),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                    fontFamily: 'G',
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Современная карточка 
+class _ModernTransactionCard extends StatelessWidget {
+  final Map<String, dynamic> transaction;
+
+  const _ModernTransactionCard({required this.transaction});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: transaction['points'] > 0 ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            transaction['points'] > 0 ? Icons.add_rounded : Icons.remove_rounded,
+            color: transaction['points'] > 0 ? Colors.green : Colors.red,
+            size: 20,
+          ),
+        ),
+        title: Text(
+          transaction['description'],
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+            fontFamily: 'G',
+          ),
+        ),
+        subtitle: Text(
+          transaction['date'],
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey[600],
+            fontFamily: 'G',
+          ),
+        ),
+        trailing: Text(
+          '${transaction['points'] > 0 ? '+' : ''}${transaction['points']}',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: transaction['points'] > 0 ? Colors.green : Colors.red,
+            fontFamily: 'G',
+          ),
+        ),
       ),
     );
   }
@@ -559,76 +1068,702 @@ class _SubscriptionsTab extends StatelessWidget {
     final theme = Theme.of(context);
     
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Активные подписки',
-            style: theme.textTheme.titleLarge,
+    padding: const EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Заголовок активных подписок
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 24,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Активные подписки',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Colors.black87,
+                fontFamily: 'G',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        
+        if (activeSubscriptions.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(40),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.colorScheme.primary.withOpacity(0.1),
+                        theme.colorScheme.secondary.withOpacity(0.1),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.subscriptions_rounded,
+                    size: 40,
+                    color: theme.colorScheme.primary.withOpacity(0.6),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'У вас пока нет активных подписок',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Оформите подписку и получайте свои любимые напитки с выгодой',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                    fontFamily: 'G',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          
-          if (activeSubscriptions.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.subscriptions_outlined,
-                      size: 48,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+        
+        ...activeSubscriptions.map((subscription) => Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: _ModernSubscriptionCard(
+            subscription: subscription,
+            isActive: true,
+            onCancel: onCancel,
+          ),
+        )),
+
+        const SizedBox(height: 15),
+
+        // Заголовок доступных подписок
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 24,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.green, Colors.greenAccent],
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Доступные подписки',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Colors.black87,
+                fontFamily: 'G',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        
+        ...availableSubscriptions.map((subscription) => Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: _ModernSubscriptionCard(
+            subscription: subscription,
+            isActive: false,
+            onSubscribe: onSubscribe,
+          ),
+        ))
+            .toList()
+            .animate(interval: const Duration(milliseconds: 100))
+            .fadeIn(duration: const Duration(milliseconds: 400))
+            .slideY(begin: 0.2, duration: const Duration(milliseconds: 400)),
+      ],
+    ),
+  );
+  }
+}
+
+
+class _ModernSubscriptionCard extends StatelessWidget {
+  final Map<String, dynamic> subscription;
+  final bool isActive;
+  final ValueChanged<Map<String, dynamic>>? onSubscribe;
+  final ValueChanged<Map<String, dynamic>>? onCancel;
+
+  const _ModernSubscriptionCard({
+    required this.subscription,
+    required this.isActive,
+    this.onSubscribe,
+    this.onCancel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 25,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Верхняя часть с названием и статусом
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    subscription['name'],
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black87,
+                      fontFamily: 'G',
+                      height: 1.2,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'У вас пока нет активных подписок',
-                      style: theme.textTheme.titleMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Оформите подписку и получайте свои любимые напитки с выгодой',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  ),
+                ),
+                if (isActive)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.green, Colors.greenAccent],
                       ),
-                      textAlign: TextAlign.center,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.green.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Активна',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontFamily: 'G',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // Описание
+            Text(
+              subscription['description'],
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
+                fontFamily: 'G',
+                height: 1.4,
+              ),
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Цена и кнопка
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Цена и скидка
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '₽${subscription['price']}',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            color: theme.colorScheme.primary,
+                            fontFamily: 'G',
+                            letterSpacing: -1,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '/${subscription['period']}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[600],
+                            fontFamily: 'G',
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (subscription['discount'] != null)
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Скидка ${subscription['discount']}%',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.green,
+                            fontFamily: 'G',
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                
+                // Кнопка
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: isActive 
+                          ? [Colors.grey, Colors.grey[600]!]
+                          : [theme.colorScheme.primary, theme.colorScheme.secondary],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: (isActive ? Colors.grey : theme.colorScheme.primary).withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        if (isActive) {
+                          _showModernManageSubscriptionDialog(context);
+                        } else {
+                          _showModernSubscribeDialog(context, subscription);
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                        child: Text(
+                          isActive ? 'Управлять' : 'Подписаться',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontFamily: 'G',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showModernSubscribeDialog(BuildContext context, Map<String, dynamic> subscription) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 40,
+                offset: const Offset(0, 15),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.subscriptions_rounded,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Оформить подписку',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Вы хотите оформить подписку "${subscription['name']}" за ₽${subscription['price']}/${subscription['period']}?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                    fontFamily: 'G',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: Text(
+                                  'Отмена',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[700],
+                                    fontFamily: 'G',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              onSubscribe?.call(subscription);
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: Text(
+                                  'Подписаться',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    fontFamily: 'G',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showModernManageSubscriptionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 40,
+                offset: const Offset(0, 15),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.green, Colors.greenAccent],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.settings_rounded,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Управление подпиской',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                  ),
+                ),
+                const SizedBox(height: 24),
+                
+                // Опции управления
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildModernDialogOption(
+                        icon: Icons.pause_rounded,
+                        title: 'Приостановить подписку',
+                        subtitle: 'Временно остановить списания',
+                        color: Colors.orange,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Подписка приостановлена',
+                                style: TextStyle(fontFamily: 'G'),
+                              ),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        },
+                      ),
+                      Divider(height: 1, color: Colors.grey.withOpacity(0.2)),
+                      _buildModernDialogOption(
+                        icon: Icons.cancel_rounded,
+                        title: 'Отменить подписку',
+                        subtitle: 'Полностью прекратить подписку',
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          onCancel?.call(subscription);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                
+                const SizedBox(height: 24),
+                
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.grey.withOpacity(0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text(
+                            'Закрыть',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700],
+                              fontFamily: 'G',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernDialogOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                        fontFamily: 'G',
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey[600],
+                        fontFamily: 'G',
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          
-          ...activeSubscriptions.map((subscription) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SubscriptionCard(
-              subscription: subscription,
-              isActive: true,
-              onCancel: onCancel,
-            ),
-          )),
-
-          const SizedBox(height: 24),
-
-          Text(
-            'Доступные подписки',
-            style: theme.textTheme.titleLarge,
+            ],
           ),
-          const SizedBox(height: 16),
-          
-          ...availableSubscriptions.map((subscription) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _SubscriptionCard(
-              subscription: subscription,
-              isActive: false,
-              onSubscribe: onSubscribe,
-            ),
-          ))
-              .toList()
-              .animate(interval: const Duration(milliseconds: 100))
-              .fadeIn(duration: const Duration(milliseconds: 400))
-              .slideY(begin: 0.2, duration: const Duration(milliseconds: 400)),
-        ],
+        ),
       ),
     );
   }
@@ -649,330 +1784,529 @@ class _RewardsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Заголовок
-          Text(
-            'Бонусы',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-          
-          const SizedBox(height: 8),
-          
-          Text(
-            'Обменивайте баллы на приятные бонусы',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
-            ),
-          ),
-          
-          const SizedBox(height: 32),
-
-          // Доступные награды - минималистичный дизайн
-          ...availableRewards.map((reward) => Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: _MinimalRewardCard(reward: reward, onRedeem: onRedeem),
-          ))
-              .toList()
-              .animate(interval: const Duration(milliseconds: 150))
-              .fadeIn(duration: const Duration(milliseconds: 600))
-              .slideY(begin: 0.3, duration: const Duration(milliseconds: 600)),
-
-          const SizedBox(height: 40),
-
-          // Использованные награды
-          if (usedRewards.isNotEmpty) ...[
-            Text(
-              'История',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.onSurface.withOpacity(0.8),
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
-            ...usedRewards.map((reward) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _MinimalUsedRewardCard(reward: reward),
-            )),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const _StatCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 32,
-              color: color,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              title,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TransactionCard extends StatelessWidget {
-  final Map<String, dynamic> transaction;
-
-  const _TransactionCard({required this.transaction});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isEarned = transaction['type'] == 'earned';
-    
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
+   return SingleChildScrollView(
+    padding: const EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Заголовок
+        Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 4,
+              height: 32,
               decoration: BoxDecoration(
-                color: (isEarned ? Colors.green : Colors.red).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(
-                isEarned ? Icons.add : Icons.remove,
-                color: isEarned ? Colors.green : Colors.red,
+                gradient: LinearGradient(
+                  colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                ),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Бонусы',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Обменивайте баллы на приятные бонусы',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                    fontFamily: 'G',
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        
+        const SizedBox(height: 10),
+
+        // Доступные награды
+        ...availableRewards.map((reward) => Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: _ModernRewardCard(reward: reward, onRedeem: onRedeem),
+        ))
+            .toList()
+            .animate(interval: const Duration(milliseconds: 150))
+            .fadeIn(duration: const Duration(milliseconds: 200))
+            .slideY(begin: 0.3, duration: const Duration(milliseconds: 200)),
+
+        // Использованные награды
+        if (usedRewards.isNotEmpty) ...[
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 24,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.grey, Colors.grey[600]!],
+                  ),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'История наград',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black87,
+                  fontFamily: 'G',
+                ),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 10),
+          
+          ...usedRewards.map((reward) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: _ModernUsedRewardCard(reward: reward),
+          )),
+        ],
+      ],
+    ),
+  );
+  }
+}
+
+class _ModernRewardCard extends StatelessWidget {
+  final Map<String, dynamic> reward;
+  final Function(Map<String, dynamic>) onRedeem;
+
+  const _ModernRewardCard({required this.reward, required this.onRedeem});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final canAfford = (reward['points'] as int) <= 2450; //ТУТ ТЕКУЩИ БАЛЛЫ
+    
+    return Container(
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(24),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.08),
+        blurRadius: 25,
+        offset: const Offset(0, 8),
+      ),
+    ],
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Первая строка: иконка, название и описание
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Иконка награды
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: canAfford 
+                      ? [theme.colorScheme.primary, theme.colorScheme.primary]
+                      : [Colors.grey, Colors.grey[600]!],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: (canAfford ? theme.colorScheme.primary : Colors.grey).withOpacity(0.3),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Icon(
+                reward['icon'] ?? Icons.card_giftcard_rounded,
+                size: 27,
+                color: Colors.white,
+              ),
+            ),
+            
+            const SizedBox(width: 20),
+            
+            // Название и описание
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    transaction['description'],
-                    style: theme.textTheme.titleSmall,
+                    reward['title'],
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black87,
+                      fontFamily: 'G',
+                    ),
                   ),
+                  
+                  const SizedBox(height: 6),
+                  
                   Text(
-                    transaction['date'],
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    reward['description'],
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
+                      fontFamily: 'G',
+                      height: 1.4,
                     ),
                   ),
                 ],
               ),
             ),
-            Text(
-              '${isEarned ? '+' : '-'}${transaction['points']} баллов',
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: isEarned ? Colors.green : Colors.red,
-                fontWeight: FontWeight.bold,
+          ],
+        ),
+        
+        const SizedBox(height: 16),
+        
+        // Вторая строка: стоимость и кнопка
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: canAfford 
+                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    : Colors.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.bolt_rounded,
+                    size: 16,
+                    color: canAfford ? theme.colorScheme.primary : Colors.grey,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${reward['points']} баллов',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: canAfford ? theme.colorScheme.primary : Colors.grey,
+                      fontFamily: 'G',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: canAfford
+                      ? [theme.colorScheme.primary, theme.colorScheme.secondary]
+                      : [Colors.grey, Colors.grey[600]!],
+                ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: (canAfford ? theme.colorScheme.primary : Colors.grey).withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: canAfford ? () => _showRedeemDialog(context, reward) : null,
+                  borderRadius: BorderRadius.circular(14),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    child: Text(
+                      'Обменять',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontFamily: 'G',
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
+        ),
+      ],
+    ),
+  ),
+);
+  }
+
+  void _showRedeemDialog(BuildContext context, Map<String, dynamic> reward) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 40,
+                offset: const Offset(0, 15),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.card_giftcard_rounded,
+                    size: 48,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Обменять баллы?',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    fontFamily: 'G',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Вы хотите обменять ${reward['points']} баллов на "${reward['title']}"?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                    fontFamily: 'G',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: Text(
+                                  'Отмена',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[700],
+                                    fontFamily: 'G',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              onRedeem(reward);
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: Text(
+                                  'Обменять',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    fontFamily: 'G',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class _SubscriptionCard extends StatelessWidget {
-  final Map<String, dynamic> subscription;
-  final bool isActive;
-  final ValueChanged<Map<String, dynamic>>? onSubscribe;
-  final ValueChanged<Map<String, dynamic>>? onCancel;
+class _ModernUsedRewardCard extends StatelessWidget {
+  final Map<String, dynamic> reward;
 
-  const _SubscriptionCard({
-    required this.subscription,
-    required this.isActive,
-    this.onSubscribe,
-    this.onCancel,
-  });
+  const _ModernUsedRewardCard({required this.reward});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    subscription['name'],
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ),
-                if (isActive)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'Активна',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.green,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subscription['description'],
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '₽${subscription['price']}/${subscription['period']}',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (subscription['discount'] != null)
-                      Text(
-                        'Скидка ${subscription['discount']}%',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.green,
-                        ),
-                      ),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (isActive) {
-                      _showManageSubscriptionDialog(context);
-                    } else {
-                      _showSubscribeDialog(context, subscription);
-                    }
-                  },
-                  child: Text(isActive ? 'Управлять' : 'Подписаться'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showSubscribeDialog(BuildContext context, Map<String, dynamic> subscription) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Оформить подписку'),
-        content: Text('Вы хотите оформить подписку "${subscription['name']}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Отмена'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onSubscribe?.call(subscription);
-            },
-            child: const Text('Подписаться'),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
-    );
-  }
-
-  void _showManageSubscriptionDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Управление подпиской'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
           children: [
-            ListTile(
-              leading: const Icon(Icons.pause),
-              title: const Text('Приостановить'),
-              onTap: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Подписка приостановлена'),
+            // Иконка
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.grey, Colors.grey[600]!],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                reward['icon'] ?? Icons.check_circle_rounded,
+                size: 28,
+                color: Colors.white,
+              ),
+            ),
+            
+            const SizedBox(width: 16),
+            
+            // Контент
+            Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  reward['title'],
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                    fontFamily: 'G',
                   ),
-                );
-              },
+                ),
+                
+                const SizedBox(height: 8),
+                
+                // Статус под названием
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.grey.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.check_circle_rounded,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          reward['description'],
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey,
+                            fontFamily: 'G',
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.cancel),
-              title: const Text('Отменить'),
-              onTap: () {
-                Navigator.of(context).pop();
-                onCancel?.call(subscription);
-              },
-            ),
-          ],
+          ),]
         ),
       ),
     );
   }
 }
+
 
 
 // Данные для примера
@@ -991,7 +2325,7 @@ final _loyaltyTransactions = [
   },
   {
     'type': 'spent',
-    'points': 100,
+    'points': -100,
     'description': 'Бесплатный латте',
     'date': '2 дня назад',
   },
@@ -1003,269 +2337,3 @@ final _loyaltyTransactions = [
   },
 ];
 
-
-// removed duplicate demo datasets; stateful copies now live in _LoyaltyPageState
-
-// Минималистичная карточка награды
-class _MinimalRewardCard extends StatelessWidget {
-  final Map<String, dynamic> reward;
-  final ValueChanged<Map<String, dynamic>> onRedeem;
-
-  const _MinimalRewardCard({required this.reward, required this.onRedeem});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
-          width: 1,
-        ),
-      ),
-      child: InkWell(
-        onTap: () => _showRedeemDialog(context, reward),
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Row(
-            children: [
-              // Иконка
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(
-                  reward['icon'],
-                  size: 28,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-              
-              const SizedBox(width: 20),
-              
-              // Контент
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      reward['title'],
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 4),
-                    
-                    Text(
-                      reward['description'],
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Баллы и кнопка
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '${reward['points']} баллов',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'Обменять',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showRedeemDialog(BuildContext context, Map<String, dynamic> reward) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Обменять награду',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              reward['icon'],
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              reward['title'],
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Стоимость: ${reward['points']} баллов',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Отмена'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onRedeem(reward);
-            },
-            child: const Text('Обменять'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Минималистичная карточка использованной награды
-class _MinimalUsedRewardCard extends StatelessWidget {
-  final Map<String, dynamic> reward;
-
-  const _MinimalUsedRewardCard({required this.reward});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
-          width: 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            // Иконка
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.onSurface.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                reward['icon'],
-                size: 24,
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-            
-            const SizedBox(width: 16),
-            
-            // Контент
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    reward['title'],
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.onSurface.withOpacity(0.8),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 2),
-                  
-                  Text(
-                    reward['description'],
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Статус
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'Использовано',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.green,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
