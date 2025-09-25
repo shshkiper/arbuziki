@@ -6,11 +6,7 @@ import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
-<<<<<<< HEAD
 import '../../widgets/notifications_modal.dart';
-=======
-// import '../../data/providers/simple_cart_provider.dart';
->>>>>>> 20a1acc704c0cbf9456eebfdfbf287011f0bb5a6
 import 'dart:ui';
 
 class HomePage extends ConsumerStatefulWidget {
