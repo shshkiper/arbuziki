@@ -6,6 +6,7 @@ import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
+import '../../widgets/notifications_modal.dart';
 import 'dart:ui';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -37,6 +38,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       curve: Curves.easeInOut,
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +136,15 @@ class _HomeTab extends StatelessWidget {
     required this.onNavigateToBooks,
   });
 
+  void _showNotificationsModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const NotificationsModal(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -169,7 +180,7 @@ class _HomeTab extends StatelessWidget {
                 IconButton(
                   iconSize: 27,
                   icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () {},
+                  onPressed: () => _showNotificationsModal(context),
                 ),
                 IconButton(
                   iconSize: 27,
