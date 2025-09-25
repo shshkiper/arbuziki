@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
@@ -214,7 +215,7 @@ class _HomeTab extends ConsumerWidget {
                 IconButton(
                   iconSize: 27,
                   icon: const Icon(Icons.message_outlined),
-                  onPressed: () {},
+                  onPressed: () => context.go('/chat'),
                 ),
               ],
             ),

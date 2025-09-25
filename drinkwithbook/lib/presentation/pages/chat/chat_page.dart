@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
+import 'dart:ui';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
@@ -31,16 +33,47 @@ class _ChatPageState extends ConsumerState<ChatPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: SizedBox(
-          height: 40,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          height: 120, // Высота размытой области
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+              child: Container(
+                color: Colors.white.withOpacity(0.00001),
+              ),
+            ),
+          ),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 1.0),
           child: Image.asset(
+            height: 45,
             'assets/images/logo.png',
             fit: BoxFit.contain,
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/home'),
+        ),
         bottom: TabBar(
           controller: _tabController,
+          dividerHeight: 0,
+          indicatorColor: Colors.transparent,
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey[600],
+          labelStyle: const TextStyle(
+            fontFamily: 'G',
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontFamily: 'G',
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
           tabs: const [
             Tab(text: 'Общий чат'),
             Tab(text: 'Клубы'),
@@ -74,7 +107,7 @@ class _GeneralChatTab extends StatelessWidget {
         // Список сообщений
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
             itemCount: _generalMessages.length,
             itemBuilder: (context, index) {
               final message = _generalMessages[index];
@@ -102,7 +135,7 @@ class _GeneralChatTab extends StatelessWidget {
             color: theme.colorScheme.surface,
             border: Border(
               top: BorderSide(
-                color: theme.colorScheme.outline.withOpacity(0.2),
+                color: theme.colorScheme.outline.withOpacity(0.1),
               ),
             ),
           ),
@@ -111,23 +144,58 @@ class _GeneralChatTab extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: messageController,
+                  style: TextStyle(
+                    fontFamily: 'G',
+                    fontSize: 16,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Написать сообщение...',
+                    hintStyle: TextStyle(
+                      fontFamily: 'G',
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.outline.withOpacity(0.2),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.outline.withOpacity(0.2),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.primary,
+                        width: 2,
+                      ),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,
                     ),
+                    filled: true,
+                    fillColor: theme.colorScheme.surface,
                   ),
                   maxLines: null,
                 ),
               ),
               const SizedBox(width: 8),
-              FloatingActionButton.small(
-                onPressed: () => _sendMessage(context),
-                child: const Icon(Icons.send),
+              Container(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: IconButton(
+                  onPressed: () => _sendMessage(context),
+                  icon: const Icon(
+                    Icons.send,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
@@ -156,12 +224,12 @@ class _ClubChatsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
       itemCount: _clubChats.length,
       itemBuilder: (context, index) {
         final chat = _clubChats[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 12),
           child: _ChatListItem(
             chat: chat,
             onTap: () => _openClubChat(context, chat),
@@ -191,36 +259,48 @@ class _OwnerChatTab extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
       child: Column(
         children: [
           // Информация о владельцах
           Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   Row(
                     children: [
                       CircleAvatar(
+                        radius: 24,
                         backgroundColor: theme.colorScheme.primary,
                         child: const Icon(
                           Icons.store,
                           color: Colors.white,
+                          size: 24,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Команда Drink with Book',
-                              style: theme.textTheme.titleMedium,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontFamily: 'G',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
+                            const SizedBox(height: 4),
                             Text(
                               'Мы всегда готовы помочь',
                               style: theme.textTheme.bodySmall?.copyWith(
+                                fontFamily: 'G',
                                 color: theme.colorScheme.onSurface.withOpacity(0.7),
                               ),
                             ),
@@ -237,7 +317,7 @@ class _OwnerChatTab extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
@@ -245,14 +325,26 @@ class _OwnerChatTab extends StatelessWidget {
                           onPressed: () => _startChat(context),
                           icon: const Icon(Icons.chat),
                           label: const Text('Написать'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () => _callOwners(context),
                           icon: const Icon(Icons.phone),
                           label: const Text('Позвонить'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -274,7 +366,11 @@ class _OwnerChatTab extends StatelessWidget {
               children: [
                 Text(
                   'Частые вопросы',
-                  style: theme.textTheme.titleLarge,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontFamily: 'G',
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Expanded(
@@ -345,6 +441,8 @@ class _MessageBubble extends StatelessWidget {
                 child: Text(
                   message['author'],
                   style: theme.textTheme.bodySmall?.copyWith(
+                    fontFamily: 'G',
+                    fontSize: 14,
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w500,
                   ),
@@ -366,6 +464,8 @@ class _MessageBubble extends StatelessWidget {
               child: Text(
                 message['text'],
                 style: theme.textTheme.bodyMedium?.copyWith(
+                  fontFamily: 'G',
+                  fontSize: 16,
                   color: isOwn
                       ? theme.colorScheme.onPrimary
                       : theme.colorScheme.onSurface,
@@ -377,6 +477,8 @@ class _MessageBubble extends StatelessWidget {
               child: Text(
                 message['time'],
                 style: theme.textTheme.bodySmall?.copyWith(
+                  fontFamily: 'G',
+                  fontSize: 12,
                   color: theme.colorScheme.onSurface.withOpacity(0.5),
                 ),
               ),
@@ -402,19 +504,38 @@ class _ChatListItem extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
+          radius: 24,
           backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
           child: Icon(
             _getClubIcon(chat['type']),
             color: theme.colorScheme.primary,
+            size: 20,
           ),
         ),
-        title: Text(chat['name']),
+        title: Text(
+          chat['name'],
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontFamily: 'G',
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         subtitle: Text(
           chat['lastMessage'],
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontFamily: 'G',
+            fontSize: 14,
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
+          ),
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -423,6 +544,8 @@ class _ChatListItem extends StatelessWidget {
             Text(
               chat['time'],
               style: theme.textTheme.bodySmall?.copyWith(
+                fontFamily: 'G',
+                fontSize: 12,
                 color: theme.colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
@@ -437,6 +560,7 @@ class _ChatListItem extends StatelessWidget {
                 child: Text(
                   chat['unreadCount'].toString(),
                   style: TextStyle(
+                    fontFamily: 'G',
                     color: theme.colorScheme.onPrimary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -472,17 +596,36 @@ class _FAQItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: Text(faq['question']),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            faq['answer'],
-            style: Theme.of(context).textTheme.bodyMedium,
+    final theme = Theme.of(context);
+    
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ExpansionTile(
+        title: Text(
+          faq['question'],
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontFamily: 'G',
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
-      ],
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              faq['answer'],
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontFamily: 'G',
+                fontSize: 15,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
