@@ -982,7 +982,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
   }
 }
 
-class _CartBottomSheet extends StatelessWidget {
+class _CartBottomSheet extends StatefulWidget {
   final List<Map<String, dynamic>> cart;
   final Function(int, int) onUpdateQuantity;
   final VoidCallback onClearCart;
@@ -994,9 +994,40 @@ class _CartBottomSheet extends StatelessWidget {
   });
 
   @override
+  State<_CartBottomSheet> createState() => _CartBottomSheetState();
+}
+
+class _CartBottomSheetState extends State<_CartBottomSheet> {
+  late List<Map<String, dynamic>> _localCart;
+
+  @override
+  void initState() {
+    super.initState();
+    _localCart = List.from(widget.cart);
+  }
+
+  void _updateQuantity(int index, int quantity) {
+    setState(() {
+      if (quantity <= 0) {
+        _localCart.removeAt(index);
+      } else {
+        _localCart[index]['quantity'] = quantity;
+      }
+    });
+    widget.onUpdateQuantity(index, quantity);
+  }
+
+  void _clearCart() {
+    setState(() {
+      _localCart.clear();
+    });
+    widget.onClearCart();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final total = cart.fold<double>(
+    final total = _localCart.fold<double>(
       0,
       (sum, item) => sum + (item['price'] * item['quantity']),
     );
@@ -1011,7 +1042,7 @@ class _CartBottomSheet extends StatelessWidget {
         children: [
           // Заголовок
           Container(
-            padding: cart.isEmpty
+            padding: _localCart.isEmpty
             ?const EdgeInsets.only(right: 16, left: 20, bottom:15, top: 15)
             :const EdgeInsets.only(right: 16, left: 20, bottom:5, top: 5),
             decoration: BoxDecoration(
@@ -1031,9 +1062,9 @@ class _CartBottomSheet extends StatelessWidget {
                     fontSize: 22,
                   ),
                 ),
-                if (cart.isNotEmpty)
+                if (_localCart.isNotEmpty)
                   TextButton(
-                    onPressed: onClearCart,
+                      onPressed: _clearCart,
                     child: Text(
                       'Очистить', 
                       style: theme.textTheme.headlineSmall?.copyWith(
@@ -1048,7 +1079,7 @@ class _CartBottomSheet extends StatelessWidget {
           ),
           
           // Список товаров
-          if (cart.isEmpty)
+          if (_localCart.isEmpty)
              Expanded(
               child: Center(
                 child: Text('Корзина пуста', 
@@ -1064,13 +1095,13 @@ class _CartBottomSheet extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: cart.length,
+                itemCount: _localCart.length,
                 itemBuilder: (context, index) {
-                  final item = cart[index];
+                  final item = _localCart[index];
                   return _CartItem(
                     item: item,
                     onQuantityChanged: (quantity) {
-                      onUpdateQuantity(index, quantity);
+                      _updateQuantity(index, quantity);
                     },
                   );
                 },
