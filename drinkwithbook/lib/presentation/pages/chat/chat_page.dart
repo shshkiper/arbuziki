@@ -32,7 +32,7 @@ class _ChatPageState extends ConsumerState<ChatPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(
           height: 120, // Высота размытой области
@@ -79,6 +79,77 @@ class _ChatPageState extends ConsumerState<ChatPage>
             Tab(text: 'Клубы'),
             Tab(text: 'Владельцы'),
           ],
+        ),
+      ),*/
+      appBar: AppBar(
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Container(),
+        centerTitle: true,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+            child: Container(
+              color: Colors.white.withOpacity(0.00001),
+              child: Stack(
+                children: [
+                  // Стрелка выхода слева
+                  Positioned(
+                    left: 15,
+                    top: 22,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        context.go('/home');
+                      },
+                    ),
+                  ),
+                  // Логотип по центру сверху
+                  Positioned(
+                    top: 20,
+                    left: 0,
+                    right: 10,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        height: 45,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  // Табы внизу
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 48, // Высота табов
+                      child: TabBar(
+                        dividerHeight: 0,
+                        controller: _tabController,
+                        labelStyle: TextStyle(
+                          fontSize: 16.4,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'G'
+                        ),
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: 16.4,
+                          fontWeight: FontWeight.normal,
+                          fontFamily: 'G',
+                        ),
+                        tabs: const [
+                          Tab(text: 'Общий чат'),
+                          Tab(text: 'Клубы'),
+                          Tab(text: 'Владельцы'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
       body: TabBarView(

@@ -65,12 +65,13 @@ class _SplashPageState extends State<SplashPage> {
 
             // Подзаголовок
             Text(
-                  'Уютное место для души и вкуса',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  ),
-                  textAlign: TextAlign.center,
-                )
+              'Уютное место для души и вкуса',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                fontFamily: 'G',
+              ),
+              textAlign: TextAlign.center,
+            )
                 .animate(delay: const Duration(milliseconds: 600))
                 .slideY(
                   begin: 0.3,
