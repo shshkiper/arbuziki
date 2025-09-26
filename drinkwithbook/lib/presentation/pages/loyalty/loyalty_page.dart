@@ -98,7 +98,7 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -145,20 +145,23 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
                             child: TabBar(
                               dividerHeight: 0,
                               controller: _tabController,
+                              isScrollable: false,
+                              tabAlignment: TabAlignment.fill,
                               labelStyle: TextStyle(
-                                fontSize: 16.4,
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'G'
                               ),
                               unselectedLabelStyle: TextStyle(
-                                fontSize: 16.4,
+                                fontSize: 14,
                                 fontWeight: FontWeight.normal,
                                 fontFamily: 'G',
                               ),
                               tabs: const [
-                                Tab(text: 'Моя карта'),
+                                Tab(text: 'Карта'),
                                 Tab(text: 'Подписки'),
                                 Tab(text: 'Награды'),
+                                Tab(text: 'Обмен'),
                               ],
                             ),
                             
@@ -184,6 +187,7 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
             usedRewards: _usedRewards,
             onRedeem: _redeemReward,
           ),
+          _BookExchangeTab(),
         ],
       ),
     );
@@ -2308,6 +2312,632 @@ class _ModernUsedRewardCard extends StatelessWidget {
 }
 
 
+
+class _BookExchangeTab extends StatefulWidget {
+  @override
+  State<_BookExchangeTab> createState() => _BookExchangeTabState();
+}
+
+class _BookExchangeTabState extends State<_BookExchangeTab> {
+  final _formKey = GlobalKey<FormState>();
+  final _bookTitleController = TextEditingController();
+  final _authorController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _contactController = TextEditingController();
+  String _selectedCondition = 'Отличное';
+  String _selectedGenre = 'Художественная литература';
+
+  final List<String> _bookConditions = [
+    'Отличное',
+    'Хорошее',
+    'Удовлетворительное',
+  ];
+
+  final List<String> _bookGenres = [
+    'Художественная литература',
+    'Научная литература',
+    'Детская литература',
+    'Фантастика',
+    'Детективы',
+    'Романтика',
+    'Биографии',
+    'История',
+    'Психология',
+    'Философия',
+  ];
+
+  @override
+  void dispose() {
+    _bookTitleController.dispose();
+    _authorController.dispose();
+    _descriptionController.dispose();
+    _contactController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Заголовок
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 32,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                  ),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Книгообмен',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black87,
+                        fontFamily: 'G',
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Обменивайтесь книгами с другими читателями',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                        fontFamily: 'G',
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 24),
+
+          // Форма заявки
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 25,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Заголовок формы
+                    Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Icon(
+                            Icons.swap_horiz_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Подать заявку на обмен',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black87,
+                                  fontFamily: 'G',
+                                ),
+                              ),
+                              Text(
+                                'Заполните форму для размещения книги',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[600],
+                                  fontFamily: 'G',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Поля формы
+                    _buildFormField(
+                      controller: _bookTitleController,
+                      label: 'Название книги',
+                      hint: 'Введите название книги',
+                      icon: Icons.menu_book_rounded,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите название книги';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    _buildFormField(
+                      controller: _authorController,
+                      label: 'Автор',
+                      hint: 'Введите имя автора',
+                      icon: Icons.person_rounded,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите имя автора';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Жанр
+                    _buildDropdownField(
+                      label: 'Жанр',
+                      value: _selectedGenre,
+                      items: _bookGenres,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGenre = value!;
+                        });
+                      },
+                      icon: Icons.category_rounded,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Состояние книги
+                    _buildDropdownField(
+                      label: 'Состояние книги',
+                      value: _selectedCondition,
+                      items: _bookConditions,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCondition = value!;
+                        });
+                      },
+                      icon: Icons.star_rounded,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    _buildFormField(
+                      controller: _descriptionController,
+                      label: 'Описание',
+                      hint: 'Краткое описание книги и условия обмена',
+                      icon: Icons.description_rounded,
+                      maxLines: 3,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите описание';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    _buildFormField(
+                      controller: _contactController,
+                      label: 'Контактная информация',
+                      hint: 'Телефон или email для связи',
+                      icon: Icons.contact_phone_rounded,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите контактную информацию';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Кнопка отправки
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.primary.withOpacity(0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _submitForm,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.send_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Подать заявку',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    fontFamily: 'G',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Информация о книгообмене
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: theme.colorScheme.primary.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.info_rounded,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Как работает книгообмен',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.primary,
+                        fontFamily: 'G',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '• Ваша заявка будет рассмотрена в течение 24 часов\n'
+                  '• После одобрения книга появится в каталоге обмена\n'
+                  '• Другие пользователи смогут предложить обмен\n'
+                  '• Вы получите уведомление о заинтересованных читателях',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                    fontFamily: 'G',
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    int maxLines = 1,
+    String? Function(String?)? validator,
+  }) {
+    final theme = Theme.of(context);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+            fontFamily: 'G',
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          maxLines: maxLines,
+          validator: validator,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: Colors.grey[500],
+              fontFamily: 'G',
+            ),
+            prefixIcon: Icon(
+              icon,
+              color: theme.colorScheme.primary,
+              size: 20,
+            ),
+            filled: true,
+            fillColor: Colors.grey.withOpacity(0.05),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.grey.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 2,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.red,
+                width: 1,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField({
+    required String label,
+    required String value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+    required IconData icon,
+  }) {
+    final theme = Theme.of(context);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+            fontFamily: 'G',
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: DropdownButtonFormField<String>(
+            value: value,
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                icon,
+                color: theme.colorScheme.primary,
+                size: 20,
+              ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+            ),
+            items: items.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: TextStyle(
+                    fontFamily: 'G',
+                    fontSize: 14,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      // Показать диалог подтверждения
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.25),
+                  blurRadius: 40,
+                  offset: const Offset(0, 15),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.check_circle_rounded,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Заявка отправлена!',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black87,
+                      fontFamily: 'G',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Ваша заявка на обмен книги "${_bookTitleController.text}" будет рассмотрена в течение 24 часов.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[700],
+                      fontFamily: 'G',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _clearForm();
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Center(
+                            child: Text(
+                              'Отлично',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                fontFamily: 'G',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _clearForm() {
+    _bookTitleController.clear();
+    _authorController.clear();
+    _descriptionController.clear();
+    _contactController.clear();
+    setState(() {
+      _selectedCondition = 'Отличное';
+      _selectedGenre = 'Художественная литература';
+    });
+  }
+}
 
 // Данные для примера
 final _loyaltyTransactions = [
