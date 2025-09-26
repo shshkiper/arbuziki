@@ -136,7 +136,7 @@ class _MapPageState extends ConsumerState<MapPage> {
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -175,7 +175,7 @@ class _MapPageState extends ConsumerState<MapPage> {
                             fontFamily: 'G',
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
-                            color: Colors.black87,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -335,7 +335,7 @@ class _MapMarker extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -360,7 +360,7 @@ class _MapMarker extends StatelessWidget {
                 fontFamily: 'G',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             Text(
@@ -429,7 +429,7 @@ class _CafeDetailsSheet extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
@@ -464,7 +464,7 @@ class _CafeDetailsSheet extends StatelessWidget {
                           fontFamily: 'G',
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -530,7 +530,7 @@ class _CafeDetailsSheet extends StatelessWidget {
                 fontFamily: 'G',
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
@@ -625,7 +625,7 @@ class _InfoRow extends StatelessWidget {
               style: theme.textTheme.bodyLarge?.copyWith(
                 fontFamily: 'G',
                 fontSize: 16,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),

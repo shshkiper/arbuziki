@@ -45,6 +45,9 @@ dependencies:
   # Для генерации QR-кодов
   qr_flutter: ^4.1.0
 
+  # Для сохранения настроек
+  shared_preferences: ^2.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -156,9 +156,7 @@ class _HomeTab extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => BookAdModal(
-        onViewBooks: onNavigateToBooks,
-      ),
+      builder: (context) => BookAdModal(onViewBooks: onNavigateToBooks),
     );
   }
 
@@ -342,85 +340,88 @@ class _HomeTab extends ConsumerWidget {
 
             // Реклама книг
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: GestureDetector(
-                onTap: () => _showBookAdModal(context),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        theme.colorScheme.secondary,
-                        theme.colorScheme.secondary.withOpacity(0.8),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: theme.colorScheme.secondary.withOpacity(0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      // Иконка книги
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          Icons.menu_book_rounded,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Текст
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Откройте мир книг',
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontFamily: "G",
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Рекомендуем лучшие книги для чтения с кофе',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontFamily: "G",
-                                fontSize: 14,
-                                color: Colors.white.withOpacity(0.9),
-                              ),
-                            ),
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GestureDetector(
+                    onTap: () => _showBookAdModal(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            theme.colorScheme.secondary,
+                            theme.colorScheme.secondary.withOpacity(0.8),
                           ],
                         ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.secondary.withOpacity(0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
-                      // Стрелка
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white.withOpacity(0.8),
-                        size: 20,
+                      child: Row(
+                        children: [
+                          // Иконка книги
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.menu_book_rounded,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          // Текст
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Откройте мир книг',
+                                  style: theme.textTheme.titleLarge?.copyWith(
+                                    fontFamily: "G",
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Рекомендуем лучшие книги для чтения с кофе',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontFamily: "G",
+                                    fontSize: 14,
+                                    color: Colors.white.withOpacity(0.9),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Стрелка
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white.withOpacity(0.8),
+                            size: 20,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            )
+                )
                 .animate(delay: const Duration(milliseconds: 200))
                 .fadeIn(duration: const Duration(milliseconds: 200))
-                .slideY(begin: 0.2, duration: const Duration(milliseconds: 400)),
+                .slideY(
+                  begin: 0.2,
+                  duration: const Duration(milliseconds: 400),
+                ),
 
             const SizedBox(height: 15),
 
@@ -1023,7 +1024,7 @@ class _CartItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -1067,7 +1068,7 @@ class _CartItem extends StatelessWidget {
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
-                    color: Colors.black87,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1322,7 +1323,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: theme.colorScheme.outline.withOpacity(0.1),
@@ -1669,7 +1670,7 @@ Widget _buildSuggestions(ThemeData theme) {
             left: index == 0 ? 0 : 0,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(18),
           ),
           child: Stack(
@@ -1700,10 +1701,10 @@ Widget _buildSuggestions(ThemeData theme) {
                       children: [
                         Text(
                           suggestion['name'],
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
-                            color: Colors.black87,
+                            color: theme.colorScheme.onSurface,
                             height: 1.3,
                           ),
                           maxLines: 2,
