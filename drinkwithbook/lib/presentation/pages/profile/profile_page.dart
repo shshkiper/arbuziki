@@ -65,7 +65,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             // Профиль пользователя
             Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -133,7 +133,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.w800,
-                                    color: Colors.black87,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontFamily: 'G',
                                     height: 1.1,
                                   ),
@@ -144,7 +145,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.grey[600],
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.7),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -338,7 +341,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: valueColor ?? Colors.black87,
+              color: valueColor ?? Theme.of(context).colorScheme.onSurface,
               fontFamily: 'G',
             ),
           ),
@@ -348,7 +351,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               fontFamily: 'G',
             ),
           ),
@@ -516,7 +519,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.black87,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -533,7 +536,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                               size: 20,
                             ),
                           ),
@@ -549,7 +554,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey[700],
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.8),
                         fontFamily: 'G',
                       ),
                     ),
@@ -584,7 +591,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),

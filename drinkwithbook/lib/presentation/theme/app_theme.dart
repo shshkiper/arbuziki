@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Цветовая палитра точно как в Drinkit - голубые тона и минимализм
-  static const Color primaryBrown = Color(0xFF5B7EF7); // Основной синий как в Drinkit
+  static const Color primaryBrown = Color(
+    0xFF5B7EF7,
+  ); // Основной синий как в Drinkit
   static const Color lightBrown = Color(0xFF8B5CF6); // Фиолетовый акцент
   static const Color creamWhite = Color(0xFFFFFFFF); // Белые карточки
   static const Color warmBeige = Color(0xFFE8F0FF); // Светло-голубой фон
@@ -11,6 +13,12 @@ class AppTheme {
   static const Color softGreen = Color(0xFF8FBC8F); // Мягкий зеленый для чая
   static const Color errorRed = Color(0xFFEF4444); // Красный
   static const Color successGreen = Color(0xFF10B981); // Зеленый
+
+  // Акцентные цвета для темной темы - синий, голубой, белый
+  static const Color darkPrimary = Color(0xFF3B82F6); // Яркий синий
+  static const Color darkSecondary = Color(0xFF06B6D4); // Голубой акцент
+  static const Color darkAccent = Color(0xFF0EA5E9); // Светло-голубой акцент
+  static const Color darkOutline = Color(0xFF60A5FA); // Светло-синий для границ
 
   // Градиенты как в Drinkit
   static const LinearGradient warmGradient = LinearGradient(
@@ -32,7 +40,7 @@ class AppTheme {
       brightness: Brightness.light,
       primaryColor: primaryBrown,
       scaffoldBackgroundColor: warmBeige,
-      
+
       colorScheme: const ColorScheme.light(
         primary: primaryBrown,
         secondary: lightBrown,
@@ -148,10 +156,7 @@ class AppTheme {
         labelColor: primaryBrown, // Синий цвет для активной вкладки
         unselectedLabelColor: Color(0x80000000), // Серый для неактивной вкладки
         indicatorColor: primaryBrown, // Синий индикатор
-        labelStyle: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
+        labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
@@ -178,10 +183,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
 
@@ -193,10 +195,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
 
@@ -204,10 +203,7 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: primaryBrown,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
       ),
 
@@ -231,7 +227,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: errorRed),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
         hintStyle: TextStyle(color: darkBrown.withOpacity(0.6)),
       ),
 
@@ -245,19 +244,14 @@ class AppTheme {
       ),
 
       // Иконки
-      iconTheme: const IconThemeData(
-        color: darkBrown,
-        size: 24,
-      ),
+      iconTheme: const IconThemeData(color: darkBrown, size: 24),
 
       // Чипы
       chipTheme: ChipThemeData(
         backgroundColor: lightBrown.withOpacity(0.2),
         selectedColor: primaryBrown,
         labelStyle: const TextStyle(color: darkBrown),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
 
       // Диалоги
@@ -277,9 +271,7 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: darkBrown,
         contentTextStyle: const TextStyle(color: creamWhite),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -290,22 +282,22 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      primaryColor: lightBrown,
-      scaffoldBackgroundColor: const Color(0xFF2D1B14),
-      
+      primaryColor: darkPrimary,
+      scaffoldBackgroundColor: const Color(0xFF0F172A), // Темно-синий фон
+
       colorScheme: const ColorScheme.dark(
-        primary: lightBrown,
-        secondary: accentGold,
-        surface: Color(0xFF3E2723),
-        background: Color(0xFF2D1B14),
+        primary: darkPrimary, // Яркий синий
+        secondary: darkSecondary, // Голубой акцент
+        surface: Color(0xFF1E293B), // Темно-синяя поверхность
+        background: Color(0xFF0F172A), // Темно-синий фон
         error: errorRed,
-        onPrimary: darkBrown,
-        onSecondary: darkBrown,
+        onPrimary: creamWhite,
+        onSecondary: creamWhite,
         onSurface: creamWhite,
         onBackground: creamWhite,
         onError: creamWhite,
-        tertiary: accentGold,
-        outline: lightBrown,
+        tertiary: darkAccent, // Светло-голубой акцент
+        outline: darkOutline, // Светло-синий для границ
       ),
 
       textTheme: const TextTheme(
@@ -388,7 +380,7 @@ class AppTheme {
       ),
 
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF1A1A2E),
+        backgroundColor: Color(0xFF1E293B), // Темно-синий AppBar
         foregroundColor: creamWhite,
         elevation: 2,
         shadowColor: Color(0x40000000),
@@ -403,13 +395,12 @@ class AppTheme {
 
       // TabBar тема для темной темы
       tabBarTheme: const TabBarThemeData(
-        labelColor: primaryBrown, // Синий цвет для активной вкладки
-        unselectedLabelColor: Color(0xB3FFFFFF), // Белый с прозрачностью для неактивной
-        indicatorColor: primaryBrown, // Синий индикатор
-        labelStyle: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
+        labelColor: darkPrimary, // Яркий синий для активной вкладки
+        unselectedLabelColor: Color(
+          0xB3FFFFFF,
+        ), // Белый с прозрачностью для неактивной
+        indicatorColor: darkPrimary, // Яркий синий индикатор
+        labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w400,
@@ -417,7 +408,7 @@ class AppTheme {
       ),
 
       cardTheme: const CardThemeData(
-        color: Color(0xFF3E2723),
+        color: Color(0xFF1E293B), // Темно-синие карточки
         elevation: 4,
         shadowColor: Color(0x4D000000), // Colors.black с прозрачностью 0.3
         shape: RoundedRectangleBorder(
@@ -427,26 +418,102 @@ class AppTheme {
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: lightBrown,
-          foregroundColor: darkBrown,
+          backgroundColor: darkPrimary, // Яркий синий
+          foregroundColor: creamWhite,
           elevation: 2,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
 
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: darkPrimary,
+          side: const BorderSide(color: darkPrimary, width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+      ),
+
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: darkPrimary,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+      ),
+
+      // Поля ввода для темной темы
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF1E293B),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: darkOutline),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: darkOutline),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: darkPrimary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: errorRed),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        hintStyle: TextStyle(color: creamWhite.withOpacity(0.6)),
+      ),
+
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color(0xFF3E2723),
-        selectedItemColor: lightBrown,
-        unselectedItemColor: Color(0xFF8D6E63),
+        backgroundColor: Color(0xFF1E293B), // Темно-синяя навигация
+        selectedItemColor: darkPrimary, // Яркий синий
+        unselectedItemColor: Color(0xFF60A5FA), // Светло-синий
         type: BottomNavigationBarType.fixed,
         elevation: 8,
+      ),
+
+      // Иконки для темной темы
+      iconTheme: const IconThemeData(color: creamWhite, size: 24),
+
+      // Чипы для темной темы
+      chipTheme: ChipThemeData(
+        backgroundColor: darkPrimary.withOpacity(0.2),
+        selectedColor: darkPrimary,
+        labelStyle: const TextStyle(color: creamWhite),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+
+      // Диалоги для темной темы
+      dialogTheme: const DialogThemeData(
+        backgroundColor: Color(0xFF1E293B),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: creamWhite,
+        ),
+      ),
+
+      // Snackbar для темной темы
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: const Color(0xFF1E293B),
+        contentTextStyle: const TextStyle(color: creamWhite),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

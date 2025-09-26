@@ -5,7 +5,7 @@ import 'dart:ui';
 
 class MenuPage extends ConsumerStatefulWidget {
   final int? initialTabIndex;
-  
+
   const MenuPage({super.key, this.initialTabIndex});
 
   @override
@@ -33,8 +33,10 @@ class _MenuPageState extends ConsumerState<MenuPage>
 
   void _addToCart(Map<String, dynamic> item) {
     final currentCart = ref.read(cartItemsProvider);
-    final existingIndex = currentCart.indexWhere((cartItem) => cartItem.id == item['id']);
-    
+    final existingIndex = currentCart.indexWhere(
+      (cartItem) => cartItem.id == item['id'],
+    );
+
     if (existingIndex >= 0) {
       final updatedCart = List<CartItem>.from(currentCart);
       updatedCart[existingIndex].quantity += 1;
@@ -65,23 +67,24 @@ class _MenuPageState extends ConsumerState<MenuPage>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _CartBottomSheet(
-        onUpdateQuantity: (index, quantity) {
-          final currentCart = ref.read(cartItemsProvider);
-          if (quantity <= 0) {
-            final updatedCart = List<CartItem>.from(currentCart);
-            updatedCart.removeAt(index);
-            ref.read(cartItemsProvider.notifier).state = updatedCart;
-          } else {
-            final updatedCart = List<CartItem>.from(currentCart);
-            updatedCart[index].quantity = quantity;
-            ref.read(cartItemsProvider.notifier).state = updatedCart;
-          }
-        },
-        onClearCart: () {
-          ref.read(cartItemsProvider.notifier).state = [];
-        },
-      ),
+      builder:
+          (context) => _CartBottomSheet(
+            onUpdateQuantity: (index, quantity) {
+              final currentCart = ref.read(cartItemsProvider);
+              if (quantity <= 0) {
+                final updatedCart = List<CartItem>.from(currentCart);
+                updatedCart.removeAt(index);
+                ref.read(cartItemsProvider.notifier).state = updatedCart;
+              } else {
+                final updatedCart = List<CartItem>.from(currentCart);
+                updatedCart[index].quantity = quantity;
+                ref.read(cartItemsProvider.notifier).state = updatedCart;
+              }
+            },
+            onClearCart: () {
+              ref.read(cartItemsProvider.notifier).state = [];
+            },
+          ),
     );
   }
 
@@ -89,128 +92,123 @@ class _MenuPageState extends ConsumerState<MenuPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cartItemsCount = ref.watch(cartItemsCountProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
-  backgroundColor: Colors.transparent,
-  elevation: 0,
-  title: Container(), // Пустой title
-  centerTitle: false,
-  flexibleSpace: ClipRect(
-    child: BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
-      child: Container(
-        color: Colors.white.withOpacity(0.00001),
-        child: Column(
-          children: [
-            // Верхняя часть с логотипом и корзиной
-            Container(
-              height: 80,
-              child: Row(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Container(), // Пустой title
+        centerTitle: false,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+            child: Container(
+              color: Colors.white.withOpacity(0.00001),
+              child: Column(
                 children: [
-                  // Логотип
-                  Padding(
-                    padding: const EdgeInsets.only(left: 17.0, top:24.0 ),
-                    child: Image.asset(
-                      height: 45,
-                      'assets/images/logo.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  Spacer(),
-                  // Иконка корзины
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15.0, top: 26),
-                        child: IconButton(
-                          icon: const Icon(Icons.shopping_basket_outlined),
-                          iconSize: 30,
-                          onPressed: _showCart,
-                        ),
-                      ),
-                      if (cartItemsCount > 0)
-                        Positioned(
-                          right: 20,
-                          top: 33,
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.error,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            constraints: const BoxConstraints(
-                              minWidth: 16,
-                              minHeight: 16,
-                            ),
-                            child: Text(
-                              '$cartItemsCount',
-                              style: TextStyle(
-                                color: theme.colorScheme.onError,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                  // Верхняя часть с логотипом и корзиной
+                  Container(
+                    height: 80,
+                    child: Row(
+                      children: [
+                        // Логотип
+                        Padding(
+                          padding: const EdgeInsets.only(left: 17.0, top: 24.0),
+                          child: Image.asset(
+                            height: 45,
+                            'assets/images/logo.png',
+                            fit: BoxFit.contain,
                           ),
                         ),
-                    ],
+                        Spacer(),
+                        // Иконка корзины
+                        Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 15.0,
+                                top: 26,
+                              ),
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.shopping_basket_outlined,
+                                ),
+                                iconSize: 30,
+                                onPressed: _showCart,
+                              ),
+                            ),
+                            if (cartItemsCount > 0)
+                              Positioned(
+                                right: 20,
+                                top: 33,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.error,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: Text(
+                                    '$cartItemsCount',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.onError,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-            // TabBar
-            Expanded(
-              child: Row(
-                children: [
+                  // TabBar
                   Expanded(
-                    child: TabBar(
-                      dividerHeight: 0,
-                      controller: _tabController,
-                      labelStyle: TextStyle(
-                        fontSize: 16.4,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'G'
-                      ),
-                      unselectedLabelStyle: TextStyle(
-                        fontSize: 16.4,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'G',
-                      ),
-                      tabs: const [
-                        Tab(text: 'Кофе'),
-                        Tab(text: 'Пончики'),
-                        Tab(text: 'Книги'),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TabBar(
+                            dividerHeight: 0,
+                            controller: _tabController,
+                            labelStyle: TextStyle(
+                              fontSize: 16.4,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'G',
+                            ),
+                            unselectedLabelStyle: TextStyle(
+                              fontSize: 16.4,
+                              fontWeight: FontWeight.normal,
+                              fontFamily: 'G',
+                            ),
+                            tabs: const [
+                              Tab(text: 'Кофе'),
+                              Tab(text: 'Пончики'),
+                              Tab(text: 'Книги'),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
-    ),
-  ),
-),
-
 
       body: TabBarView(
         controller: _tabController,
         children: [
-          _MenuSection(
-            items: _coffeeItems,
-            onAddToCart: _addToCart,
-          ),
-          _MenuSection(
-            items: _dessertItems,
-            onAddToCart: _addToCart,
-          ),
-          _MenuSection(
-            items: _bookItems,
-            onAddToCart: _addToCart,
-          ),
+          _MenuSection(items: _coffeeItems, onAddToCart: _addToCart),
+          _MenuSection(items: _dessertItems, onAddToCart: _addToCart),
+          _MenuSection(items: _bookItems, onAddToCart: _addToCart),
         ],
       ),
     );
@@ -221,10 +219,7 @@ class _MenuSection extends StatelessWidget {
   final List<Map<String, dynamic>> items;
   final Function(Map<String, dynamic>) onAddToCart;
 
-  const _MenuSection({
-    required this.items,
-    required this.onAddToCart,
-  });
+  const _MenuSection({required this.items, required this.onAddToCart});
 
   @override
   Widget build(BuildContext context) {
@@ -241,10 +236,7 @@ class _MenuSection extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _MenuItem(
-            item: item,
-            onAddToCart: () => onAddToCart(item),
-        );
+        return _MenuItem(item: item, onAddToCart: () => onAddToCart(item));
       },
     );
   }
@@ -254,15 +246,12 @@ class _MenuItem extends StatelessWidget {
   final Map<String, dynamic> item;
   final VoidCallback onAddToCart;
 
-  const _MenuItem({
-    required this.item,
-    required this.onAddToCart,
-  });
+  const _MenuItem({required this.item, required this.onAddToCart});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return RepaintBoundary(
       child: Container(
         decoration: BoxDecoration(
@@ -271,105 +260,108 @@ class _MenuItem extends StatelessWidget {
             image: AssetImage('assets/images/${item['image']}'),
             fit: BoxFit.cover,
           ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: InkWell(
-        onTap: () => _showItemDetails(context),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.transparent,
-                Colors.transparent,
-                Colors.black.withOpacity(0.5),
-              ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
-          ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      item['name'],
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 21,
-                        fontFamily: 'G',
-                        height: 1.3,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.5),
-                            blurRadius: 2,
-                            offset: Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.white.withOpacity(0.3),
-                                Colors.white.withOpacity(0.1),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.4),
-                              width: 1,
-                            ),
-                          ),
-                          child: Text(
-                            '${item['price']} ₽',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'G',
-                              fontSize: 14.5,
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: onAddToCart,
-                          child: Container(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: Icon(
-                              Icons.add_circle,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          ),
+          ],
+        ),
+        child: InkWell(
+          onTap: () => _showItemDetails(context),
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.5),
+                ],
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    item['name'],
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 21,
+                      fontFamily: 'G',
+                      height: 1.3,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 2,
+                          offset: Offset(0, 1),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.white.withOpacity(0.3),
+                              Colors.white.withOpacity(0.1),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          '${item['price']} ₽',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'G',
+                            fontSize: 14.5,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: onAddToCart,
+                        child: Container(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Icon(
+                            Icons.add_circle,
+                            color: Colors.white,
+                            size: 35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   void _showItemDetails(BuildContext context) {
@@ -377,10 +369,9 @@ class _MenuItem extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _ItemDetailsBottomSheet(
-        item: item,
-        onAddToCart: onAddToCart,
-      ),
+      builder:
+          (context) =>
+              _ItemDetailsBottomSheet(item: item, onAddToCart: onAddToCart),
     );
   }
 }
@@ -395,7 +386,8 @@ class _ItemDetailsBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<_ItemDetailsBottomSheet> createState() => _ItemDetailsBottomSheetState();
+  State<_ItemDetailsBottomSheet> createState() =>
+      _ItemDetailsBottomSheetState();
 }
 
 class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
@@ -413,7 +405,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     return Container(
       height: screenHeight * 0.93, // 93% экрана
       decoration: BoxDecoration(
@@ -439,10 +431,13 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     ),
                   ),
                 ),
-                
+
                 // Header с кнопками
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -460,7 +455,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                           },
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red.withValues(alpha: 0.85) : theme.colorScheme.onSurface,
+                            color:
+                                isFavorite
+                                    ? Colors.red.withValues(alpha: 0.85)
+                                    : theme.colorScheme.onSurface,
                             size: 24,
                           ),
                         ),
@@ -492,7 +490,9 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                      image: AssetImage('assets/images/${widget.item['image']}'),
+                      image: AssetImage(
+                        'assets/images/${widget.item['image']}',
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -531,7 +531,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                             style: theme.textTheme.titleLarge?.copyWith(
                               color: Colors.white.withOpacity(0.8),
                               fontFamily: 'G',
-                              fontSize:19,
+                              fontSize: 19,
                             ),
                           ),
                         ],
@@ -539,9 +539,9 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 15),
-                
+
                 // Контент в белой области
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -549,24 +549,26 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Кастомизация (только для кофе)
-                      if (widget.item['id'].toString().startsWith('coffee')) ...[
+                      if (widget.item['id'].toString().startsWith(
+                        'coffee',
+                      )) ...[
                         _buildCustomizationOptions(theme),
                         const SizedBox(height: 10),
                         _buildNutritionInfo(theme),
                         const SizedBox(height: 13),
                       ],
-                      
+
                       // Размеры
-                      if(widget.item['ingredients'] != null)
-                      _buildSizeSelection(theme),
-                      
+                      if (widget.item['ingredients'] != null)
+                        _buildSizeSelection(theme),
+
                       const SizedBox(height: 13),
                       if (widget.item['ingredients'] != null) ...[
-                        Container( 
+                        Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: theme.colorScheme.outline.withOpacity(0.1),
@@ -579,17 +581,20 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                                 'Состав',
                                 style: theme.textTheme.titleLarge?.copyWith(
                                   fontFamily: 'G',
-                                    fontSize: 20,
-                                    color: theme.colorScheme.onSurface.withOpacity(1),
+                                  fontSize: 20,
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(1),
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                (widget.item['ingredients'] as List<String>).join(', '),
+                                (widget.item['ingredients'] as List<String>)
+                                    .join(', '),
                                 style: theme.textTheme.bodyLarge?.copyWith(
                                   fontFamily: 'G',
                                   fontSize: 17,
-                                  color: theme.colorScheme.onSurface.withOpacity(0.9),
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.9),
                                   height: 1.4,
                                 ),
                               ),
@@ -598,34 +603,40 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                         ),
                         const SizedBox(height: 12),
                       ],
-                      
-                      
+
                       // Блок "Вместе вкуснее"
-                      Container( 
-                          width: double.infinity,
-                          padding: const EdgeInsets.only(top: 0, bottom: 16, left: 16,right: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Предложения',
-                                style: theme.textTheme.titleLarge?.copyWith(
-                                  fontFamily: 'G',
-                                    fontSize: 20,
-                                    color: theme.colorScheme.onSurface.withOpacity(1),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(
+                          top: 0,
+                          bottom: 16,
+                          left: 16,
+                          right: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Предложения',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontFamily: 'G',
+                                fontSize: 20,
+                                color: theme.colorScheme.onSurface.withOpacity(
+                                  1,
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                      // Предложения
-                              _buildSuggestions(theme),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 10),
+                            // Предложения
+                            _buildSuggestions(theme),
+                          ],
                         ),
-                      
+                      ),
+
                       const SizedBox(height: 100), // Отступ для кнопки корзины
                     ],
                   ),
@@ -633,7 +644,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
               ],
             ),
           ),
-          
+
           // Закрепленная кнопка добавления в корзину
           Positioned(
             left: 20,
@@ -663,14 +674,14 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                      children: [
                         const Icon(
                           Icons.add_circle_outline,
                           color: Colors.white,
                           size: 28,
                         ),
                         const SizedBox(width: 8),
-                       Text(
+                        Text(
                           '${_getCurrentPrice()} ₽',
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontFamily: 'G',
@@ -731,11 +742,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
             color: theme.colorScheme.outline.withOpacity(0.2),
             borderRadius: BorderRadius.circular(30),
           ),
-          child: Icon(
-            icon,
-            color: theme.colorScheme.onSurface,
-            size: 30,
-          ),
+          child: Icon(icon, color: theme.colorScheme.onSurface, size: 30),
         ),
         const SizedBox(height: 8),
         Text(
@@ -802,32 +809,35 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: selectedSize == 'M' 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.surface,
+                color:
+                    selectedSize == 'M'
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 children: [
                   Text(
                     'M',
-                        style: theme.textTheme.headlineMedium?.copyWith(
+                    style: theme.textTheme.headlineMedium?.copyWith(
                       fontFamily: 'G',
                       fontSize: 22,
-                      color: selectedSize == 'M' 
-                          ? Colors.white 
-                          : theme.colorScheme.onSurface,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      color:
+                          selectedSize == 'M'
+                              ? Colors.white
+                              : theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text(
                     '350 мл',
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontFamily: 'G',
                       fontSize: 16,
-                      color: selectedSize == 'M' 
-                          ? Colors.white.withOpacity(1) 
-                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                      color:
+                          selectedSize == 'M'
+                              ? Colors.white.withOpacity(1)
+                              : theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -842,9 +852,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: selectedSize == 'L' 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.surface,
+                color:
+                    selectedSize == 'L'
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -854,9 +865,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontFamily: 'G',
                       fontSize: 22,
-                      color: selectedSize == 'L' 
-                          ? Colors.white 
-                          : theme.colorScheme.onSurface,
+                      color:
+                          selectedSize == 'L'
+                              ? Colors.white
+                              : theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -865,24 +877,25 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontFamily: 'G',
                       fontSize: 16,
-                      color: selectedSize == 'L' 
-                          ? Colors.white.withOpacity(1) 
-                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                      color:
+                          selectedSize == 'L'
+                              ? Colors.white.withOpacity(1)
+                              : theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                 ],
               ),
             ),
-              ),
-            ),
-          ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildSuggestions(ThemeData theme) {
     // Примерные предложения в зависимости от типа товара
     List<Map<String, dynamic>> suggestions = [];
-    
+
     if (widget.item['id'].toString().startsWith('coffee')) {
       suggestions = [
         {'name': 'Круассан', 'price': 180, 'image': 'donat1.jpg'},
@@ -899,96 +912,98 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
         {'name': 'Пончик', 'price': 120, 'image': 'donat3.jpg'},
       ];
     }
-    
+
     return SizedBox(
-    height: 200,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions[index];
-        return Container(
-          width: 150,
-          margin: EdgeInsets.only(
-            right: index < suggestions.length - 1 ? 15 : 0,
-            left: index == 0 ? 0 : 0,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // Изображение
-                  Container(
-                    height: 110,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
-                      ),
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/${suggestion['image']}'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  // Текст
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          suggestion['name'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            color: Colors.black87,
-                            height: 1.3,
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: suggestions.length,
+        itemBuilder: (context, index) {
+          final suggestion = suggestions[index];
+          return Container(
+            width: 150,
+            margin: EdgeInsets.only(
+              right: index < suggestions.length - 1 ? 15 : 0,
+              left: index == 0 ? 0 : 0,
+            ),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // Изображение
+                    Container(
+                      height: 110,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(18),
+                          topRight: Radius.circular(18),
+                        ),
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/${suggestion['image']}',
                           ),
-                          maxLines: 2,
+                          fit: BoxFit.cover,
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              '${suggestion['price']} ₽',
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 18,
-                                fontFamily: 'G',
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.all(0),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.add_circle,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
+                    // Текст
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            suggestion['name'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                              color: theme.colorScheme.onSurface,
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                '${suggestion['price']} ₽',
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 18,
+                                  fontFamily: 'G',
+                                ),
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.all(0),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.add_circle,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -1009,7 +1024,7 @@ class _CartBottomSheet extends ConsumerWidget {
       0,
       (sum, item) => sum + (item.price * item.quantity),
     );
-    
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
@@ -1020,9 +1035,20 @@ class _CartBottomSheet extends ConsumerWidget {
         children: [
           // Заголовок
           Container(
-            padding: cart.isEmpty
-            ?const EdgeInsets.only(right: 16, left: 20, bottom:15, top: 15)
-            :const EdgeInsets.only(right: 16, left: 20, bottom:5, top: 5),
+            padding:
+                cart.isEmpty
+                    ? const EdgeInsets.only(
+                      right: 16,
+                      left: 20,
+                      bottom: 15,
+                      top: 15,
+                    )
+                    : const EdgeInsets.only(
+                      right: 16,
+                      left: 20,
+                      bottom: 5,
+                      top: 5,
+                    ),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -1042,26 +1068,27 @@ class _CartBottomSheet extends ConsumerWidget {
                 ),
                 if (cart.isNotEmpty)
                   TextButton(
-                      onPressed: onClearCart,
+                    onPressed: onClearCart,
                     child: Text(
-                      'Очистить', 
+                      'Очистить',
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontFamily: 'G',
                         fontSize: 17,
-                        color:theme.colorScheme.primary,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                   ),
               ],
             ),
           ),
-          
+
           // Список товаров
           if (cart.isEmpty)
-             Expanded(
+            Expanded(
               child: Center(
-                child: Text('Корзина пуста', 
-                style: theme.textTheme.headlineSmall?.copyWith(
+                child: Text(
+                  'Корзина пуста',
+                  style: theme.textTheme.headlineSmall?.copyWith(
                     fontFamily: 'G',
                     fontSize: 18,
                     color: theme.colorScheme.outline.withOpacity(0.9),
@@ -1085,7 +1112,7 @@ class _CartBottomSheet extends ConsumerWidget {
                 },
               ),
             ),
-            
+
             // Итого и кнопка заказа
             Container(
               padding: const EdgeInsets.all(16),
@@ -1125,9 +1152,9 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                       
                       },
-                      child:  Text('Оформить заказ',
+                      child: Text(
+                        'Оформить заказ',
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -1152,20 +1179,17 @@ class _CartItem extends StatelessWidget {
   final CartItem item;
   final Function(int) onQuantityChanged;
 
-  const _CartItem({
-    required this.item,
-    required this.onQuantityChanged,
-  });
+  const _CartItem({required this.item, required this.onQuantityChanged});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -1174,10 +1198,7 @@ class _CartItem extends StatelessWidget {
             offset: const Offset(0, 5),
           ),
         ],
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.grey.withOpacity(0.1), width: 1),
       ),
       child: Row(
         children: [
@@ -1201,7 +1222,7 @@ class _CartItem extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Текст
           Expanded(
             child: Column(
@@ -1212,7 +1233,7 @@ class _CartItem extends StatelessWidget {
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
-                    color: Colors.black87,
+                    color: theme.colorScheme.onSurface,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1229,7 +1250,7 @@ class _CartItem extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Счетчик
           Container(
             decoration: BoxDecoration(
@@ -1245,7 +1266,10 @@ class _CartItem extends StatelessWidget {
                   padding: const EdgeInsets.all(6),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Text(
                     item.quantity.toString(),
                     style: theme.textTheme.titleSmall?.copyWith(
@@ -1269,6 +1293,7 @@ class _CartItem extends StatelessWidget {
     );
   }
 }
+
 // Данные для меню
 final _coffeeItems = [
   {
@@ -1317,7 +1342,6 @@ final _coffeeItems = [
     'ingredients': ['Двойной эспрессо'],
   },
 ];
-
 
 final _dessertItems = [
   {
@@ -1436,4 +1460,3 @@ final _bookItems = [
     'rating': 4.5,
   },
 ];
-

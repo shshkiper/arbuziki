@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
+import '../../../main.dart';
 
-class SettingsDialog extends StatefulWidget {
+class SettingsDialog extends ConsumerStatefulWidget {
   const SettingsDialog({super.key});
 
   @override
-  State<SettingsDialog> createState() => _SettingsDialogState();
+  ConsumerState<SettingsDialog> createState() => _SettingsDialogState();
 }
 
-class _SettingsDialogState extends State<SettingsDialog> {
+class _SettingsDialogState extends ConsumerState<SettingsDialog> {
   bool _notificationsEnabled = true;
   bool _soundEnabled = true;
 
@@ -22,7 +24,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
@@ -72,7 +74,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontFamily: 'G',
                             height: 1.1,
                           ),
@@ -91,7 +93,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         ),
                         child: Icon(
                           Icons.close_rounded,
-                          color: Colors.grey[600],
+                          color: Colors.white.withOpacity(0.7),
                           size: 20,
                         ),
                       ),
@@ -110,7 +112,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: Colors.white,
                         fontFamily: 'G',
                       ),
                     ),
@@ -170,7 +172,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: Colors.white,
                         fontFamily: 'G',
                       ),
                     ),
@@ -204,6 +206,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
                             'Звуки',
                             _soundEnabled,
                             (value) => setState(() => _soundEnabled = value),
+                          ),
+                          _buildThemeSwitchItem(
+                            context,
+                            Icons.dark_mode_rounded,
+                            'Темная тема',
+                            ref.watch(themeProvider) == ThemeMode.dark,
+                            (value) =>
+                                ref.read(themeProvider.notifier).toggleTheme(),
                           ),
                         ],
                       ),
@@ -354,7 +364,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: Colors.white,
                   fontFamily: 'G',
                 ),
               ),
@@ -362,7 +372,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 16,
-                color: Colors.grey.withOpacity(0.6),
+                color: Colors.white.withOpacity(0.6),
               ),
             ],
           ),
@@ -402,7 +412,59 @@ class _SettingsDialogState extends State<SettingsDialog> {
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w500,
-              color: Colors.black87,
+              color: Colors.white,
+              fontFamily: 'G',
+            ),
+          ),
+          const Spacer(),
+          Transform.scale(
+            scale: 1,
+            child: Switch(
+              value: value,
+              onChanged: onChanged,
+              activeColor: Theme.of(context).colorScheme.primary,
+              activeTrackColor: Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(0.3),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Переключатель темы
+  Widget _buildThemeSwitchItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    bool value,
+    ValueChanged<bool> onChanged,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              color: Theme.of(context).colorScheme.primary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
               fontFamily: 'G',
             ),
           ),
@@ -437,7 +499,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
@@ -483,7 +545,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -500,7 +562,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                               size: 20,
                             ),
                           ),
@@ -519,7 +583,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontFamily: 'G',
                           ),
                         ),
@@ -544,8 +608,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               hintText: 'example@mail.com',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(18),
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
+                              hintStyle: const TextStyle(
+                                color: Colors.white70,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -584,7 +648,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                    color: Colors.white.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -701,7 +765,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
@@ -747,7 +811,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -764,7 +828,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                               size: 20,
                             ),
                           ),
@@ -783,7 +849,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontFamily: 'G',
                           ),
                         ),
@@ -808,8 +874,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               hintText: 'Минимум 6 символов',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(18),
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
+                              hintStyle: const TextStyle(
+                                color: Colors.white70,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -848,7 +914,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                    color: Colors.white.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -975,7 +1041,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
@@ -1021,7 +1087,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -1038,7 +1104,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                               size: 20,
                             ),
                           ),
@@ -1057,7 +1125,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontFamily: 'G',
                           ),
                         ),
@@ -1081,8 +1149,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               hintText: 'Ваше имя',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(18),
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
+                              hintStyle: const TextStyle(
+                                color: Colors.white70,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -1121,7 +1189,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                    color: Colors.white.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -1235,7 +1303,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
@@ -1281,7 +1349,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -1298,7 +1366,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                               size: 20,
                             ),
                           ),
@@ -1314,7 +1384,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey[700],
+                        color: Colors.white.withOpacity(0.8),
                         fontFamily: 'G',
                       ),
                     ),
@@ -1349,7 +1419,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.grey[700],
+                                    color: Colors.white.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),

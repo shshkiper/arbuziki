@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'presentation/theme/app_theme.dart';
 import 'presentation/pages/splash/splash_page.dart';
@@ -14,6 +15,31 @@ import 'presentation/pages/loyalty/loyalty_page.dart';
 import 'presentation/pages/profile/profile_page.dart';
 import 'presentation/pages/chat/chat_page.dart';
 import 'presentation/pages/map/map_page.dart';
+
+// Провайдер для управления темой
+final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
+  return ThemeNotifier();
+});
+
+class ThemeNotifier extends StateNotifier<ThemeMode> {
+  ThemeNotifier() : super(ThemeMode.system) {
+    _loadTheme();
+  }
+
+  void _loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isDark = prefs.getBool('isDarkMode') ?? false;
+    state = isDark ? ThemeMode.dark : ThemeMode.light;
+  }
+
+  void toggleTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final newTheme =
+        state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    state = newTheme;
+    await prefs.setBool('isDarkMode', newTheme == ThemeMode.dark);
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,15 +71,18 @@ final GoRouter _router = GoRouter(
   ],
 );
 
-class DrinkWithBookApp extends StatelessWidget {
+class DrinkWithBookApp extends ConsumerWidget {
   const DrinkWithBookApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
+
     return MaterialApp.router(
       title: 'Drink with Book',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );

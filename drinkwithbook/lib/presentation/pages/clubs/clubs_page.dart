@@ -31,85 +31,87 @@ class _ClubsPageState extends ConsumerState<ClubsPage>
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Container(),
-          centerTitle: false,
-          flexibleSpace: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
-              child: Container(
-                color: Colors.white.withOpacity(0.00001),
-                child: Column(
-                  children: [
-                    // Верхняя часть с логотипом и корзиной
-                    Container(
-                      height: 80,
-                      child: Row(
-                        children: [
-                          // Логотип
-                          Padding(
-                            padding: const EdgeInsets.only(left: 17.0, top:24.0 ),
-                            child: Image.asset(
-                              height: 45,
-                              'assets/images/logo.png',
-                              fit: BoxFit.contain,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Container(),
+        centerTitle: false,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+            child: Container(
+              color: Colors.white.withOpacity(0.00001),
+              child: Column(
+                children: [
+                  // Верхняя часть с логотипом и корзиной
+                  Container(
+                    height: 80,
+                    child: Row(
+                      children: [
+                        // Логотип
+                        Padding(
+                          padding: const EdgeInsets.only(left: 17.0, top: 24.0),
+                          child: Image.asset(
+                            height: 45,
+                            'assets/images/logo.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Spacer(),
+                        // Иконка корзины
+                        Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 15.0,
+                                top: 26,
+                              ), // ← Добавь этот отступ
+                              child: IconButton(
+                                icon: const Icon(Icons.add),
+                                iconSize: 30,
+                                onPressed: () => _showCreateClubDialog(context),
+                              ),
                             ),
-                          ),
-                          Spacer(),
-                          // Иконка корзины
-                          Stack(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 15.0, top: 26), // ← Добавь этот отступ
-                                child: IconButton(
-                                  icon: const Icon(Icons.add),
-                                  iconSize: 30,
-                                  onPressed: () => _showCreateClubDialog(context),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ),
-                    // TabBar
-                          Expanded(
-                            child: TabBar(
-                              dividerHeight: 0,
-                              controller: _tabController,
-                              labelStyle: TextStyle(
-                                fontSize: 16.4,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'G'
-                              ),
-                              unselectedLabelStyle: TextStyle(
-                                fontSize: 16.4,
-                                fontWeight: FontWeight.normal,
-                                fontFamily: 'G',
-                              ),
-                              tabs: const [
-                                Tab(text: 'Мои клубы'),
-                                Tab(text: 'Все клубы'),
-                                Tab(text: 'События'),
-                              ],
-                            ),
-                            
-                          ),
-                        ],
+                  ),
+                  // TabBar
+                  Expanded(
+                    child: TabBar(
+                      dividerHeight: 0,
+                      controller: _tabController,
+                      labelStyle: TextStyle(
+                        fontSize: 16.4,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'G',
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
+                      unselectedLabelStyle: TextStyle(
+                        fontSize: 16.4,
+                        fontWeight: FontWeight.normal,
+                        fontFamily: 'G',
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                      tabs: const [
+                        Tab(text: 'Мои клубы'),
+                        Tab(text: 'Все клубы'),
+                        Tab(text: 'События'),
+                      ],
                     ),
-                ),
-              ),
-            ),
-              body: TabBarView(
-                controller: _tabController,
-                children: const [
-                  _MyClubsTab(),
-                  _AllClubsTab(),
-                  _EventsTab(),
+                  ),
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [_MyClubsTab(), _AllClubsTab(), _EventsTab()],
+      ),
     );
   }
 
@@ -132,13 +134,13 @@ class _MyClubsTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final club = _myClubs[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: _ClubCard(
-            club: club,
-            isMember: true,
-            onTap: () => _showClubDetails(context, club),
-          ),
-        )
+              padding: const EdgeInsets.only(bottom: 5),
+              child: _ClubCard(
+                club: club,
+                isMember: true,
+                onTap: () => _showClubDetails(context, club),
+              ),
+            )
             .animate(delay: Duration(milliseconds: index * 100))
             .fadeIn(duration: const Duration(milliseconds: 200))
             .slideX(begin: -0.2, duration: const Duration(milliseconds: 200));
@@ -148,9 +150,7 @@ class _MyClubsTab extends StatelessWidget {
 
   void _showClubDetails(BuildContext context, Map<String, dynamic> club) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _ClubDetailsPage(club: club),
-      ),
+      MaterialPageRoute(builder: (context) => _ClubDetailsPage(club: club)),
     );
   }
 }
@@ -166,14 +166,14 @@ class _AllClubsTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final club = _allClubs[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: _ClubCard(
-            club: club,
-            isMember: _myClubs.any((myClub) => myClub['id'] == club['id']),
-            onTap: () => _showClubDetails(context, club),
-          ),
-        )
-            .animate(delay: Duration(milliseconds: index *80))
+              padding: const EdgeInsets.only(bottom: 5),
+              child: _ClubCard(
+                club: club,
+                isMember: _myClubs.any((myClub) => myClub['id'] == club['id']),
+                onTap: () => _showClubDetails(context, club),
+              ),
+            )
+            .animate(delay: Duration(milliseconds: index * 80))
             .fadeIn(duration: const Duration(milliseconds: 200))
             .slideX(begin: 0.2, duration: const Duration(milliseconds: 200));
       },
@@ -182,9 +182,7 @@ class _AllClubsTab extends StatelessWidget {
 
   void _showClubDetails(BuildContext context, Map<String, dynamic> club) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _ClubDetailsPage(club: club),
-      ),
+      MaterialPageRoute(builder: (context) => _ClubDetailsPage(club: club)),
     );
   }
 }
@@ -200,9 +198,9 @@ class _EventsTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final event = _upcomingEvents[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 0),
-          child: _EventCard(event: event),
-        )
+              padding: const EdgeInsets.only(bottom: 0),
+              child: _EventCard(event: event),
+            )
             .animate(delay: Duration(milliseconds: index * 100))
             .fadeIn(duration: const Duration(milliseconds: 150))
             .slideY(begin: 0.2, duration: const Duration(milliseconds: 250));
@@ -225,7 +223,7 @@ class _ClubCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       child: Card(
@@ -233,10 +231,7 @@ class _ClubCard extends StatelessWidget {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(
-            color: Colors.grey.withOpacity(0.1),
-            width: 1,
-          ),
+          side: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
         ),
         child: InkWell(
           onTap: onTap,
@@ -299,8 +294,6 @@ class _ClubCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
-
 
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -318,7 +311,8 @@ class _ClubCard extends StatelessWidget {
                                   fontFamily: 'G',
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.black87,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   height: 1.2,
                                 ),
                               ),
@@ -366,13 +360,16 @@ class _ClubCard extends StatelessWidget {
                                   gradient: LinearGradient(
                                     colors: [
                                       theme.colorScheme.primary,
-                                      theme.colorScheme.primary.withOpacity(0.8),
+                                      theme.colorScheme.primary.withOpacity(
+                                        0.8,
+                                      ),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: theme.colorScheme.primary.withOpacity(0.3),
+                                      color: theme.colorScheme.primary
+                                          .withOpacity(0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -390,9 +387,9 @@ class _ClubCard extends StatelessWidget {
                               ),
                           ],
                         ),
-                        
+
                         const SizedBox(height: 12),
-                        
+
                         // Описание
                         Text(
                           club['description'],
@@ -406,9 +403,9 @@ class _ClubCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Статистика
                         Container(
                           padding: const EdgeInsets.all(16),
@@ -427,6 +424,7 @@ class _ClubCard extends StatelessWidget {
                                 value: club['members'].toString(),
                                 label: 'Участников',
                                 theme: theme,
+                                context: context,
                               ),
                               Container(
                                 height: 30,
@@ -438,6 +436,7 @@ class _ClubCard extends StatelessWidget {
                                 value: club['events'].toString(),
                                 label: 'Событий',
                                 theme: theme,
+                                context: context,
                               ),
                             ],
                           ),
@@ -447,7 +446,7 @@ class _ClubCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               //стрелка выход
               Positioned(
                 top: 16,
@@ -478,22 +477,20 @@ class _ClubCard extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildModernStatItem({
     required IconData icon,
     required String value,
     required String label,
     required ThemeData theme,
+    required BuildContext context,
   }) {
     return Column(
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 22,
-              color: theme.colorScheme.primary,
-            ),
+            Icon(icon, size: 22, color: theme.colorScheme.primary),
             const SizedBox(width: 6),
             Text(
               value,
@@ -501,7 +498,7 @@ class _ClubCard extends StatelessWidget {
                 fontFamily: 'G',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -555,14 +552,12 @@ class _EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 17),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
       child: Material(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: () {},
@@ -605,7 +600,7 @@ class _EventCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 20),
-                    
+
                     // Заголовок, клуб и участники
                     Expanded(
                       child: Column(
@@ -617,7 +612,7 @@ class _EventCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
-                              color: Colors.black87,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontFamily: 'G',
                               height: 1.3,
                             ),
@@ -631,63 +626,69 @@ class _EventCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              // Название клуба
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.primary.withOpacity(0.08),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: theme.colorScheme.primary.withOpacity(0.2),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Text(
-                                  event['clubName'] ?? 'Клуб',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: theme.colorScheme.primary,
-                                    fontFamily: 'G',
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              
-                              // Участники
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.08),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.people_alt_rounded,
-                                      size: 16,
-                                      color: Colors.grey[600],
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      '${event['attendees'] ?? 0}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.grey[700],
-                                        fontFamily: 'G',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                Row(
+                  children: [
+                    // Название клуба
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.primary.withOpacity(0.2),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Text(
+                        event['clubName'] ?? 'Клуб',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                          fontFamily: 'G',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+
+                    // Участники
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.people_alt_rounded,
+                            size: 16,
+                            color: Colors.grey[600],
                           ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '${event['attendees'] ?? 0}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700],
+                              fontFamily: 'G',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 15),
-                
+
                 // Описание
                 Container(
                   width: double.infinity,
@@ -719,9 +720,9 @@ class _EventCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                
+
                 const SizedBox(height: 15),
-                
+
                 // Детали события
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -742,9 +743,10 @@ class _EventCard extends StatelessWidget {
                           title: 'Время',
                           value: event['time'] ?? '--:--',
                           color: Colors.blue,
+                          context: context,
                         ),
                       ),
-                      
+
                       // Вертикальный разделитель
                       Container(
                         width: 1,
@@ -752,7 +754,7 @@ class _EventCard extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.2),
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                       ),
-                      
+
                       // Местоположение
                       Expanded(
                         child: _buildDetailItem(
@@ -760,14 +762,15 @@ class _EventCard extends StatelessWidget {
                           title: 'Место',
                           value: event['location'] ?? 'Не указано',
                           color: Colors.green,
+                          context: context,
                         ),
                       ),
                     ],
                   ),
                 ),
-                
-                const SizedBox(height:15),
-                
+
+                const SizedBox(height: 15),
+
                 // Кнопка присоединения
                 Container(
                   height: 56,
@@ -830,6 +833,7 @@ class _EventCard extends StatelessWidget {
     required String title,
     required String value,
     required Color color,
+    required BuildContext context,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -843,11 +847,7 @@ class _EventCard extends StatelessWidget {
                 color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
-                icon,
-                size: 16,
-                color: color,
-              ),
+              child: Icon(icon, size: 16, color: color),
             ),
             const SizedBox(width: 8),
             Text(
@@ -867,7 +867,7 @@ class _EventCard extends StatelessWidget {
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: Colors.black87,
+            color: Theme.of(context).colorScheme.onSurface,
             fontFamily: 'G',
           ),
           maxLines: 1,
@@ -887,9 +887,9 @@ class _ClubDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final clubColors = _getClubColors(club['type']);
-    
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -958,10 +958,15 @@ class _ClubDetailsPage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 10),
+              padding: const EdgeInsets.only(
+                top: 24,
+                left: 24,
+                right: 24,
+                bottom: 10,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -982,20 +987,20 @@ class _ClubDetailsPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontFamily: 'G',
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Описание клуба
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
@@ -1010,15 +1015,15 @@ class _ClubDetailsPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey[800],
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontFamily: 'G',
                         height: 1.5,
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Статистика
                   Row(
                     children: [
@@ -1043,9 +1048,9 @@ class _ClubDetailsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Заголовок "Обсуждения"
                   Row(
                     children: [
@@ -1063,7 +1068,7 @@ class _ClubDetailsPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontFamily: 'G',
                         ),
                       ),
@@ -1073,27 +1078,22 @@ class _ClubDetailsPage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Список постов
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final post = _clubPosts[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                  child: _buildPostCard(post, theme, clubColors),
-                );
-              },
-              childCount: _clubPosts.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final post = _clubPosts[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                child: _buildPostCard(post, theme, clubColors, context),
+              );
+            }, childCount: _clubPosts.length),
           ),
-          
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 105),
-          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 105)),
         ],
       ),
-      
+
       // Кнопка нового поста
       floatingActionButton: Container(
         decoration: BoxDecoration(
@@ -1111,10 +1111,7 @@ class _ClubDetailsPage extends StatelessWidget {
           onPressed: () {},
           backgroundColor: Colors.transparent,
           elevation: 0,
-          icon: Icon(
-            Icons.add_comment_rounded,
-            color: Colors.white,
-          ),
+          icon: Icon(Icons.add_comment_rounded, color: Colors.white),
           label: Text(
             'Новый пост',
             style: TextStyle(
@@ -1140,16 +1137,10 @@ class _ClubDetailsPage extends StatelessWidget {
       height: 160,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            gradient[0].withOpacity(0.1),
-            gradient[1].withOpacity(0.05),
-          ],
+          colors: [gradient[0].withOpacity(0.1), gradient[1].withOpacity(0.05)],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: gradient[0].withOpacity(0.2),
-          width: 1.5,
-        ),
+        border: Border.all(color: gradient[0].withOpacity(0.2), width: 1.5),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1161,11 +1152,7 @@ class _ClubDetailsPage extends StatelessWidget {
               gradient: LinearGradient(colors: gradient),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: Icon(icon, color: Colors.white, size: 24),
           ),
           const SizedBox(height: 12),
           Text(
@@ -1183,7 +1170,7 @@ class _ClubDetailsPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               fontFamily: 'G',
             ),
           ),
@@ -1192,10 +1179,15 @@ class _ClubDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPostCard(Map<String, dynamic> post, ThemeData theme, List<Color> clubColors) {
+  Widget _buildPostCard(
+    Map<String, dynamic> post,
+    ThemeData theme,
+    List<Color> clubColors,
+    BuildContext context,
+  ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -1242,7 +1234,7 @@ class _ClubDetailsPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontFamily: 'G',
                         ),
                       ),
@@ -1250,7 +1242,9 @@ class _ClubDetailsPage extends StatelessWidget {
                         post['time'] as String? ?? '',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey[600],
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.7),
                           fontFamily: 'G',
                         ),
                       ),
@@ -1260,20 +1254,20 @@ class _ClubDetailsPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Контент поста
             Text(
               post['content'] as String? ?? '',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
+                color: Theme.of(context).colorScheme.onSurface,
                 fontFamily: 'G',
                 height: 1.4,
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Действия
             Row(
               children: [
@@ -1286,11 +1280,14 @@ class _ClubDetailsPage extends StatelessWidget {
                 _buildPostAction(
                   icon: Icons.comment_rounded,
                   count: post['comments'] ?? 0,
-                  color: Colors.grey[800]!,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: clubColors[0].withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -1320,11 +1317,7 @@ class _ClubDetailsPage extends StatelessWidget {
   }) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 20,
-          color: color.withOpacity(0.7),
-        ),
+        Icon(icon, size: 20, color: color.withOpacity(0.7)),
         const SizedBox(width: 6),
         Text(
           count.toString(),
@@ -1340,32 +1333,31 @@ class _ClubDetailsPage extends StatelessWidget {
   }
 }
 
-  List<Color> _getClubColors(String type) {
-    switch (type) {
-      case 'coffee':
-        return [const Color(0xFF8B4513), const Color(0xFFD2B48C)];
-      case 'tea':
-        return [const Color(0xFF8FBC8F), const Color(0xFF90EE90)];
-      case 'book':
-        return [const Color(0xFF4682B4), const Color(0xFF87CEEB)];
-      default:
-        return [Colors.grey, Colors.grey.shade300];
-    }
+List<Color> _getClubColors(String type) {
+  switch (type) {
+    case 'coffee':
+      return [const Color(0xFF8B4513), const Color(0xFFD2B48C)];
+    case 'tea':
+      return [const Color(0xFF8FBC8F), const Color(0xFF90EE90)];
+    case 'book':
+      return [const Color(0xFF4682B4), const Color(0xFF87CEEB)];
+    default:
+      return [Colors.grey, Colors.grey.shade300];
   }
+}
 
-  IconData _getClubIcon(String type) {
-    switch (type) {
-      case 'coffee':
-        return Icons.local_cafe;
-      case 'tea':
-        return Icons.emoji_food_beverage;
-      case 'book':
-        return Icons.menu_book;
-      default:
-        return Icons.group;
-    }
+IconData _getClubIcon(String type) {
+  switch (type) {
+    case 'coffee':
+      return Icons.local_cafe;
+    case 'tea':
+      return Icons.emoji_food_beverage;
+    case 'book':
+      return Icons.menu_book;
+    default:
+      return Icons.group;
   }
-
+}
 
 class _CreateClubDialog extends StatefulWidget {
   const _CreateClubDialog();
@@ -1431,7 +1423,9 @@ class _CreateClubDialogState extends State<_CreateClubDialog> {
       // Показываем уведомление об успешном создании
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Клуб "${_nameController.text.trim()}" успешно создан!'),
+          content: Text(
+            'Клуб "${_nameController.text.trim()}" успешно создан!',
+          ),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 3),
         ),
@@ -1455,445 +1449,445 @@ class _CreateClubDialogState extends State<_CreateClubDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
-    return Dialog(
-  backgroundColor: Colors.transparent,
-  elevation: 0,
-  insetPadding: const EdgeInsets.all(20),
-  child: Container(
-    constraints: const BoxConstraints(maxWidth: 500),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(28),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.25),
-          blurRadius: 40,
-          offset: const Offset(0, 15),
-        ),
-      ],
-    ),
-    child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Заголовок с иконкой
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              theme.colorScheme.primary,
-                              theme.colorScheme.primary.withOpacity(0.8),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Icon(
-                          Icons.groups_rounded,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Создать клуб',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black87,
-                              fontFamily: 'G',
-                              height: 1.1,
-                            ),
-                          ),
 
-                        ],
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    padding: EdgeInsets.only(bottom: 3,left: 20),
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.close_rounded,
-                        color: Colors.grey[600],
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 10),
-              
-              // Название клуба
-              Column(
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.all(20),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 40,
+              offset: const Offset(0, 15),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Название клуба',
-                    style: TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                      fontFamily: 'G',
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.grey.withOpacity(0.2),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: TextFormField(
-                      controller: _nameController,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Введите название клуба';
-                        }
-                        if (value.trim().length < 3) {
-                          return 'Название должно содержать минимум 3 символа';
-                        }
-                        return null;
-                      },
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontFamily: 'G',
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'Кофейные гурманы, Книжный клуб...',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(20),
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 10),
-              
-              // Описание
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Описание',
-                    style: TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                      fontFamily: 'G',
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.grey.withOpacity(0.2),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: TextFormField(
-                      controller: _descriptionController,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Введите описание клуба';
-                        }
-                        if (value.trim().length < 10) {
-                          return 'Описание должно содержать минимум 10 символов';
-                        }
-                        return null;
-                      },
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'G',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      maxLines: 3,
-                      decoration: const InputDecoration(
-                        hintText: 'Опишите цели, тематику и правила клуба',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(20),
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 10),
-              
-              // Тип клуба
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Тематика клуба',
-                    style: TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                      fontFamily: 'G',
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  // Заголовок с иконкой
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: _buildPremiumTypeCard(
-                          type: 'coffee',
-                          icon: Icons.coffee_rounded,
-                          title: 'Кофе',
-                          theme: theme,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildPremiumTypeCard(
-                          type: 'tea',
-                          icon: Icons.emoji_food_beverage,
-                          title: 'Чай',
-                          theme: theme,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildPremiumTypeCard(
-                          type: 'book',
-                          icon: Icons.auto_stories_rounded,
-                          title: 'Книги',
-                          theme: theme,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 10),
-              
-              // Кнопки
-              Container(
-                height: 2,
-                color: Colors.grey.withOpacity(0.1),
-              ),
-              const SizedBox(height: 10),
-              
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: Colors.grey.withOpacity(0.3),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        borderRadius: BorderRadius.circular(14),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 14,
-                          ),
-                          child: Text(
-                            'Отмена',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[700],
-                              fontFamily: 'G',
+                      Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  theme.colorScheme.primary,
+                                  theme.colorScheme.primary.withOpacity(0.8),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Icon(
+                              Icons.groups_rounded,
+                              color: Colors.white,
+                              size: 24,
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.colorScheme.primary,
-                          theme.colorScheme.primary.withOpacity(0.9),
-                        ],
-                        stops: [0.0, 0.8],
-                      ),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: theme.colorScheme.primary.withOpacity(0.4),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => _createClub(context),
-                        borderRadius: BorderRadius.circular(14),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 14,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                          const SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(
-                                Icons.add_circle_rounded,
-                                size: 20,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 10),
                               Text(
                                 'Создать клуб',
                                 style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontFamily: 'G',
-                                  letterSpacing: -0.2,
+                                  height: 1.1,
                                 ),
                               ),
                             ],
                           ),
+                        ],
+                      ),
+                      IconButton(
+                        padding: EdgeInsets.only(bottom: 3, left: 20),
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: Colors.grey[600],
+                            size: 20,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Название клуба
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Название клуба',
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'G',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.2),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: TextFormField(
+                          controller: _nameController,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Введите название клуба';
+                            }
+                            if (value.trim().length < 3) {
+                              return 'Название должно содержать минимум 3 символа';
+                            }
+                            return null;
+                          },
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontFamily: 'G',
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: const InputDecoration(
+                            hintText: 'Кофейные гурманы, Книжный клуб...',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(20),
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Описание
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Описание',
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'G',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.2),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: TextFormField(
+                          controller: _descriptionController,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Введите описание клуба';
+                            }
+                            if (value.trim().length < 10) {
+                              return 'Описание должно содержать минимум 10 символов';
+                            }
+                            return null;
+                          },
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'G',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          maxLines: 3,
+                          decoration: const InputDecoration(
+                            hintText: 'Опишите цели, тематику и правила клуба',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(20),
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Тип клуба
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Тематика клуба',
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'G',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildPremiumTypeCard(
+                              type: 'coffee',
+                              icon: Icons.coffee_rounded,
+                              title: 'Кофе',
+                              theme: theme,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildPremiumTypeCard(
+                              type: 'tea',
+                              icon: Icons.emoji_food_beverage,
+                              title: 'Чай',
+                              theme: theme,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildPremiumTypeCard(
+                              type: 'book',
+                              icon: Icons.auto_stories_rounded,
+                              title: 'Книги',
+                              theme: theme,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Кнопки
+                  Container(height: 2, color: Colors.grey.withOpacity(0.1)),
+                  const SizedBox(height: 10),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            borderRadius: BorderRadius.circular(14),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 14,
+                              ),
+                              child: Text(
+                                'Отмена',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[700],
+                                  fontFamily: 'G',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              theme.colorScheme.primary,
+                              theme.colorScheme.primary.withOpacity(0.9),
+                            ],
+                            stops: [0.0, 0.8],
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withOpacity(0.4),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => _createClub(context),
+                            borderRadius: BorderRadius.circular(14),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 14,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.add_circle_rounded,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Создать клуб',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      fontFamily: 'G',
+                                      letterSpacing: -0.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
-// Премиум версия карточки типа
+    // Премиум версия карточки типа
 
-
-// Метод для карточки типа клуба
-
+    // Метод для карточки типа клуба
   }
-Widget _buildPremiumTypeCard({
-  required String type,
-  required IconData icon,
-  required String title,
-  required ThemeData theme,
-}) {
-  final isSelected = _selectedType == type;
-  
-  return GestureDetector(
-    onTap: () {
-      setState(() {
-        _selectedType = type;
-      });
-    },
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isSelected 
-            ? theme.colorScheme.primary.withOpacity(0.08)
-            : Colors.grey.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isSelected 
-              ? theme.colorScheme.primary.withOpacity(0.3)
-              : Colors.transparent,
-          width: 2,
-        ),
-        boxShadow: isSelected 
-            ? [
-                BoxShadow(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ]
-            : [],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: isSelected 
-                  ? theme.colorScheme.primary
-                  : Colors.grey.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(
-              icon,
-              size: 24,
-              color: isSelected ? Colors.white : Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: isSelected 
-                  ? theme.colorScheme.primary
-                  : Colors.black87,
-              fontFamily: 'G',
-            ),
-          ),
-          const SizedBox(height: 4),
-        ],
-      ),
-    ),
-  );
-}
 
+  Widget _buildPremiumTypeCard({
+    required String type,
+    required IconData icon,
+    required String title,
+    required ThemeData theme,
+  }) {
+    final isSelected = _selectedType == type;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedType = type;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? theme.colorScheme.primary.withOpacity(0.08)
+                  : Colors.grey.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color:
+                isSelected
+                    ? theme.colorScheme.primary.withOpacity(0.3)
+                    : Colors.transparent,
+            width: 2,
+          ),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ]
+                  : [],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary
+                        : Colors.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                icon,
+                size: 24,
+                color: isSelected ? Colors.white : Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
+                fontFamily: 'G',
+              ),
+            ),
+            const SizedBox(height: 4),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // Данные для примера
@@ -1978,21 +1972,24 @@ final _clubPosts = [
   {
     'author': 'Анна Смирнова',
     'time': '2 часа назад',
-    'content': 'Попробовала новый сорт кофе из Гватемалы - просто восхитительно! Кто-нибудь еще пробовал?',
+    'content':
+        'Попробовала новый сорт кофе из Гватемалы - просто восхитительно! Кто-нибудь еще пробовал?',
     'likes': 5,
     'comments': 3,
   },
   {
     'author': 'Михаил Петров',
     'time': '5 часов назад',
-    'content': 'Поделюсь рецептом идеального капучино. Главное - правильная температура молока!',
+    'content':
+        'Поделюсь рецептом идеального капучино. Главное - правильная температура молока!',
     'likes': 8,
     'comments': 6,
   },
   {
     'author': 'Елена Козлова',
     'time': '1 день назад',
-    'content': 'Кто-нибудь читал "Кофе с молоком и временем" Тамары Мелашвили? Очень атмосферная книга!',
+    'content':
+        'Кто-нибудь читал "Кофе с молоком и временем" Тамары Мелашвили? Очень атмосферная книга!',
     'likes': 12,
     'comments': 9,
   },
