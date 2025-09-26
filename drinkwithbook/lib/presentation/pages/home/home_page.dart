@@ -7,6 +7,7 @@ import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
 import '../../widgets/notifications_modal.dart';
+import '../../widgets/book_ad_modal.dart';
 import 'dart:ui';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -56,7 +57,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         children: [
           _HomeTab(
             onNavigateToMenu: () => _onTabTapped(1),
-            onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 3),
+            onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 2),
           ),
           MenuPage(initialTabIndex: _menuInitialTabIndex),
           const ClubsPage(),
@@ -142,6 +143,17 @@ class _HomeTab extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const NotificationsModal(),
+    );
+  }
+
+  void _showBookAdModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BookAdModal(
+        onViewBooks: onNavigateToBooks,
+      ),
     );
   }
 
@@ -309,6 +321,90 @@ class _HomeTab extends ConsumerWidget {
                 ],
               ),
             ),
+
+            const SizedBox(height: 15),
+
+            // Реклама книг
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () => _showBookAdModal(context),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        theme.colorScheme.secondary,
+                        theme.colorScheme.secondary.withOpacity(0.8),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.secondary.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      // Иконка книги
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.menu_book_rounded,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // Текст
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Откройте мир книг',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontFamily: "G",
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Рекомендуем лучшие книги для чтения с кофе',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontFamily: "G",
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Стрелка
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white.withOpacity(0.8),
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 200))
+                .slideY(begin: 0.2, duration: const Duration(milliseconds: 400)),
 
             const SizedBox(height: 15),
 
