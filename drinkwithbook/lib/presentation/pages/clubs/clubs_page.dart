@@ -225,7 +225,7 @@ class _ClubCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 4),
+      margin: const EdgeInsets.only(bottom: 3),
       child: Card(
         clipBehavior: Clip.antiAlias,
         elevation: 0,

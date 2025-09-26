@@ -42,7 +42,7 @@ class NotificationsModal extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
               child: Container(
-                padding: EdgeInsets.only(top:12,bottom:12, left: 22, right: 20),
+                padding: EdgeInsets.only(top:12, bottom:6, left: 22, right: 20),
                 /* const EdgeInsets.symmetric(horizontal: 20, vertical: 16),*/
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
@@ -148,9 +148,7 @@ class _NotificationCard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: isUnread 
-                ? Border.all(color: theme.colorScheme.primary.withOpacity(0.2), width: 1.5)
-                : null,
+
             gradient: isUnread 
                 ? LinearGradient(
                     begin: Alignment.topLeft,
@@ -219,7 +217,7 @@ class _NotificationCard extends StatelessWidget {
                             height: 10,
                             decoration: BoxDecoration(
                               color: theme.colorScheme.primary,
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(13),
                               boxShadow: [
                                 BoxShadow(
                                   color: theme.colorScheme.primary.withOpacity(0.3),
@@ -258,37 +256,11 @@ class _NotificationCard extends StatelessWidget {
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontFamily: 'G',
                             fontSize: 13,
-                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const Spacer(),
-                        if (notification['type'] == 'order')
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  _getStatusColor(notification['status']).withOpacity(0.1),
-                                  _getStatusColor(notification['status']).withOpacity(0.05),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _getStatusColor(notification['status']).withOpacity(0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              notification['status'],
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontFamily: 'G',
-                                fontSize: 12,
-                                color: _getStatusColor(notification['status']),
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                   ],
