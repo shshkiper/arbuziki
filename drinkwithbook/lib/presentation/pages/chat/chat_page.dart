@@ -32,55 +32,6 @@ class _ChatPageState extends ConsumerState<ChatPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          height: 120, // Высота размытой области
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
-              child: Container(
-                color: Colors.white.withOpacity(0.00001),
-              ),
-            ),
-          ),
-        ),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 1.0),
-          child: Image.asset(
-            height: 45,
-            'assets/images/logo.png',
-            fit: BoxFit.contain,
-          ),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/home'),
-        ),
-        bottom: TabBar(
-          controller: _tabController,
-          dividerHeight: 0,
-          indicatorColor: Colors.transparent,
-          labelColor: Colors.black,
-          unselectedLabelColor: Colors.grey[600],
-          labelStyle: const TextStyle(
-            fontFamily: 'G',
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontFamily: 'G',
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-          ),
-          tabs: const [
-            Tab(text: 'Общий чат'),
-            Tab(text: 'Клубы'),
-            Tab(text: 'Владельцы'),
-          ],
-        ),
-      ),*/
       appBar: AppBar(
         toolbarHeight: 100,
         backgroundColor: Colors.transparent,
@@ -295,12 +246,12 @@ class _ClubChatsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
       itemCount: _clubChats.length,
       itemBuilder: (context, index) {
         final chat = _clubChats[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: 5),
           child: _ChatListItem(
             chat: chat,
             onTap: () => _openClubChat(context, chat),
@@ -359,31 +310,27 @@ class _OwnerChatTab extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            Container(
+                              child:Text(
                               'Команда Drink with Book',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontFamily: 'G',
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),
+                            ), 
+                              
+                          ),
                             const SizedBox(height: 4),
                             Text(
                               'Мы всегда готовы помочь',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontFamily: 'G',
+                                fontSize: 16,
                                 color: theme.colorScheme.onSurface.withOpacity(0.7),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(4),
                         ),
                       ),
                     ],
@@ -428,7 +375,7 @@ class _OwnerChatTab extends StatelessWidget {
               .fadeIn(duration: const Duration(milliseconds: 600))
               .slideY(begin: -0.2, duration: const Duration(milliseconds: 600)),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 15),
 
           // Часто задаваемые вопросы
           Expanded(
@@ -587,48 +534,39 @@ class _ChatListItem extends StatelessWidget {
           child: Icon(
             _getClubIcon(chat['type']),
             color: theme.colorScheme.primary,
-            size: 20,
+            size: 26,
           ),
         ),
         title: Text(
           chat['name'],
           style: theme.textTheme.titleMedium?.copyWith(
             fontFamily: 'G',
-            fontSize: 16,
+            fontSize: 22,
             fontWeight: FontWeight.w600,
           ),
         ),
         subtitle: Text(
           chat['lastMessage'],
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
           style: theme.textTheme.bodyMedium?.copyWith(
             fontFamily: 'G',
-            fontSize: 14,
+            fontSize: 17,
             color: theme.colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
         trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              chat['time'],
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontFamily: 'G',
-                fontSize: 12,
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
             if (chat['unreadCount'] > 0) ...[
-              const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(
+                child:
+                Container(
+                  child: Text(
                   chat['unreadCount'].toString(),
                   style: TextStyle(
                     fontFamily: 'G',
@@ -637,8 +575,9 @@ class _ChatListItem extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                ), 
               ),
-            ],
+            ],   
           ],
         ),
         onTap: onTap,
