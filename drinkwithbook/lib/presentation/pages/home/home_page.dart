@@ -6,6 +6,7 @@ import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
+import '../map/map_page.dart';
 import '../../widgets/notifications_modal.dart';
 import 'dart:ui';
 
@@ -39,20 +40,20 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: (index) => setState(() {
-          _currentIndex = index;
-          if (index != 1) {
-            _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
-          }
-        }),
+        onPageChanged:
+            (index) => setState(() {
+              _currentIndex = index;
+              if (index != 1) {
+                _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
+              }
+            }),
         children: [
           _HomeTab(
             onNavigateToMenu: () => _onTabTapped(1),
@@ -61,9 +62,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           MenuPage(initialTabIndex: _menuInitialTabIndex),
           const ClubsPage(),
           const LoyaltyPage(),
-          ProfilePage(
-            onNavigateToClubs: () => _onTabTapped(2),
-          ),
+          const MapPage(),
+          ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
         ],
       ),
       bottomNavigationBar: Container(
@@ -116,6 +116,11 @@ class _HomePageState extends ConsumerState<HomePage> {
               label: 'Бонусы',
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.map_outlined),
+              activeIcon: Icon(Icons.map),
+              label: 'Карта',
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
               label: 'Профиль',
@@ -157,9 +162,7 @@ class _HomeTab extends ConsumerWidget {
           child: ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
-              child: Container(
-                color: Colors.white.withOpacity(0.00001),
-              ),
+              child: Container(color: Colors.white.withOpacity(0.00001)),
             ),
           ),
         ),
@@ -239,73 +242,86 @@ class _HomeTab extends ConsumerWidget {
           children: [
             // Приветствие
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16), // ← отступы слева и справа
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    theme.colorScheme.primary,
-                    theme.colorScheme.primary.withOpacity(0.8),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Добро пожаловать!',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontFamily: "G",
-                      color: theme.colorScheme.onPrimary,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ), // ← отступы слева и справа
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        theme.colorScheme.primary,
+                        theme.colorScheme.primary.withOpacity(0.8),
+                      ],
                     ),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Сегодня прекрасный день для кофе и хорошей книги',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontFamily: "G",
-                      fontSize: 17,
-                      color: theme.colorScheme.onPrimary.withOpacity(0.9),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Добро пожаловать!',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontFamily: "G",
+                          color: theme.colorScheme.onPrimary,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Сегодня прекрасный день для кофе и хорошей книги',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontFamily: "G",
+                          fontSize: 17,
+                          color: theme.colorScheme.onPrimary.withOpacity(0.9),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
+                )
                 .animate()
                 .fadeIn(duration: const Duration(milliseconds: 200))
-                .slideY(begin: -0.2, duration: const Duration(milliseconds: 400)),
+                .slideY(
+                  begin: -0.2,
+                  duration: const Duration(milliseconds: 400),
+                ),
 
             const SizedBox(height: 15),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16), // ← отступы слева и справа
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ), // ← отступы слева и справа
               child: Row(
                 children: [
                   Expanded(
-                    child: _QuickActionCard(
-                      icon: Icons.coffee_maker,
-                      title: 'Заказать кофе',
-                      onTap: onNavigateToMenu,
-                    ),
-                  )
-                  .animate(delay: const Duration(milliseconds: 120))
-                  .fadeIn(duration: const Duration(milliseconds: 120))
-                  .slideX(begin: -0.2, duration: const Duration(milliseconds: 150)),
+                        child: _QuickActionCard(
+                          icon: Icons.coffee_maker,
+                          title: 'Заказать кофе',
+                          onTap: onNavigateToMenu,
+                        ),
+                      )
+                      .animate(delay: const Duration(milliseconds: 120))
+                      .fadeIn(duration: const Duration(milliseconds: 120))
+                      .slideX(
+                        begin: -0.2,
+                        duration: const Duration(milliseconds: 150),
+                      ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _QuickActionCard(
-                      icon: Icons.auto_stories,
-                      title: 'Список книг',
-                      onTap: onNavigateToBooks,
-                    ),
-                  )
-                  .animate(delay: const Duration(milliseconds: 120))
-                  .fadeIn(duration: const Duration(milliseconds: 120))
-                  .slideX(begin: 0.2, duration: const Duration(milliseconds: 150)),
+                        child: _QuickActionCard(
+                          icon: Icons.auto_stories,
+                          title: 'Список книг',
+                          onTap: onNavigateToBooks,
+                        ),
+                      )
+                      .animate(delay: const Duration(milliseconds: 120))
+                      .fadeIn(duration: const Duration(milliseconds: 120))
+                      .slideX(
+                        begin: 0.2,
+                        duration: const Duration(milliseconds: 150),
+                      ),
                 ],
               ),
             ),
@@ -314,84 +330,106 @@ class _HomeTab extends ConsumerWidget {
 
             // Популярные напитки
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Популярные напитки',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontFamily: "G",
-                  fontSize: 22,
-                ),
-              ),
-            )
-                  .animate(delay: const Duration(milliseconds: 120))
-                  .fadeIn(duration: const Duration(milliseconds: 120))
-                  .slideX(begin: 0.2, duration: const Duration(milliseconds: 150)),
-            const SizedBox(height: 7),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _popularDrinks.length + 2, // +2 для пустых элементов
-                itemBuilder: (context, index) {
-                  // Первый элемент - отступ слева
-                  if (index == 0) {
-                    return const SizedBox(width: 18);
-                  }
-                  
-                  // Последний элемент - отступ справа
-                  if (index == _popularDrinks.length + 1) {
-                    return const SizedBox(width: 10);
-                  }
-                  
-                  // Основные элементы (индекс сдвинут на -1)
-                  final drink = _popularDrinks[index - 1];
-                  return Container(
-                    width: 160,
-                    margin: const EdgeInsets.only(right: 12), // обычный отступ между карточками
-                    child: _DrinkCard(
-                      name: drink['name'] as String,
-                      price: '₽${drink['price']}',
-                      image: drink['image'] as String,
-                      onTap: () => _showDrinkDetails(context, drink, ref),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Популярные напитки',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontFamily: "G",
+                      fontSize: 22,
                     ),
-                  );
-                },
-              ),
-            )
+                  ),
+                )
                 .animate(delay: const Duration(milliseconds: 120))
                 .fadeIn(duration: const Duration(milliseconds: 120))
-                .slideX(begin: 0.2, duration: const Duration(milliseconds: 200)),
+                .slideX(
+                  begin: 0.2,
+                  duration: const Duration(milliseconds: 150),
+                ),
+            const SizedBox(height: 7),
+            SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount:
+                        _popularDrinks.length + 2, // +2 для пустых элементов
+                    itemBuilder: (context, index) {
+                      // Первый элемент - отступ слева
+                      if (index == 0) {
+                        return const SizedBox(width: 18);
+                      }
+
+                      // Последний элемент - отступ справа
+                      if (index == _popularDrinks.length + 1) {
+                        return const SizedBox(width: 10);
+                      }
+
+                      // Основные элементы (индекс сдвинут на -1)
+                      final drink = _popularDrinks[index - 1];
+                      return Container(
+                        width: 160,
+                        margin: const EdgeInsets.only(
+                          right: 12,
+                        ), // обычный отступ между карточками
+                        child: _DrinkCard(
+                          name: drink['name'] as String,
+                          price: '₽${drink['price']}',
+                          image: drink['image'] as String,
+                          onTap: () => _showDrinkDetails(context, drink, ref),
+                        ),
+                      );
+                    },
+                  ),
+                )
+                .animate(delay: const Duration(milliseconds: 120))
+                .fadeIn(duration: const Duration(milliseconds: 120))
+                .slideX(
+                  begin: 0.2,
+                  duration: const Duration(milliseconds: 200),
+                ),
 
             const SizedBox(height: 15),
 
             // Активности клубов
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Активности клубов',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                        fontFamily: "G",
-                        fontSize: 22,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Активности клубов',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontFamily: "G",
+                      fontSize: 22,
+                    ),
+                  ),
+                )
+                .animate(delay: const Duration(milliseconds: 120))
+                .fadeIn(duration: const Duration(milliseconds: 120))
+                .slideX(
+                  begin: 0.2,
+                  duration: const Duration(milliseconds: 150),
                 ),
-              ),
-            )
-                  .animate(delay: const Duration(milliseconds: 120))
-                  .fadeIn(duration: const Duration(milliseconds: 120))
-                  .slideX(begin: 0.2, duration: const Duration(milliseconds: 150)),
             const SizedBox(height: 7),
-            ..._clubActivities.map((activity) => Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12), // ← добавил horizontal
-              child: _ActivityCard(
-                clubName: activity['clubName'] as String,
-                activity: activity['activity'] as String,
-                time: activity['time'] as String,
-                participants: activity['participants'] as int,
-              ),
-            ))
+            ..._clubActivities
+                .map(
+                  (activity) => Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      bottom: 12,
+                    ), // ← добавил horizontal
+                    child: _ActivityCard(
+                      clubName: activity['clubName'] as String,
+                      activity: activity['activity'] as String,
+                      time: activity['time'] as String,
+                      participants: activity['participants'] as int,
+                    ),
+                  ),
+                )
                 .toList()
                 .animate(interval: const Duration(milliseconds: 120))
                 .fadeIn(duration: const Duration(milliseconds: 400))
-                .slideY(begin: 0.2, duration: const Duration(milliseconds: 400)),
+                .slideY(
+                  begin: 0.2,
+                  duration: const Duration(milliseconds: 400),
+                ),
           ],
         ),
       ),
@@ -413,7 +451,7 @@ class _QuickActionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -422,18 +460,14 @@ class _QuickActionCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Icon(
-                icon,
-                size: 42,
-                color: theme.colorScheme.primary,
-              ),
+              Icon(icon, size: 42, color: theme.colorScheme.primary),
               const SizedBox(height: 8),
               Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontFamily: "G",
                   fontSize: 16,
-                  ),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -460,7 +494,7 @@ class _DrinkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -555,7 +589,7 @@ class _ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -568,10 +602,7 @@ class _ActivityCard extends StatelessWidget {
                 color: theme.colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                Icons.groups,
-                color: theme.colorScheme.primary,
-              ),
+              child: Icon(Icons.groups, color: theme.colorScheme.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -593,7 +624,7 @@ class _ActivityCard extends StatelessWidget {
                       fontFamily: 'G',
                       fontSize: 17,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey[900], 
+                      color: Colors.grey[900],
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -640,41 +671,51 @@ class _ActivityCard extends StatelessWidget {
   }
 }
 
-void _showDrinkDetails(BuildContext context, Map<String, dynamic> drink, WidgetRef ref) {
+void _showDrinkDetails(
+  BuildContext context,
+  Map<String, dynamic> drink,
+  WidgetRef ref,
+) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => _ItemDetailsBottomSheet(
-      item: drink,
-      onAddToCart: () {
-        final currentCart = ref.read(cartItemsProvider);
-        final existingIndex = currentCart.indexWhere((item) => item.id == drink['id']);
-        
-        if (existingIndex >= 0) {
-          final updatedCart = List<CartItem>.from(currentCart);
-          updatedCart[existingIndex].quantity += 1;
-          ref.read(cartItemsProvider.notifier).state = updatedCart;
-        } else {
-          final newItem = CartItem(
-            id: drink['id'],
-            name: drink['name'],
-            price: drink['price'],
-            image: drink['image'],
-            description: drink['description'] ?? '',
-            ingredients: List<String>.from(drink['ingredients'] ?? []),
-            quantity: 1,
-          );
-          ref.read(cartItemsProvider.notifier).state = [...currentCart, newItem];
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${drink['name']} добавлен в корзину'),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      },
-    ),
+    builder:
+        (context) => _ItemDetailsBottomSheet(
+          item: drink,
+          onAddToCart: () {
+            final currentCart = ref.read(cartItemsProvider);
+            final existingIndex = currentCart.indexWhere(
+              (item) => item.id == drink['id'],
+            );
+
+            if (existingIndex >= 0) {
+              final updatedCart = List<CartItem>.from(currentCart);
+              updatedCart[existingIndex].quantity += 1;
+              ref.read(cartItemsProvider.notifier).state = updatedCart;
+            } else {
+              final newItem = CartItem(
+                id: drink['id'],
+                name: drink['name'],
+                price: drink['price'],
+                image: drink['image'],
+                description: drink['description'] ?? '',
+                ingredients: List<String>.from(drink['ingredients'] ?? []),
+                quantity: 1,
+              );
+              ref.read(cartItemsProvider.notifier).state = [
+                ...currentCart,
+                newItem,
+              ];
+            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${drink['name']} добавлен в корзину'),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+        ),
   );
 }
 
@@ -683,23 +724,24 @@ void _showCart(BuildContext context, WidgetRef ref) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => _CartBottomSheet(
-      onUpdateQuantity: (index, quantity) {
-        final currentCart = ref.read(cartItemsProvider);
-        if (quantity <= 0) {
-          final updatedCart = List<CartItem>.from(currentCart);
-          updatedCart.removeAt(index);
-          ref.read(cartItemsProvider.notifier).state = updatedCart;
-        } else {
-          final updatedCart = List<CartItem>.from(currentCart);
-          updatedCart[index].quantity = quantity;
-          ref.read(cartItemsProvider.notifier).state = updatedCart;
-        }
-      },
-      onClearCart: () {
-        ref.read(cartItemsProvider.notifier).state = [];
-      },
-    ),
+    builder:
+        (context) => _CartBottomSheet(
+          onUpdateQuantity: (index, quantity) {
+            final currentCart = ref.read(cartItemsProvider);
+            if (quantity <= 0) {
+              final updatedCart = List<CartItem>.from(currentCart);
+              updatedCart.removeAt(index);
+              ref.read(cartItemsProvider.notifier).state = updatedCart;
+            } else {
+              final updatedCart = List<CartItem>.from(currentCart);
+              updatedCart[index].quantity = quantity;
+              ref.read(cartItemsProvider.notifier).state = updatedCart;
+            }
+          },
+          onClearCart: () {
+            ref.read(cartItemsProvider.notifier).state = [];
+          },
+        ),
   );
 }
 
@@ -720,7 +762,7 @@ class _CartBottomSheet extends ConsumerWidget {
       0,
       (sum, item) => sum + (item.price * item.quantity),
     );
-    
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
@@ -731,9 +773,20 @@ class _CartBottomSheet extends ConsumerWidget {
         children: [
           // Заголовок
           Container(
-            padding: cart.isEmpty
-            ?const EdgeInsets.only(right: 16, left: 20, bottom:15, top: 15)
-            :const EdgeInsets.only(right: 16, left: 20, bottom:5, top: 5),
+            padding:
+                cart.isEmpty
+                    ? const EdgeInsets.only(
+                      right: 16,
+                      left: 20,
+                      bottom: 15,
+                      top: 15,
+                    )
+                    : const EdgeInsets.only(
+                      right: 16,
+                      left: 20,
+                      bottom: 5,
+                      top: 5,
+                    ),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -753,9 +806,9 @@ class _CartBottomSheet extends ConsumerWidget {
                 ),
                 if (cart.isNotEmpty)
                   TextButton(
-                      onPressed: onClearCart,
+                    onPressed: onClearCart,
                     child: Text(
-                      'Очистить', 
+                      'Очистить',
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontFamily: 'G',
                         fontSize: 17,
@@ -766,13 +819,14 @@ class _CartBottomSheet extends ConsumerWidget {
               ],
             ),
           ),
-          
+
           // Список товаров
           if (cart.isEmpty)
-             Expanded(
+            Expanded(
               child: Center(
-                child: Text('Корзина пуста', 
-                style: theme.textTheme.headlineSmall?.copyWith(
+                child: Text(
+                  'Корзина пуста',
+                  style: theme.textTheme.headlineSmall?.copyWith(
                     fontFamily: 'G',
                     fontSize: 18,
                     color: theme.colorScheme.onSurface.withOpacity(0.6),
@@ -796,7 +850,7 @@ class _CartBottomSheet extends ConsumerWidget {
                 },
               ),
             ),
-            
+
             // Итого и кнопка заказа
             Container(
               padding: const EdgeInsets.all(16),
@@ -836,9 +890,9 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                       
                       },
-                      child:  Text('Оформить заказ',
+                      child: Text(
+                        'Оформить заказ',
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -863,15 +917,12 @@ class _CartItem extends StatelessWidget {
   final CartItem item;
   final Function(int) onQuantityChanged;
 
-  const _CartItem({
-    required this.item,
-    required this.onQuantityChanged,
-  });
+  const _CartItem({required this.item, required this.onQuantityChanged});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -885,10 +936,7 @@ class _CartItem extends StatelessWidget {
             offset: const Offset(0, 5),
           ),
         ],
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.grey.withOpacity(0.1), width: 1),
       ),
       child: Row(
         children: [
@@ -912,7 +960,7 @@ class _CartItem extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Текст
           Expanded(
             child: Column(
@@ -940,7 +988,7 @@ class _CartItem extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Счетчик
           Container(
             decoration: BoxDecoration(
@@ -956,7 +1004,10 @@ class _CartItem extends StatelessWidget {
                   padding: const EdgeInsets.all(6),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Text(
                     item.quantity.toString(),
                     style: theme.textTheme.titleSmall?.copyWith(
@@ -991,7 +1042,8 @@ class _ItemDetailsBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<_ItemDetailsBottomSheet> createState() => _ItemDetailsBottomSheetState();
+  State<_ItemDetailsBottomSheet> createState() =>
+      _ItemDetailsBottomSheetState();
 }
 
 class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
@@ -1009,7 +1061,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     return Container(
       height: screenHeight * 0.93, // 93% экрана
       decoration: BoxDecoration(
@@ -1035,10 +1087,13 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     ),
                   ),
                 ),
-                
+
                 // Header с кнопками
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -1056,12 +1111,15 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                           },
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red.withValues(alpha: 0.85) : theme.colorScheme.onSurface,
+                            color:
+                                isFavorite
+                                    ? Colors.red.withValues(alpha: 0.85)
+                                    : theme.colorScheme.onSurface,
                             size: 24,
                           ),
                         ),
                       ),
-                      
+
                       // Кнопка закрытия
                       Container(
                         decoration: BoxDecoration(
@@ -1089,7 +1147,9 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                      image: AssetImage('assets/images/${widget.item['image']}'),
+                      image: AssetImage(
+                        'assets/images/${widget.item['image']}',
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -1128,7 +1188,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                             style: theme.textTheme.titleLarge?.copyWith(
                               color: Colors.white.withOpacity(0.8),
                               fontFamily: 'G',
-                              fontSize:19,
+                              fontSize: 19,
                             ),
                           ),
                         ],
@@ -1141,14 +1201,14 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                        const SizedBox(height: 15),
-                        _buildCustomizationOptions(theme),
-                        const SizedBox(height: 10),
-                        _buildNutritionInfo(theme),
-                        const SizedBox(height: 13),
-                        ]
-                      ),
-                    ),
+                      const SizedBox(height: 15),
+                      _buildCustomizationOptions(theme),
+                      const SizedBox(height: 10),
+                      _buildNutritionInfo(theme),
+                      const SizedBox(height: 13),
+                    ],
+                  ),
+                ),
                 // Контент в белой области
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1157,13 +1217,12 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     children: [
                       // Размеры
                       _buildSizeSelection(theme),
-                      
+
                       const SizedBox(height: 0),
-                    
-                      
+
                       if (widget.item['ingredients'] != null) ...[
                         const SizedBox(height: 13),
-                        Container( 
+                        Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -1180,17 +1239,20 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                                 'Состав',
                                 style: theme.textTheme.titleLarge?.copyWith(
                                   fontFamily: 'G',
-                                    fontSize: 20,
-                                    color: theme.colorScheme.onSurface.withOpacity(1),
+                                  fontSize: 20,
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(1),
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                (widget.item['ingredients'] as List<String>).join(', '),
+                                (widget.item['ingredients'] as List<String>)
+                                    .join(', '),
                                 style: theme.textTheme.bodyLarge?.copyWith(
                                   fontFamily: 'G',
                                   fontSize: 17,
-                                  color: theme.colorScheme.onSurface.withOpacity(0.9),
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.9),
                                   height: 1.4,
                                 ),
                               ),
@@ -1199,30 +1261,37 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                         ),
                         const SizedBox(height: 12),
                       ],
-                      Container( 
-                          width: double.infinity,
-                          padding: const EdgeInsets.only(top: 0, bottom: 16, left: 16,right: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Предложения',
-                                style: theme.textTheme.titleLarge?.copyWith(
-                                  fontFamily: 'G',
-                                    fontSize: 20,
-                                    color: theme.colorScheme.onSurface.withOpacity(1),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(
+                          top: 0,
+                          bottom: 16,
+                          left: 16,
+                          right: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Предложения',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontFamily: 'G',
+                                fontSize: 20,
+                                color: theme.colorScheme.onSurface.withOpacity(
+                                  1,
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                      // Предложения
-                              _buildSuggestions(theme),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 10),
+                            // Предложения
+                            _buildSuggestions(theme),
+                          ],
                         ),
+                      ),
                       const SizedBox(height: 100), // Отступ для кнопки корзины
                     ],
                   ),
@@ -1230,7 +1299,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
               ],
             ),
           ),
-          
+
           // Закрепленная кнопка добавления в корзину
           Positioned(
             left: 20,
@@ -1304,9 +1373,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: selectedSize == 'M' 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.surface,
+                color:
+                    selectedSize == 'M'
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -1316,9 +1386,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontFamily: 'G',
                       fontSize: 22,
-                      color: selectedSize == 'M' 
-                          ? Colors.white 
-                          : theme.colorScheme.onSurface,
+                      color:
+                          selectedSize == 'M'
+                              ? Colors.white
+                              : theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1327,9 +1398,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontFamily: 'G',
                       fontSize: 16,
-                      color: selectedSize == 'M' 
-                          ? Colors.white.withOpacity(1) 
-                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                      color:
+                          selectedSize == 'M'
+                              ? Colors.white.withOpacity(1)
+                              : theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -1344,9 +1416,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: selectedSize == 'L' 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.surface,
+                color:
+                    selectedSize == 'L'
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -1356,9 +1429,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontFamily: 'G',
                       fontSize: 22,
-                      color: selectedSize == 'L' 
-                          ? Colors.white 
-                          : theme.colorScheme.onSurface,
+                      color:
+                          selectedSize == 'L'
+                              ? Colors.white
+                              : theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1367,9 +1441,10 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontFamily: 'G',
                       fontSize: 16,
-                      color: selectedSize == 'L' 
-                          ? Colors.white.withOpacity(1) 
-                          : theme.colorScheme.onSurface.withOpacity(0.8),
+                      color:
+                          selectedSize == 'L'
+                              ? Colors.white.withOpacity(1)
+                              : theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -1383,112 +1458,107 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
 }
 
 Widget _buildCustomizationOptions(ThemeData theme) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildCustomizationItem(
-          theme,
-          Icons.add_circle_outline,
-          'Полезные\nдобавки',
-        ),
-        _buildCustomizationItem(
-          theme,
-          Icons.add_circle_outline,
-          'Сырная\nпенка и мусс',
-        ),
-        _buildCustomizationItem(
-          theme,
-          Icons.local_drink_outlined,
-          'Молоко\nкоровье',
-        ),
-        _buildCustomizationItem(
-          theme,
-          Icons.coffee_outlined,
-          'Эспрессо\nДринкит',
-        ),
-      ],
-    );
-  }
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      _buildCustomizationItem(
+        theme,
+        Icons.add_circle_outline,
+        'Полезные\nдобавки',
+      ),
+      _buildCustomizationItem(
+        theme,
+        Icons.add_circle_outline,
+        'Сырная\nпенка и мусс',
+      ),
+      _buildCustomizationItem(
+        theme,
+        Icons.local_drink_outlined,
+        'Молоко\nкоровье',
+      ),
+      _buildCustomizationItem(
+        theme,
+        Icons.coffee_outlined,
+        'Эспрессо\nДринкит',
+      ),
+    ],
+  );
+}
 
 Widget _buildCustomizationItem(ThemeData theme, IconData icon, String label) {
-    return Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.outline.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Icon(
-            icon,
-            color: theme.colorScheme.onSurface,
-            size:30,
-          ),
+  return Column(
+    children: [
+      Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(30),
         ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
-            fontFamily: "G",
-            fontSize: 13.5,
-          ),
-          textAlign: TextAlign.center,
+        child: Icon(icon, color: theme.colorScheme.onSurface, size: 30),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        label,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurface.withOpacity(0.7),
+          fontFamily: "G",
+          fontSize: 13.5,
         ),
-      ],
-    );
-  }
-
+        textAlign: TextAlign.center,
+      ),
+    ],
+  );
+}
 
 Widget _buildNutritionInfo(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildNutritionItem('156 ккал', 'Энергия', theme),
-          _buildNutritionItem('7,7 г', 'Белки', theme),
-          _buildNutritionItem('8,0 г', 'Жиры', theme),
-          _buildNutritionItem('11,9 г', 'Углеводы', theme),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNutritionItem(String value, String label, ThemeData theme) {
-    return Column(
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: theme.colorScheme.surface,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text(
-          value,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontFamily: 'G',
-            fontSize: 20,
-            color: theme.colorScheme.onSurface.withOpacity(1),
-          ),
-        ),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.9),
-            fontFamily: 'G',
-            fontSize: 14,
-          ),
-        ),
+        _buildNutritionItem('156 ккал', 'Энергия', theme),
+        _buildNutritionItem('7,7 г', 'Белки', theme),
+        _buildNutritionItem('8,0 г', 'Жиры', theme),
+        _buildNutritionItem('11,9 г', 'Углеводы', theme),
       ],
-    );
-  }
+    ),
+  );
+}
 
-   Widget _buildSuggestions(ThemeData theme) {
+Widget _buildNutritionItem(String value, String label, ThemeData theme) {
+  return Column(
+    children: [
+      Text(
+        value,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontFamily: 'G',
+          fontSize: 20,
+          color: theme.colorScheme.onSurface.withOpacity(1),
+        ),
+      ),
+      Text(
+        label,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurface.withOpacity(0.9),
+          fontFamily: 'G',
+          fontSize: 14,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildSuggestions(ThemeData theme) {
   List<Map<String, dynamic>> suggestions = [
     {'name': 'Круассан', 'price': 180, 'image': 'donat1.jpg'},
     {'name': 'Чизкейк', 'price': 320, 'image': 'donat2.jpg'},
   ];
-  
+
   return SizedBox(
     height: 200,
     child: ListView.builder(
@@ -1519,7 +1589,9 @@ Widget _buildNutritionInfo(ThemeData theme) {
                         topRight: Radius.circular(18),
                       ),
                       image: DecorationImage(
-                        image: AssetImage('assets/images/${suggestion['image']}'),
+                        image: AssetImage(
+                          'assets/images/${suggestion['image']}',
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
