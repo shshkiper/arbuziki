@@ -19,7 +19,7 @@ class _MenuPageState extends ConsumerState<MenuPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     if (widget.initialTabIndex != null) {
       _tabController.animateTo(widget.initialTabIndex!);
     }
