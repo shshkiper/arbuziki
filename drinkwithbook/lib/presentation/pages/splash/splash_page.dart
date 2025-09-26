@@ -61,6 +61,7 @@ class _SplashPageState extends State<SplashPage> {
               'Уютное место для души и вкуса',
               style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onSurface.withOpacity(0.7),
+                fontFamily: 'G',
               ),
               textAlign: TextAlign.center,
             )

@@ -42,7 +42,8 @@ class NotificationsModal extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: EdgeInsets.only(top:12,bottom:12, left: 22, right: 20),
+                /* const EdgeInsets.symmetric(horizontal: 20, vertical: 16),*/
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
@@ -60,18 +61,24 @@ class NotificationsModal extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
+                      child: 
+                      IconButton(
+                    padding: EdgeInsets.only(bottom: 0,left:0),
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Container(
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.outline.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey.withOpacity(0.1),
+                        shape: BoxShape.circle,
                       ),
-                      child: IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(
-                          Icons.close,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                        iconSize: 20,
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: Colors.grey[600],
+                        size: 20,
                       ),
+                    ),
+                  ),
                     ),
                   ],
                 ),
@@ -82,7 +89,7 @@ class NotificationsModal extends StatelessWidget {
           // Notifications list
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+              padding: const EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 16),
               itemCount: _notifications.length,
               itemBuilder: (context, index) {
                 final notification = _notifications[index];
