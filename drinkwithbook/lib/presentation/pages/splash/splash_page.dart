@@ -19,13 +19,20 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _checkAuthAndNavigate() async {
     await Future.delayed(const Duration(seconds: 2));
-    
+
     if (!mounted) return;
-    
+
     final user = Supabase.instance.client.auth.currentUser;
+    print('🔍 Splash Debug:');
+    print('Current user: ${user?.email}');
+    print('User ID: ${user?.id}');
+    print('Email confirmed: ${user?.emailConfirmedAt != null}');
+
     if (user != null) {
+      print('✅ User authenticated, navigating to home');
       context.go('/home');
     } else {
+      print('❌ No user, navigating to auth');
       context.go('/auth');
     }
   }
@@ -33,7 +40,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -42,11 +49,11 @@ class _SplashPageState extends State<SplashPage> {
           children: [
             // Логотип - без рамок и обрезки
             Image.asset(
-              'assets/images/logo.png',
-              width: 150,
-              height: 150,
-              fit: BoxFit.contain,
-            )
+                  'assets/images/logo.png',
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.contain,
+                )
                 .animate()
                 .scale(
                   duration: const Duration(milliseconds: 600),
@@ -77,15 +84,15 @@ class _SplashPageState extends State<SplashPage> {
 
             // Индикатор загрузки
             SizedBox(
-              width: 40,
-              height: 40,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  theme.colorScheme.primary.withOpacity(0.8),
-                ),
-              ),
-            )
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.colorScheme.primary.withOpacity(0.8),
+                    ),
+                  ),
+                )
                 .animate(delay: const Duration(milliseconds: 900))
                 .fadeIn(duration: const Duration(milliseconds: 400))
                 .scale(
