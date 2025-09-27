@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 import 'package:go_router/go_router.dart';
-import '../profile/profile_page.dart';
+
 
 class MapPage extends ConsumerStatefulWidget {
   const MapPage({super.key});
@@ -11,6 +11,7 @@ class MapPage extends ConsumerStatefulWidget {
   @override
   ConsumerState<MapPage> createState() => _MapPageState();
 }
+
 
 class _MapPageState extends ConsumerState<MapPage> {
   @override
@@ -34,7 +35,7 @@ class _MapPageState extends ConsumerState<MapPage> {
     child: IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        context.go('/home');
+         context.go('/home?tab=profile');
       },
     ),
   ),
@@ -325,6 +326,7 @@ class _MapPageState extends ConsumerState<MapPage> {
     );
   }
 }
+
 
 class _MapMarker extends StatelessWidget {
   final String title;

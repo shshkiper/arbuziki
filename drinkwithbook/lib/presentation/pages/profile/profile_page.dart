@@ -17,11 +17,15 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _user = Supabase.instance.client.auth.currentUser;
+  late String adm;
+
+  myClass(_user) {
+    adm = _user?.userMetadata?['name'] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -49,6 +53,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             child: Row(
               children: [
                 IconButton(
+                  icon: const Icon(Icons.card_giftcard_outlined),
+                  iconSize: 27,
+                  onPressed: () => context.go('/loyalty'),
+                ),
+                 IconButton(
                   icon: const Icon(Icons.settings),
                   iconSize: 27,
                   onPressed: () => _showSettingsDialog(context),
@@ -273,7 +282,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       icon: Icons.fmd_good,
                       title: 'Мы на карте',
                       subtitle: 'Наше местонахождение',
-                      onTap: () => context.go('/map'),
+                      onTap: () => context.push('/map'),
                     ),
                     _MenuItem(
                       icon: Icons.rate_review,

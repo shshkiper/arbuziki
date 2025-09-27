@@ -4,7 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
-import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
 import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
@@ -64,7 +63,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           MenuPage(initialTabIndex: _menuInitialTabIndex),
           ClubsPage(eventId: _clubsEventId),
-          const LoyaltyPage(),
           ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
         ],
       ),
@@ -111,11 +109,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               icon: Icon(Icons.groups_outlined),
               activeIcon: Icon(Icons.groups),
               label: 'Клубы',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.card_giftcard_outlined),
-              activeIcon: Icon(Icons.card_giftcard),
-              label: 'Бонусы',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
