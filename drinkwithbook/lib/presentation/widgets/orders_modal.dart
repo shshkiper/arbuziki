@@ -61,7 +61,21 @@ class _OrdersModalState extends ConsumerState<OrdersModal> {
             ),
           ),
 
-          const Divider(height: 1),
+          Container(
+            height: 8,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  theme.colorScheme.shadow.withOpacity(0.1),
+                  theme.colorScheme.shadow.withOpacity(0.05),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
+          ),
 
           // Содержимое
           Expanded(
@@ -689,6 +703,22 @@ class OrderDetailsModal extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          Container(
+            height: 8,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  theme.colorScheme.shadow.withOpacity(0.1),
+                  theme.colorScheme.shadow.withOpacity(0.05),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
             ),
           ),
 

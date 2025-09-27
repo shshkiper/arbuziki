@@ -328,9 +328,20 @@ class _CheckoutContentState extends ConsumerState<_CheckoutContent> {
                     style: TextStyle(fontFamily: 'G'),
                   ),
                 ),
-                Divider(
-                  height: 1,
-                  color: theme.colorScheme.outline.withOpacity(0.1),
+                Container(
+                  height: 8,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        theme.colorScheme.shadow.withOpacity(0.1),
+                        theme.colorScheme.shadow.withOpacity(0.05),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.5, 1.0],
+                    ),
+                  ),
                 ),
                 RadioListTile<String>(
                   value: 'delivery',

@@ -481,7 +481,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
               Expanded(
                 child: _buildThemeOption(
                   context,
-                  'Системная',
+                  'Система',
                   Icons.settings_suggest_rounded,
                   currentMode == ThemeMode.system,
                   () => onChanged(ThemeMode.system),
