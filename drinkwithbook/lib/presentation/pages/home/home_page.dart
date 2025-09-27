@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../profile/profile_page.dart';
+import '../admin/admin_panel.dart';
 import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
 import '../../widgets/active_order_card.dart';
@@ -14,7 +15,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
-  
+
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
 }
@@ -26,7 +27,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   String? _clubsEventId;
   final _user = Supabase.instance.client.auth.currentUser;
   String get adm => _user?.userMetadata?['name'] ?? '';
-
 
   @override
   void dispose() {
@@ -50,42 +50,34 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       body:
-       adm != 'Admin'?
-       PageView(
-        controller: _pageController,
-        onPageChanged:
-            (index) => setState(() {
-              _currentIndex = index;
-              if (index != 1) {
-                _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
-              }
-            }),
-        children: [
-          _HomeTab(
-            onNavigateToMenu: () => _onTabTapped(1),
-            onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 2),
-            onNavigateToClubs: (eventId) => _onTabTapped(2, eventId: eventId),
-          ),
-          MenuPage(initialTabIndex: _menuInitialTabIndex),
-          ClubsPage(eventId: _clubsEventId),
-          ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
-        ],
-      ): PageView(
-        controller: _pageController,
-        onPageChanged:
-            (index) => setState(() {
-              _currentIndex = index;
-              if (index != 1) {
-                _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
-              }
-            }),
-        children: [
-          ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
-        ],
-      ),
+          adm != 'Admin'
+              ? PageView(
+                controller: _pageController,
+                onPageChanged:
+                    (index) => setState(() {
+                      _currentIndex = index;
+                      if (index != 1) {
+                        _menuInitialTabIndex =
+                            null; // Сбрасываем при переходе с меню
+                      }
+                    }),
+                children: [
+                  _HomeTab(
+                    onNavigateToMenu: () => _onTabTapped(1),
+                    onNavigateToBooks:
+                        () => _onTabTapped(1, initialTabIndex: 2),
+                    onNavigateToClubs:
+                        (eventId) => _onTabTapped(2, eventId: eventId),
+                  ),
+                  MenuPage(initialTabIndex: _menuInitialTabIndex),
+                  ClubsPage(eventId: _clubsEventId),
+                  ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
+                ],
+              )
+              : const AdminPanel(),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -97,49 +89,51 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ),
         child:
-        adm != 'Admin'?
-         BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: _onTabTapped,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: theme.colorScheme.primary,
-          unselectedItemColor: theme.colorScheme.onSurface.withOpacity(0.6),
-          backgroundColor: theme.colorScheme.surface,
-          elevation: 0,
-          selectedLabelStyle: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'G', // Ваш шрифт
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'G', // Ваш шрифт
-          ),
-          items: 
-           [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home_outlined),
-              label: 'Главная',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu_book_rounded),
-              activeIcon: Icon(Icons.menu_book_rounded),
-              label: 'Меню',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.groups_outlined),
-              activeIcon: Icon(Icons.groups),
-              label: 'Клубы',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Профиль',
-            ),
-          ],
-        ):SizedBox(),
+            adm != 'Admin'
+                ? BottomNavigationBar(
+                  currentIndex: _currentIndex,
+                  onTap: _onTabTapped,
+                  type: BottomNavigationBarType.fixed,
+                  selectedItemColor: theme.colorScheme.primary,
+                  unselectedItemColor: theme.colorScheme.onSurface.withOpacity(
+                    0.6,
+                  ),
+                  backgroundColor: theme.colorScheme.surface,
+                  elevation: 0,
+                  selectedLabelStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'G', // Ваш шрифт
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'G', // Ваш шрифт
+                  ),
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home_outlined),
+                      activeIcon: Icon(Icons.home_outlined),
+                      label: 'Главная',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.menu_book_rounded),
+                      activeIcon: Icon(Icons.menu_book_rounded),
+                      label: 'Меню',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.groups_outlined),
+                      activeIcon: Icon(Icons.groups),
+                      label: 'Клубы',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person_outline),
+                      activeIcon: Icon(Icons.person),
+                      label: 'Профиль',
+                    ),
+                  ],
+                )
+                : SizedBox(),
       ),
     );
   }
@@ -1879,5 +1873,8 @@ final cartItemsCountProvider = Provider<int>((ref) {
 
 final cartTotalPriceProvider = Provider<double>((ref) {
   final cart = ref.watch(cartItemsProvider);
-  return cart.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+  return cart.fold(
+    0.0,
+    (sum, item) => sum + (item.price.toDouble() * item.quantity),
+  );
 });
