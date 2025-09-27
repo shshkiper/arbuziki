@@ -419,10 +419,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         ref.read(cartItemsProvider.notifier).state = [];
         print('🛒 Корзина очищена');
 
-        // Переходим на экран отслеживания заказа
+        // Закрываем окно оформления заказа
         if (mounted) {
-          print('🔄 Переходим на экран заказов');
-          context.go('/orders');
+          print('🔄 Заказ создан успешно');
+          Navigator.of(context).pop();
         }
       } else {
         print('❌ Заказ не был создан');

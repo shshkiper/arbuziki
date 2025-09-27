@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'settings_dialog.dart';
 import 'dart:ui';
+import '../../widgets/orders_modal.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final VoidCallback? onNavigateToClubs;
@@ -225,7 +226,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       icon: Icons.shopping_bag_outlined,
                       title: 'История заказов',
                       subtitle: 'Ваши предыдущие заказы',
-                      onTap: () => context.go('/orders'),
+                      onTap: () => _showOrdersModal(context),
                     ),
                   ],
                 )
@@ -354,6 +355,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   void _showSettingsDialog(BuildContext context) {
     showDialog(context: context, builder: (context) => const SettingsDialog());
+  }
+
+  void _showOrdersModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const OrdersModal(),
+    );
   }
 
   Widget _PremiumProfileStat({
