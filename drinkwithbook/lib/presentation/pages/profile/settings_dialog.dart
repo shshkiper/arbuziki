@@ -197,11 +197,6 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                             (value) =>
                                 setState(() => _notificationsEnabled = value),
                           ),
-                          Container(
-                            height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            color: Colors.grey.withOpacity(0.1),
-                          ),
                           _buildPremiumSwitchItem(
                             context,
                             Icons.volume_up_rounded,
@@ -387,6 +382,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
     );
   }
 
+
   // Премиум версия переключателя
   Widget _buildPremiumSwitchItem(
     BuildContext context,
@@ -485,7 +481,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
               Expanded(
                 child: _buildThemeOption(
                   context,
-                  'Системная',
+                  'Система',
                   Icons.settings_suggest_rounded,
                   currentMode == ThemeMode.system,
                   () => onChanged(ThemeMode.system),

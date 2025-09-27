@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../profile/profile_page.dart';
-import '../../widgets/notifications_modal.dart';
+import '../admin/admin_panel.dart';
 import '../../widgets/book_ad_modal.dart';
 import '../../widgets/active_order_card.dart';
 import '../../widgets/checkout_modal.dart';
@@ -14,7 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
-  
+
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
 }
@@ -26,7 +26,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   String? _clubsEventId;
   final _user = Supabase.instance.client.auth.currentUser;
   String get adm => _user?.userMetadata?['name'] ?? '';
-
 
   @override
   void dispose() {
@@ -42,105 +41,201 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOutCubic,
     );
+  }
+
+  Widget _buildAnimatedIcon(
+    IconData inactiveIcon,
+    IconData activeIcon,
+    int index, {
+    bool isActive = false,
+  }) {
+    final isSelected = _currentIndex == index;
+    final theme = Theme.of(context);
+
+    return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutCubic,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color:
+                isSelected
+                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    : Colors.transparent,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: AnimatedScale(
+            scale: isSelected ? 1.1 : 1.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+            child: Icon(
+              isSelected ? activeIcon : inactiveIcon,
+              size: isSelected ? 26 : 24,
+            ),
+          ),
+        )
+        .animate()
+        .fadeIn(duration: 200.ms, delay: (index * 50).ms)
+        .slideY(begin: 0.3, end: 0, duration: 300.ms, delay: (index * 50).ms);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: false,
       body:
-       adm != 'Admin'?
-       PageView(
-        controller: _pageController,
-        onPageChanged:
-            (index) => setState(() {
-              _currentIndex = index;
-              if (index != 1) {
-                _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
-              }
-            }),
-        children: [
-          _HomeTab(
-            onNavigateToMenu: () => _onTabTapped(1),
-            onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 2),
-            onNavigateToClubs: (eventId) => _onTabTapped(2, eventId: eventId),
-          ),
-          MenuPage(initialTabIndex: _menuInitialTabIndex),
-          ClubsPage(eventId: _clubsEventId),
-          ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
-        ],
-      ): PageView(
-        controller: _pageController,
-        onPageChanged:
-            (index) => setState(() {
-              _currentIndex = index;
-              if (index != 1) {
-                _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
-              }
-            }),
-        children: [
-          ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child:
-        adm != 'Admin'?
-         BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: _onTabTapped,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: theme.colorScheme.primary,
-          unselectedItemColor: theme.colorScheme.onSurface.withOpacity(0.6),
-          backgroundColor: theme.colorScheme.surface,
-          elevation: 0,
-          selectedLabelStyle: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'G', // Ваш шрифт
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'G', // Ваш шрифт
-          ),
-          items: 
-           [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home_outlined),
-              label: 'Главная',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu_book_rounded),
-              activeIcon: Icon(Icons.menu_book_rounded),
-              label: 'Меню',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.groups_outlined),
-              activeIcon: Icon(Icons.groups),
-              label: 'Клубы',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Профиль',
-            ),
-          ],
-        ):SizedBox(),
-      ),
+          adm != 'Admin'
+              ? PageView(
+                controller: _pageController,
+                physics: const BouncingScrollPhysics(),
+                onPageChanged:
+                    (index) => setState(() {
+                      _currentIndex = index;
+                      if (index != 1) {
+                        _menuInitialTabIndex =
+                            null; // Сбрасываем при переходе с меню
+                      }
+                    }),
+                children: [
+                  _HomeTab(
+                    onNavigateToMenu: () => _onTabTapped(1),
+                    onNavigateToBooks:
+                        () => _onTabTapped(1, initialTabIndex: 2),
+                    onNavigateToClubs:
+                        (eventId) => _onTabTapped(2, eventId: eventId),
+                  ),
+                  MenuPage(initialTabIndex: _menuInitialTabIndex),
+                  ClubsPage(eventId: _clubsEventId),
+                  ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
+                ],
+              )
+              : const AdminPanel(),
+      bottomNavigationBar:
+          adm != 'Admin'
+              ? Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      theme.colorScheme.surface.withOpacity(0.8),
+                      theme.colorScheme.surface.withOpacity(0.9),
+                    ],
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(35),
+                    topRight: Radius.circular(35),
+                  ),
+                  border: Border(
+                    top: BorderSide(
+                      color: theme.colorScheme.outline.withOpacity(0.1),
+                      width: 0.5,
+                    ),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
+                ),
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(35),
+                        topRight: Radius.circular(35),
+                      ),
+                      child: BottomNavigationBar(
+                        currentIndex: _currentIndex,
+                        onTap: _onTabTapped,
+                        type: BottomNavigationBarType.fixed,
+                        selectedItemColor: theme.colorScheme.primary,
+                        unselectedItemColor: theme.colorScheme.onSurface
+                            .withOpacity(0.6),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        selectedLabelStyle: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'G', // Ваш шрифт
+                        ),
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          fontFamily: 'G', // Ваш шрифт
+                        ),
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.home_outlined,
+                              Icons.home,
+                              0,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.home_outlined,
+                              Icons.home,
+                              0,
+                              isActive: true,
+                            ),
+                            label: 'Главная',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.menu_book_rounded,
+                              Icons.menu_book_rounded,
+                              1,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.menu_book_rounded,
+                              Icons.menu_book_rounded,
+                              1,
+                              isActive: true,
+                            ),
+                            label: 'Меню',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.groups_outlined,
+                              Icons.groups,
+                              2,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.groups_outlined,
+                              Icons.groups,
+                              2,
+                              isActive: true,
+                            ),
+                            label: 'Клубы',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.person_outline,
+                              Icons.person,
+                              3,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.person_outline,
+                              Icons.person,
+                              3,
+                              isActive: true,
+                            ),
+                            label: 'Профиль',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              : const SizedBox(),
     );
   }
 }
@@ -155,15 +250,6 @@ class _HomeTab extends ConsumerWidget {
     required this.onNavigateToBooks,
     required this.onNavigateToClubs,
   });
-
-  void _showNotificationsModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const NotificationsModal(),
-    );
-  }
 
   void _showBookAdModal(BuildContext context) {
     showModalBottomSheet(
@@ -246,8 +332,8 @@ class _HomeTab extends ConsumerWidget {
                 ),
                 IconButton(
                   iconSize: 27,
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () => _showNotificationsModal(context),
+                  icon: const Icon(Icons.card_giftcard_outlined),
+                  onPressed: () => context.go('/loyalty'),
                 ),
                 IconButton(
                   iconSize: 27,
@@ -1879,5 +1965,8 @@ final cartItemsCountProvider = Provider<int>((ref) {
 
 final cartTotalPriceProvider = Provider<double>((ref) {
   final cart = ref.watch(cartItemsProvider);
-  return cart.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+  return cart.fold(
+    0.0,
+    (sum, item) => sum + (item.price.toDouble() * item.quantity),
+  );
 });

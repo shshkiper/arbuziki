@@ -5,6 +5,18 @@ import 'order_simulation_service.dart';
 class OrderService {
   static final SupabaseClient _supabase = Supabase.instance.client;
 
+  static DateTime _parseDateTime(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return DateTime.now();
+    }
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      print('⚠️ Ошибка парсинга даты: $dateString, используем текущую дату');
+      return DateTime.now();
+    }
+  }
+
   // Создание заказа
   static Future<OrderModel> createOrder({
     required List<OrderItem> items,
@@ -106,7 +118,7 @@ class OrderService {
               productId: itemData['product_id'] as String,
               productName: itemData['product_name'] as String,
               quantity: itemData['quantity'] as int,
-              price: (itemData['price'] as num).toDouble(),
+              price: (itemData['price'] as num?)?.toDouble() ?? 0.0,
               customizations:
                   itemData['customizations'] as Map<String, dynamic>?,
               notes: itemData['notes'] as String?,
@@ -117,16 +129,16 @@ class OrderService {
         id: orderData['id'] as String,
         userId: orderData['user_id'] as String,
         items: items,
-        totalAmount: (orderData['total_amount'] as num).toDouble(),
+        totalAmount: (orderData['total_amount'] as num?)?.toDouble() ?? 0.0,
         status: orderData['status'] as String,
-        createdAt: DateTime.parse(orderData['created_at'] as String),
+        createdAt: _parseDateTime(orderData['created_at'] as String?),
         readyAt:
             orderData['ready_at'] != null
-                ? DateTime.parse(orderData['ready_at'] as String)
+                ? _parseDateTime(orderData['ready_at'] as String)
                 : null,
         completedAt:
             orderData['completed_at'] != null
-                ? DateTime.parse(orderData['completed_at'] as String)
+                ? _parseDateTime(orderData['completed_at'] as String)
                 : null,
         notes: orderData['notes'] as String?,
         orderType: orderData['order_type'] as String,
@@ -177,16 +189,17 @@ class OrderService {
                   userId: orderData['user_id'] as String,
                   items:
                       [], // В стриме не загружаем items для производительности
-                  totalAmount: (orderData['total_amount'] as num).toDouble(),
+                  totalAmount:
+                      (orderData['total_amount'] as num?)?.toDouble() ?? 0.0,
                   status: orderData['status'] as String,
-                  createdAt: DateTime.parse(orderData['created_at'] as String),
+                  createdAt: _parseDateTime(orderData['created_at'] as String?),
                   readyAt:
                       orderData['ready_at'] != null
-                          ? DateTime.parse(orderData['ready_at'] as String)
+                          ? _parseDateTime(orderData['ready_at'] as String)
                           : null,
                   completedAt:
                       orderData['completed_at'] != null
-                          ? DateTime.parse(orderData['completed_at'] as String)
+                          ? _parseDateTime(orderData['completed_at'] as String)
                           : null,
                   notes: orderData['notes'] as String?,
                   orderType: orderData['order_type'] as String,

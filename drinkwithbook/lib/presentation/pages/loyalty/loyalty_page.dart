@@ -122,7 +122,7 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
     child: IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        context.go('/profile?tab=profile');
+        context.go('/home?tab=profile');
       },
     ),
   ),
