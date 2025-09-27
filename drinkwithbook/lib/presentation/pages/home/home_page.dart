@@ -4,10 +4,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
-import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
 import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
+import '../../widgets/active_order_card.dart';
+import '../../widgets/checkout_modal.dart';
 import 'dart:ui';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -64,7 +65,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           MenuPage(initialTabIndex: _menuInitialTabIndex),
           ClubsPage(eventId: _clubsEventId),
-          const LoyaltyPage(),
           ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
         ],
       ),
@@ -111,11 +111,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               icon: Icon(Icons.groups_outlined),
               activeIcon: Icon(Icons.groups),
               label: 'Клубы',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.card_giftcard_outlined),
-              activeIcon: Icon(Icons.card_giftcard),
-              label: 'Бонусы',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
@@ -425,6 +420,9 @@ class _HomeTab extends ConsumerWidget {
                 ),
 
             const SizedBox(height: 15),
+
+            // Активный заказ (если есть)
+            const ActiveOrderCard(),
 
             // Популярные напитки
             Padding(
@@ -995,7 +993,7 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        context.go('/checkout');
+                        _showCheckoutModal(context);
                       },
                       child: Text(
                         'Оформить заказ',
@@ -1015,6 +1013,15 @@ class _CartBottomSheet extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+
+  void _showCheckoutModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const CheckoutModal(),
     );
   }
 }

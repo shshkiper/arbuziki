@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../home/home_page.dart'; // Импортируем CartItem и провайдеры из home_page.dart
+import '../../widgets/checkout_modal.dart';
 import 'dart:ui';
 
 class MenuPage extends ConsumerStatefulWidget {
@@ -1211,7 +1211,7 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        context.go('/checkout');
+                        _showCheckoutModal(context);
                       },
                       child: Text(
                         'Оформить заказ',
@@ -1231,6 +1231,15 @@ class _CartBottomSheet extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+
+  void _showCheckoutModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const CheckoutModal(),
     );
   }
 }

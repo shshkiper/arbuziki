@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'settings_dialog.dart';
 import 'dart:ui';
+import '../../widgets/orders_modal.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final VoidCallback? onNavigateToClubs;
@@ -17,11 +18,11 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _user = Supabase.instance.client.auth.currentUser;
+  String get adm => _user?.userMetadata?['name'] ?? '';
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -46,15 +47,25 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 13.0),
-            child: Row(
+            child: 
+            adm != 'Admin'
+            ?Row(
               children: [
                 IconButton(
+                  icon: const Icon(Icons.card_giftcard_outlined),
+                  iconSize: 27,
+                  onPressed: () => context.go('/loyalty'),
+                ),
+                 IconButton(
                   icon: const Icon(Icons.settings),
                   iconSize: 27,
                   onPressed: () => _showSettingsDialog(context),
                 ),
               ],
-            ),
+            )
+            :
+            Row( 
+            )
           ),
         ],
       ),
@@ -215,7 +226,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       icon: Icons.shopping_bag_outlined,
                       title: 'История заказов',
                       subtitle: 'Ваши предыдущие заказы',
-                      onTap: () => context.go('/orders'),
+                      onTap: () => _showOrdersModal(context),
                     ),
                   ],
                 )
@@ -273,7 +284,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       icon: Icons.fmd_good,
                       title: 'Мы на карте',
                       subtitle: 'Наше местонахождение',
-                      onTap: () => context.go('/map'),
+                      onTap: () => context.push('/map'),
                     ),
                     _MenuItem(
                       icon: Icons.rate_review,
@@ -344,6 +355,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   void _showSettingsDialog(BuildContext context) {
     showDialog(context: context, builder: (context) => const SettingsDialog());
+  }
+
+  void _showOrdersModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const OrdersModal(),
+    );
   }
 
   Widget _PremiumProfileStat({
