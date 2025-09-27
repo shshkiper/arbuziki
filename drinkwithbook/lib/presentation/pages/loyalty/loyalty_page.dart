@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:ui';
+import 'package:go_router/go_router.dart';
 
 class LoyaltyPage extends ConsumerStatefulWidget {
   const LoyaltyPage({super.key});
@@ -105,64 +106,71 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
     _tabController.dispose();
     super.dispose();
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Container(),
-        centerTitle: false,
-        flexibleSpace: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Column(
-            children: [
-              // Верхняя часть с логотипом и корзиной
-              Container(
-                height: 80,
-                child: Row(
-                  children: [
-                    // Логотип
-                    Padding(
-                      padding: const EdgeInsets.only(left: 17.0, top: 24.0),
-                      child: Image.asset(
-                        height: 45,
-                        'assets/images/logo.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ],
-                ),
+  toolbarHeight: 100,
+  backgroundColor: Colors.transparent,
+  elevation: 0,
+  title: Container(),
+  centerTitle: false,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 8.0, bottom: 35.0), // Увеличил top до 24.0
+    child: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        context.go('/home?tab=profile');
+      },
+    ),
+  ),
+  flexibleSpace: Container(
+    color: Theme.of(context).colorScheme.background,
+    child: Column(
+      children: [
+        // Верхняя часть с логотипом по центру
+        Container(
+          height: 80,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 24.0),
+              child: Image.asset(
+                height: 45,
+                'assets/images/logo.png',
+                fit: BoxFit.contain,
               ),
-              // TabBar
-              Expanded(
-                child: TabBar(
-                  dividerHeight: 0,
-                  controller: _tabController,
-                  labelStyle: TextStyle(
-                    fontSize: 16.4,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'G',
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontSize: 16.4,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'G',
-                  ),
-                  tabs: const [
-                    Tab(text: 'Моя карта'),
-                    Tab(text: 'Подписки'),
-                    Tab(text: 'Награды'),
-                    Tab(text: 'Обмен'),
-                  ],
-                ),
-              ),
+            ),
+          ),
+        ),
+        // TabBar
+        Expanded(
+          child: TabBar(
+            dividerHeight: 0,
+            controller: _tabController,
+            labelStyle: TextStyle(
+              fontSize: 16.4,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'G',
+            ),
+            unselectedLabelStyle: TextStyle(
+              fontSize: 16.4,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'G',
+            ),
+            tabs: const [
+              Tab(text: 'Моя карта'),
+              Tab(text: 'Подписки'),
+              Tab(text: 'Награды'),
+              Tab(text: 'Обмен'),
             ],
           ),
         ),
-      ),
+      ],
+    ),
+  ),
+),
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -484,6 +492,7 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
     );
   }
 }
+
 
 class _LoyaltyCardTab extends StatelessWidget {
   final VoidCallback? onShowQRCode;
