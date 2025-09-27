@@ -270,6 +270,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       onTap: () => _showAbout(context),
                     ),
                     _MenuItem(
+                      icon: Icons.fmd_good,
+                      title: 'Мы на карте',
+                      subtitle: 'Наше местонахождение',
+                      onTap: () => context.go('/map'),
+                    ),
+                    _MenuItem(
                       icon: Icons.rate_review,
                       title: 'Оценить приложение',
                       subtitle: 'Поделиться отзывом',

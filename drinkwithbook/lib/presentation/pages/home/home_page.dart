@@ -6,7 +6,6 @@ import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
-import '../map/map_page.dart';
 import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
 import 'dart:ui';
@@ -66,7 +65,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           MenuPage(initialTabIndex: _menuInitialTabIndex),
           ClubsPage(eventId: _clubsEventId),
           const LoyaltyPage(),
-          const MapPage(),
           ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
         ],
       ),
@@ -118,11 +116,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               icon: Icon(Icons.card_giftcard_outlined),
               activeIcon: Icon(Icons.card_giftcard),
               label: 'Бонусы',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map_outlined),
-              activeIcon: Icon(Icons.map),
-              label: 'Карта',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),

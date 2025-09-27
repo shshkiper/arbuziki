@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
+import 'package:go_router/go_router.dart';
+import '../profile/profile_page.dart';
 
 class MapPage extends ConsumerStatefulWidget {
   const MapPage({super.key});
@@ -17,45 +19,54 @@ class _MapPageState extends ConsumerState<MapPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          height: 120,
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
-              child: Container(color: Colors.white.withOpacity(0.00001)),
-            ),
+  backgroundColor: Colors.transparent,
+  flexibleSpace: Container(
+    height: 120,
+    child: ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
+        child: Container(color: Colors.white.withOpacity(0.00001)),
+      ),
+    ),
+  ),
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 8.0),
+    child: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        context.go('/home');
+      },
+    ),
+  ),
+  title: Padding(
+    padding: const EdgeInsets.only(left: 1.0),
+    child: Image.asset(
+      height: 45,
+      'assets/images/logo.png',
+      fit: BoxFit.contain,
+    ),
+  ),
+  centerTitle: true, // Изменено на true для центрирования
+  actions: [
+    Padding(
+      padding: const EdgeInsets.only(right: 13.0),
+      child: Row(
+        children: [
+          IconButton(
+            iconSize: 27,
+            icon: const Icon(Icons.my_location),
+            onPressed: () => _showLocationDialog(context),
           ),
-        ),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 1.0),
-          child: Image.asset(
-            height: 45,
-            'assets/images/logo.png',
-            fit: BoxFit.contain,
-          ),
-        ),
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 13.0),
-            child: Row(
-              children: [
-                IconButton(
-                  iconSize: 27,
-                  icon: const Icon(Icons.my_location),
-                  onPressed: () => _showLocationDialog(context),
-                ),
-                IconButton(
-                  iconSize: 27,
-                  icon: const Icon(Icons.search),
-                  onPressed: () => _showSearchDialog(context),
-                ),
-              ],
-            ),
+          IconButton(
+            iconSize: 27,
+            icon: const Icon(Icons.search),
+            onPressed: () => _showSearchDialog(context),
           ),
         ],
       ),
+    ),
+  ],
+),
       body: Stack(
         children: [
           // Карта как фон
