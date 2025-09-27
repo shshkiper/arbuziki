@@ -22,6 +22,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
   int? _menuInitialTabIndex;
+  String? _clubsEventId;
 
   @override
   void dispose() {
@@ -29,10 +30,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.dispose();
   }
 
-  void _onTabTapped(int index, {int? initialTabIndex}) {
+  void _onTabTapped(int index, {int? initialTabIndex, String? eventId}) {
     setState(() {
       _currentIndex = index;
       _menuInitialTabIndex = initialTabIndex;
+      _clubsEventId = eventId;
     });
     _pageController.animateToPage(
       index,
@@ -59,9 +61,10 @@ class _HomePageState extends ConsumerState<HomePage> {
           _HomeTab(
             onNavigateToMenu: () => _onTabTapped(1),
             onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 2),
+            onNavigateToClubs: (eventId) => _onTabTapped(2, eventId: eventId),
           ),
           MenuPage(initialTabIndex: _menuInitialTabIndex),
-          const ClubsPage(),
+          ClubsPage(eventId: _clubsEventId),
           const LoyaltyPage(),
           const MapPage(),
           ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
@@ -136,10 +139,12 @@ class _HomePageState extends ConsumerState<HomePage> {
 class _HomeTab extends ConsumerWidget {
   final VoidCallback onNavigateToMenu;
   final VoidCallback onNavigateToBooks;
+  final Function(String?) onNavigateToClubs;
 
   const _HomeTab({
     required this.onNavigateToMenu,
     required this.onNavigateToBooks,
+    required this.onNavigateToClubs,
   });
 
   void _showNotificationsModal(BuildContext context) {
@@ -486,11 +491,11 @@ class _HomeTab extends ConsumerWidget {
 
             const SizedBox(height: 15),
 
-            // Активности клубов
+            // События клубов
             Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    'Активности клубов',
+                    'События клубов',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontFamily: "G",
                       fontSize: 22,
@@ -517,6 +522,7 @@ class _HomeTab extends ConsumerWidget {
                       activity: activity['activity'] as String,
                       time: activity['time'] as String,
                       participants: activity['participants'] as int,
+                      onTap: () => onNavigateToClubs(activity['id'] as String),
                     ),
                   ),
                 )
@@ -675,12 +681,14 @@ class _ActivityCard extends StatelessWidget {
   final String activity;
   final String time;
   final int participants;
+  final VoidCallback? onTap;
 
   const _ActivityCard({
     required this.clubName,
     required this.activity,
     required this.time,
     required this.participants,
+    this.onTap,
   });
 
   @override
@@ -688,9 +696,12 @@ class _ActivityCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
           children: [
             Container(
               width: 48,
@@ -762,6 +773,7 @@ class _ActivityCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
@@ -1788,18 +1800,21 @@ final _popularDrinks = [
 
 final _clubActivities = [
   {
+    'id': 'event_1',
     'clubName': 'Кофейный клуб',
     'activity': 'Дегустация новых сортов',
     'time': '2 часа назад',
     'participants': 12,
   },
   {
+    'id': 'event_2',
     'clubName': 'Книжный клуб',
     'activity': 'Обсуждение "1984" Оруэлла',
     'time': '4 часа назад',
     'participants': 8,
   },
   {
+    'id': 'event_3',
     'clubName': 'Чайный клуб',
     'activity': 'Церемония японского чая',
     'time': '1 день назад',
