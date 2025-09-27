@@ -29,16 +29,62 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
 
   void _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    final isDark = prefs.getBool('isDarkMode') ?? false;
-    state = isDark ? ThemeMode.dark : ThemeMode.light;
+    final themeModeString = prefs.getString('themeMode');
+
+    if (themeModeString != null) {
+      switch (themeModeString) {
+        case 'light':
+          state = ThemeMode.light;
+          break;
+        case 'dark':
+          state = ThemeMode.dark;
+          break;
+        case 'system':
+        default:
+          state = ThemeMode.system;
+          break;
+      }
+    } else {
+      // По умолчанию используем системную тему
+      state = ThemeMode.system;
+    }
+  }
+
+  void setThemeMode(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    state = mode;
+
+    String themeModeString;
+    switch (mode) {
+      case ThemeMode.light:
+        themeModeString = 'light';
+        break;
+      case ThemeMode.dark:
+        themeModeString = 'dark';
+        break;
+      case ThemeMode.system:
+        themeModeString = 'system';
+        break;
+    }
+
+    await prefs.setString('themeMode', themeModeString);
   }
 
   void toggleTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    final newTheme =
-        state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    state = newTheme;
-    await prefs.setBool('isDarkMode', newTheme == ThemeMode.dark);
+    final currentMode = state;
+
+    // Переключаем между light и dark, пропуская system
+    ThemeMode newMode;
+    if (currentMode == ThemeMode.light) {
+      newMode = ThemeMode.dark;
+    } else if (currentMode == ThemeMode.dark) {
+      newMode = ThemeMode.light;
+    } else {
+      // Если сейчас system, переключаем на light
+      newMode = ThemeMode.light;
+    }
+
+    setThemeMode(newMode);
   }
 }
 

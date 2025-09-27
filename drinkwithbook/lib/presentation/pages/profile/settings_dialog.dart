@@ -209,13 +209,14 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                             _soundEnabled,
                             (value) => setState(() => _soundEnabled = value),
                           ),
-                          _buildThemeSwitchItem(
+                          _buildThemeSelectorItem(
                             context,
-                            Icons.dark_mode_rounded,
-                            'Темная тема',
-                            ref.watch(themeProvider) == ThemeMode.dark,
-                            (value) =>
-                                ref.read(themeProvider.notifier).toggleTheme(),
+                            Icons.palette_rounded,
+                            'Тема приложения',
+                            ref.watch(themeProvider),
+                            (mode) => ref
+                                .read(themeProvider.notifier)
+                                .setThemeMode(mode),
                           ),
                         ],
                       ),
@@ -438,54 +439,142 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
     );
   }
 
-  // Переключатель темы
-  Widget _buildThemeSwitchItem(
+  // Селектор темы
+  Widget _buildThemeSelectorItem(
     BuildContext context,
     IconData icon,
     String title,
-    bool value,
-    ValueChanged<bool> onChanged,
+    ThemeMode currentMode,
+    ValueChanged<ThemeMode> onChanged,
   ) {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
-              size: 20,
-            ),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontFamily: 'G',
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurface,
-              fontFamily: 'G',
-            ),
-          ),
-          const Spacer(),
-          Transform.scale(
-            scale: 1,
-            child: Switch(
-              value: value,
-              onChanged: onChanged,
-              activeColor: Theme.of(context).colorScheme.primary,
-              activeTrackColor: Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(0.3),
-            ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildThemeOption(
+                  context,
+                  'Системная',
+                  Icons.settings_suggest_rounded,
+                  currentMode == ThemeMode.system,
+                  () => onChanged(ThemeMode.system),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildThemeOption(
+                  context,
+                  'Светлая',
+                  Icons.light_mode_rounded,
+                  currentMode == ThemeMode.light,
+                  () => onChanged(ThemeMode.light),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildThemeOption(
+                  context,
+                  'Темная',
+                  Icons.dark_mode_rounded,
+                  currentMode == ThemeMode.dark,
+                  () => onChanged(ThemeMode.dark),
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    String title,
+    IconData icon,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                  : Theme.of(
+                    context,
+                  ).colorScheme.surfaceVariant.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color:
+                isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color:
+                  isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color:
+                    isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.6),
+                fontFamily: 'G',
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
