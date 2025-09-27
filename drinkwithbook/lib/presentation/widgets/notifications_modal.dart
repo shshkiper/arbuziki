@@ -8,7 +8,7 @@ class NotificationsModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
@@ -36,17 +36,24 @@ class NotificationsModal extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Header with glass effect
           ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
               child: Container(
-                padding: EdgeInsets.only(top:12, bottom:6, left: 22, right: 20),
+                padding: EdgeInsets.only(
+                  top: 12,
+                  bottom: 6,
+                  left: 22,
+                  right: 20,
+                ),
                 /* const EdgeInsets.symmetric(horizontal: 20, vertical: 16),*/
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -61,48 +68,56 @@ class NotificationsModal extends StatelessWidget {
                     ),
                     const Spacer(),
                     Container(
-                      child: 
-                      IconButton(
-                    padding: EdgeInsets.only(bottom: 0,left:0),
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.1),
-                        shape: BoxShape.circle,
+                      child: IconButton(
+                        padding: EdgeInsets.only(bottom: 0, left: 0),
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: Colors.grey[600],
+                            size: 20,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        Icons.close_rounded,
-                        color: Colors.grey[600],
-                        size: 20,
-                      ),
-                    ),
-                  ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          
+
           // Notifications list
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 16),
+              padding: const EdgeInsets.only(
+                top: 0,
+                left: 16,
+                right: 16,
+                bottom: 16,
+              ),
               itemCount: _notifications.length,
               itemBuilder: (context, index) {
                 final notification = _notifications[index];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _NotificationCard(
-                    notification: notification,
-                    onTap: () => _handleNotificationTap(context, notification),
-                  ),
-                )
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _NotificationCard(
+                        notification: notification,
+                        onTap:
+                            () => _handleNotificationTap(context, notification),
+                      ),
+                    )
                     .animate(delay: Duration(milliseconds: index * 100))
                     .fadeIn(duration: const Duration(milliseconds: 300))
-                    .slideX(begin: 0.2, duration: const Duration(milliseconds: 300));
+                    .slideX(
+                      begin: 0.2,
+                      duration: const Duration(milliseconds: 300),
+                    );
               },
             ),
           ),
@@ -111,7 +126,10 @@ class NotificationsModal extends StatelessWidget {
     );
   }
 
-  void _handleNotificationTap(BuildContext context, Map<String, dynamic> notification) {
+  void _handleNotificationTap(
+    BuildContext context,
+    Map<String, dynamic> notification,
+  ) {
     // TODO: Handle notification tap
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -126,21 +144,16 @@ class _NotificationCard extends StatelessWidget {
   final Map<String, dynamic> notification;
   final VoidCallback onTap;
 
-  const _NotificationCard({
-    required this.notification,
-    required this.onTap,
-  });
+  const _NotificationCard({required this.notification, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isUnread = notification['isUnread'] as bool;
-    
+
     return Card(
       elevation: isUnread ? 4 : 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
@@ -149,16 +162,17 @@ class _NotificationCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
 
-            gradient: isUnread 
-                ? LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.colorScheme.primary.withOpacity(0.05),
-                      Colors.transparent,
-                    ],
-                  )
-                : null,
+            gradient:
+                isUnread
+                    ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        theme.colorScheme.primary.withOpacity(0.05),
+                        Colors.transparent,
+                      ],
+                    )
+                    : null,
           ),
           child: Row(
             children: [
@@ -171,13 +185,19 @@ class _NotificationCard extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      _getNotificationColor(notification['type']).withOpacity(0.15),
-                      _getNotificationColor(notification['type']).withOpacity(0.05),
+                      _getNotificationColor(
+                        notification['type'],
+                      ).withOpacity(0.15),
+                      _getNotificationColor(
+                        notification['type'],
+                      ).withOpacity(0.05),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: _getNotificationColor(notification['type']).withOpacity(0.2),
+                    color: _getNotificationColor(
+                      notification['type'],
+                    ).withOpacity(0.2),
                     width: 1,
                   ),
                 ),
@@ -187,9 +207,9 @@ class _NotificationCard extends StatelessWidget {
                   size: 26,
                 ),
               ),
-              
+
               const SizedBox(width: 16),
-              
+
               // Content with enhanced styling
               Expanded(
                 child: Column(
@@ -203,8 +223,14 @@ class _NotificationCard extends StatelessWidget {
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontFamily: 'G',
                               fontSize: 17,
-                              fontWeight: isUnread ? FontWeight.w700 : FontWeight.w600,
-                              color: isUnread ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withOpacity(0.8),
+                              fontWeight:
+                                  isUnread ? FontWeight.w700 : FontWeight.w600,
+                              color:
+                                  isUnread
+                                      ? theme.colorScheme.onSurface
+                                      : theme.colorScheme.onSurface.withOpacity(
+                                        0.8,
+                                      ),
                               height: 1.2,
                             ),
                             maxLines: 1,
@@ -220,7 +246,9 @@ class _NotificationCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(13),
                               boxShadow: [
                                 BoxShadow(
-                                  color: theme.colorScheme.primary.withOpacity(0.3),
+                                  color: theme.colorScheme.primary.withOpacity(
+                                    0.3,
+                                  ),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),
@@ -302,19 +330,6 @@ class _NotificationCard extends StatelessWidget {
         return Colors.grey;
     }
   }
-
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'Готов':
-        return Colors.green;
-      case 'Готовится':
-        return Colors.orange;
-      case 'Отменен':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
 }
 
 // Данные для примера
@@ -332,7 +347,8 @@ final _notifications = [
     'id': '2',
     'type': 'club',
     'title': 'Новое мероприятие в клубе',
-    'message': 'Кофейный клуб приглашает на дегустацию новых сортов кофе завтра в 18:00',
+    'message':
+        'Кофейный клуб приглашает на дегустацию новых сортов кофе завтра в 18:00',
     'time': '1 час назад',
     'isUnread': true,
     'status': null,
@@ -359,7 +375,8 @@ final _notifications = [
     'id': '5',
     'type': 'order',
     'title': 'Заказ отменен',
-    'message': 'Ваш заказ №12340 был отменен. Средства вернутся в течение 24 часов',
+    'message':
+        'Ваш заказ №12340 был отменен. Средства вернутся в течение 24 часов',
     'time': '2 дня назад',
     'isUnread': false,
     'status': 'Отменен',
