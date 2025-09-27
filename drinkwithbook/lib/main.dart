@@ -15,6 +15,8 @@ import 'presentation/pages/loyalty/loyalty_page.dart';
 import 'presentation/pages/profile/profile_page.dart';
 import 'presentation/pages/chat/chat_page.dart';
 import 'presentation/pages/map/map_page.dart';
+import 'presentation/pages/checkout/checkout_page.dart';
+import 'presentation/pages/orders/orders_page.dart';
 
 // Провайдер для управления темой
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
@@ -68,6 +70,11 @@ final GoRouter _router = GoRouter(
     GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
     GoRoute(path: '/chat', builder: (context, state) => const ChatPage()),
     GoRoute(path: '/map', builder: (context, state) => const MapPage()),
+    GoRoute(
+      path: '/checkout',
+      builder: (context, state) => const CheckoutPage(),
+    ),
+    GoRoute(path: '/orders', builder: (context, state) => const OrdersPage()),
   ],
 );
 

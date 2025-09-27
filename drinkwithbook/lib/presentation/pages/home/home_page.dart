@@ -987,6 +987,7 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+                        context.go('/checkout');
                       },
                       child: Text(
                         'Оформить заказ',

@@ -207,6 +207,27 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
             const SizedBox(height: 15),
 
+            // Секция заказов
+            _MenuSection(
+                  title: 'Заказы',
+                  items: [
+                    _MenuItem(
+                      icon: Icons.shopping_bag_outlined,
+                      title: 'История заказов',
+                      subtitle: 'Ваши предыдущие заказы',
+                      onTap: () => context.go('/orders'),
+                    ),
+                  ],
+                )
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 150))
+                .slideX(
+                  begin: -0.2,
+                  duration: const Duration(milliseconds: 150),
+                ),
+
+            const SizedBox(height: 15),
+
             _MenuSection(
                   title: 'Настройки',
                   items: [
