@@ -10,10 +10,11 @@ import '../../widgets/book_ad_modal.dart';
 import '../../widgets/active_order_card.dart';
 import '../../widgets/checkout_modal.dart';
 import 'dart:ui';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
-
+  
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
 }
@@ -23,6 +24,9 @@ class _HomePageState extends ConsumerState<HomePage> {
   final PageController _pageController = PageController();
   int? _menuInitialTabIndex;
   String? _clubsEventId;
+  final _user = Supabase.instance.client.auth.currentUser;
+  String get adm => _user?.userMetadata?['name'] ?? '';
+
 
   @override
   void dispose() {
@@ -46,9 +50,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    
     return Scaffold(
-      body: PageView(
+      body:
+       adm != 'Admin'?
+       PageView(
         controller: _pageController,
         onPageChanged:
             (index) => setState(() {
@@ -67,6 +73,18 @@ class _HomePageState extends ConsumerState<HomePage> {
           ClubsPage(eventId: _clubsEventId),
           ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
         ],
+      ): PageView(
+        controller: _pageController,
+        onPageChanged:
+            (index) => setState(() {
+              _currentIndex = index;
+              if (index != 1) {
+                _menuInitialTabIndex = null; // Сбрасываем при переходе с меню
+              }
+            }),
+        children: [
+          ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -78,7 +96,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
+        child:
+        adm != 'Admin'?
+         BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: _onTabTapped,
           type: BottomNavigationBarType.fixed,
@@ -96,7 +116,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             fontWeight: FontWeight.normal,
             fontFamily: 'G', // Ваш шрифт
           ),
-          items: const [
+          items: 
+           [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home_outlined),
@@ -118,7 +139,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               label: 'Профиль',
             ),
           ],
-        ),
+        ):SizedBox(),
       ),
     );
   }

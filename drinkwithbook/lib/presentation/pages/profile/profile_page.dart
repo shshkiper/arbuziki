@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,6 +24,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(adm);
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -65,6 +68,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             )
             :
             Row( 
+              children: [
+              ],
             )
           ),
         ],
@@ -73,8 +78,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Профиль пользователя
-            Container(
+            adm != 'Admin'
+            ?Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(20),
@@ -214,14 +219,25 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 .slideX(
                   begin: -0.2,
                   duration: const Duration(milliseconds: 150),
+                )
+                :
+                Container(
+                  
+                )
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 150))
+                .slideX(
+                  begin: -0.2,
+                  duration: const Duration(milliseconds: 150),
                 ),
+            adm != 'Admin'?
+            const SizedBox(height: 15):const SizedBox(height: 0),
 
-            const SizedBox(height: 15),
-
-            // Секция заказов
+            adm != 'Admin'?
             _MenuSection(
                   title: 'Заказы',
-                  items: [
+                  items: 
+                  [
                     _MenuItem(
                       icon: Icons.shopping_bag_outlined,
                       title: 'История заказов',
@@ -235,10 +251,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 .slideX(
                   begin: -0.2,
                   duration: const Duration(milliseconds: 150),
-                ),
+                ):SizedBox(),
 
-            const SizedBox(height: 15),
-
+            adm != 'Admin'?
+            const SizedBox(height: 15):const SizedBox(height: 0),
+            adm != 'Admin'?
             _MenuSection(
                   title: 'Настройки',
                   items: [
@@ -267,10 +284,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 .slideX(
                   begin: 0.2,
                   duration: const Duration(milliseconds: 150),
-                ),
+                ):SizedBox(),
+            adm != 'Admin'?
+            const SizedBox(height: 15):const SizedBox(height: 0),
 
-            const SizedBox(height: 15),
-
+            adm != 'Admin'?
             _MenuSection(
                   title: 'О приложении',
                   items: [
@@ -297,6 +315,47 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       title: 'Поделиться',
                       subtitle: 'Расскажи друзьям',
                       onTap: () => _shareApp(context),
+                    ),
+                  ],
+                )
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 150))
+                .slideY(
+                  begin: 0.2,
+                  duration: const Duration(milliseconds: 150),
+                ):
+                _MenuSection(
+                  title: 'Панель администратора',
+                  items: [
+                    _MenuItem(
+                      icon: Icons.person,
+                      title: 'Пользователи',
+                      subtitle: 'Список пользователей',
+                      onTap: () => const SizedBox(),
+                    ),
+                    _MenuItem(
+                      icon: Icons.article,
+                      title: 'Логи',
+                      subtitle: 'Список логов',
+                      onTap: () => const SizedBox(),
+                    ),
+                    _MenuItem(
+                      icon: Icons.groups_outlined,
+                      title: 'Клубы',
+                      subtitle: 'Список клубов',
+                      onTap: () => const SizedBox(),
+                    ),
+                    _MenuItem(
+                      icon: Icons.event,
+                      title: 'События',
+                      subtitle: 'Список событий',
+                      onTap: () => const SizedBox(),
+                    ),
+                     _MenuItem(
+                      icon: Icons.shopping_basket,
+                      title: 'Все заказы',
+                      subtitle: 'Список заказов',
+                      onTap: () => const SizedBox(),
                     ),
                   ],
                 )
@@ -334,6 +393,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 15),
           ],
         ),
       ),
