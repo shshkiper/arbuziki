@@ -16,7 +16,6 @@ import 'presentation/pages/profile/profile_page.dart';
 import 'presentation/pages/chat/chat_page.dart';
 import 'presentation/pages/map/map_page.dart';
 import 'presentation/pages/checkout/checkout_page.dart';
-import 'presentation/pages/orders/orders_page.dart';
 
 // Провайдер для управления темой
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
@@ -74,7 +73,6 @@ final GoRouter _router = GoRouter(
       path: '/checkout',
       builder: (context, state) => const CheckoutPage(),
     ),
-    GoRoute(path: '/orders', builder: (context, state) => const OrdersPage()),
   ],
 );
 

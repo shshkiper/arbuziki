@@ -8,6 +8,8 @@ import '../loyalty/loyalty_page.dart';
 import '../profile/profile_page.dart';
 import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
+import '../../widgets/active_order_card.dart';
+import '../../widgets/checkout_modal.dart';
 import 'dart:ui';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -425,6 +427,9 @@ class _HomeTab extends ConsumerWidget {
                 ),
 
             const SizedBox(height: 15),
+
+            // Активный заказ (если есть)
+            const ActiveOrderCard(),
 
             // Популярные напитки
             Padding(
@@ -995,7 +1000,7 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        context.go('/checkout');
+                        _showCheckoutModal(context);
                       },
                       child: Text(
                         'Оформить заказ',
@@ -1015,6 +1020,15 @@ class _CartBottomSheet extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+
+  void _showCheckoutModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const CheckoutModal(),
     );
   }
 }
