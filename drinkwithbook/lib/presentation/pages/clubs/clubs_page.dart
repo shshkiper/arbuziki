@@ -4,7 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 
 class ClubsPage extends ConsumerStatefulWidget {
-  const ClubsPage({super.key});
+  final String? eventId;
+  
+  const ClubsPage({super.key, this.eventId});
 
   @override
   ConsumerState<ClubsPage> createState() => _ClubsPageState();
@@ -18,6 +20,13 @@ class _ClubsPageState extends ConsumerState<ClubsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    
+    // Если передан eventId, переключаемся на вкладку "События"
+    if (widget.eventId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _tabController.animateTo(2); // Индекс вкладки "События"
+      });
+    }
   }
 
   @override
@@ -110,7 +119,11 @@ class _ClubsPageState extends ConsumerState<ClubsPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [_MyClubsTab(), _AllClubsTab(), _EventsTab()],
+        children: [
+          const _MyClubsTab(), 
+          const _AllClubsTab(), 
+          _EventsTab(eventId: widget.eventId),
+        ],
       ),
     );
   }
@@ -187,19 +200,76 @@ class _AllClubsTab extends StatelessWidget {
   }
 }
 
-class _EventsTab extends StatelessWidget {
-  const _EventsTab();
+class _EventsTab extends StatefulWidget {
+  final String? eventId;
+  
+  const _EventsTab({this.eventId});
+
+  @override
+  State<_EventsTab> createState() => _EventsTabState();
+}
+
+class _EventsTabState extends State<_EventsTab> {
+  final ScrollController _scrollController = ScrollController();
+  int? _targetEventIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Находим индекс целевого события
+    if (widget.eventId != null) {
+      _targetEventIndex = _upcomingEvents.indexWhere(
+        (event) => event['id'] == widget.eventId,
+      );
+      
+      // Прокручиваем к целевому событию после построения виджета
+      if (_targetEventIndex != null && _targetEventIndex! >= 0) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToEvent();
+        });
+      }
+    }
+  }
+
+  void _scrollToEvent() {
+    if (_targetEventIndex != null && _scrollController.hasClients) {
+      // Примерная высота карточки события + отступы
+      const double cardHeight = 200.0;
+      const double padding = 16.0;
+      
+      final double targetOffset = _targetEventIndex! * (cardHeight + padding);
+      
+      _scrollController.animateTo(
+        targetOffset,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(16),
       itemCount: _upcomingEvents.length,
       itemBuilder: (context, index) {
         final event = _upcomingEvents[index];
+        final isTargetEvent = widget.eventId != null && event['id'] == widget.eventId;
+        
         return Padding(
               padding: const EdgeInsets.only(bottom: 0),
-              child: _EventCard(event: event),
+              child: _EventCard(
+                event: event,
+                isHighlighted: isTargetEvent,
+              ),
             )
             .animate(delay: Duration(milliseconds: index * 100))
             .fadeIn(duration: const Duration(milliseconds: 150))
@@ -546,8 +616,9 @@ class _ClubCard extends StatelessWidget {
 
 class _EventCard extends StatelessWidget {
   final Map<String, dynamic> event;
+  final bool isHighlighted;
 
-  const _EventCard({required this.event});
+  const _EventCard({required this.event, this.isHighlighted = false});
 
   @override
   Widget build(BuildContext context) {
@@ -555,7 +626,21 @@ class _EventCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 17),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        border: isHighlighted 
+          ? Border.all(color: theme.colorScheme.primary, width: 2)
+          : null,
+        boxShadow: isHighlighted
+          ? [
+              BoxShadow(
+                color: theme.colorScheme.primary.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ]
+          : null,
+      ),
       child: Material(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -1943,24 +2028,27 @@ void _addNewClub(Map<String, dynamic> newClub) {
 
 final _upcomingEvents = [
   {
-    'title': 'Дегустация эфиопского кофе',
-    'clubName': 'Кофейные гурманы',
+    'id': 'event_1',
+    'title': 'Дегустация новых сортов',
+    'clubName': 'Кофейный клуб',
     'description': 'Попробуем редкие сорта кофе из Эфиопии',
     'time': 'Завтра в 18:00',
     'location': 'Основной зал',
     'attendees': 12,
   },
   {
-    'title': 'Обсуждение "Мастер и Маргарита"',
-    'clubName': 'Книжные вечера',
-    'description': 'Разбираем классику русской литературы',
+    'id': 'event_2',
+    'title': 'Обсуждение "1984" Оруэлла',
+    'clubName': 'Книжный клуб',
+    'description': 'Разбираем классику антиутопии',
     'time': 'Пятница в 19:00',
     'location': 'Тихий уголок',
     'attendees': 8,
   },
   {
-    'title': 'Японская чайная церемония',
-    'clubName': 'Чайная церемония',
+    'id': 'event_3',
+    'title': 'Церемония японского чая',
+    'clubName': 'Чайный клуб',
     'description': 'Изучаем искусство приготовления матча',
     'time': 'Суббота в 16:00',
     'location': 'Зал для мероприятий',

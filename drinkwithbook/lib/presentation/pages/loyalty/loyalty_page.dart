@@ -115,55 +115,51 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
         elevation: 0,
         title: Container(),
         centerTitle: false,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 25.0),
-            child: Container(
-              color: Colors.white.withOpacity(0.00001),
-              child: Column(
-                children: [
-                  // Верхняя часть с логотипом и корзиной
-                  Container(
-                    height: 80,
-                    child: Row(
-                      children: [
-                        // Логотип
-                        Padding(
-                          padding: const EdgeInsets.only(left: 17.0, top: 24.0),
-                          child: Image.asset(
-                            height: 45,
-                            'assets/images/logo.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // TabBar
-                  Expanded(
-                    child: TabBar(
-                      dividerHeight: 0,
-                      controller: _tabController,
-                      labelStyle: TextStyle(
-                        fontSize: 16.4,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'G',
+        flexibleSpace: Container(
+          color: Theme.of(context).colorScheme.background,
+          child: Column(
+            children: [
+              // Верхняя часть с логотипом и корзиной
+              Container(
+                height: 80,
+                child: Row(
+                  children: [
+                    // Логотип
+                    Padding(
+                      padding: const EdgeInsets.only(left: 17.0, top: 24.0),
+                      child: Image.asset(
+                        height: 45,
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
                       ),
-                      unselectedLabelStyle: TextStyle(
-                        fontSize: 16.4,
-                        fontWeight: FontWeight.normal,
-                        fontFamily: 'G',
-                      ),
-                      tabs: const [
-                        Tab(text: 'Моя карта'),
-                        Tab(text: 'Подписки'),
-                        Tab(text: 'Награды'),
-                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              // TabBar
+              Expanded(
+                child: TabBar(
+                  dividerHeight: 0,
+                  controller: _tabController,
+                  labelStyle: TextStyle(
+                    fontSize: 16.4,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'G',
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: 16.4,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'G',
+                  ),
+                  tabs: const [
+                    Tab(text: 'Моя карта'),
+                    Tab(text: 'Подписки'),
+                    Tab(text: 'Награды'),
+                    Tab(text: 'Обмен'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -2445,7 +2441,6 @@ class _ModernUsedRewardCard extends StatelessWidget {
   }
 }
 
-
 class _BookExchangeTab extends StatefulWidget {
   @override
   State<_BookExchangeTab> createState() => _BookExchangeTabState();
@@ -2491,7 +2486,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -2505,7 +2500,10 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                 height: 32,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.secondary,
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(2),
                 ),
@@ -2520,7 +2518,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        color: Colors.black87,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontFamily: 'G',
                         height: 1.1,
                       ),
@@ -2542,13 +2540,13 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 24),
 
           // Форма заявки
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
@@ -2573,13 +2571,16 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                           height: 48,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                              colors: [
+                                theme.colorScheme.primary,
+                                theme.colorScheme.secondary,
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Icon(
                             Icons.swap_horiz_rounded,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             size: 24,
                           ),
                         ),
@@ -2593,7 +2594,8 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w800,
-                                  color: Colors.black87,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontFamily: 'G',
                                 ),
                               ),
@@ -2711,7 +2713,10 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
+                          colors: [
+                            theme.colorScheme.primary,
+                            theme.colorScheme.secondary,
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
@@ -2734,7 +2739,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                               children: [
                                 Icon(
                                   Icons.send_rounded,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.surface,
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
@@ -2743,7 +2748,8 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -2825,7 +2831,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
     String? Function(String?)? validator,
   }) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2834,7 +2840,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: Theme.of(context).colorScheme.onSurface,
             fontFamily: 'G',
           ),
         ),
@@ -2845,15 +2851,8 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(
-              color: Colors.grey[500],
-              fontFamily: 'G',
-            ),
-            prefixIcon: Icon(
-              icon,
-              color: theme.colorScheme.primary,
-              size: 20,
-            ),
+            hintStyle: TextStyle(color: Colors.grey[500], fontFamily: 'G'),
+            prefixIcon: Icon(icon, color: theme.colorScheme.primary, size: 20),
             filled: true,
             fillColor: Colors.grey.withOpacity(0.05),
             border: OutlineInputBorder(
@@ -2876,10 +2875,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: Colors.red,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: Colors.red, width: 1),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -2899,7 +2895,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
     required IconData icon,
   }) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2908,7 +2904,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: Theme.of(context).colorScheme.onSurface,
             fontFamily: 'G',
           ),
         ),
@@ -2917,10 +2913,7 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
           decoration: BoxDecoration(
             color: Colors.grey.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.grey.withOpacity(0.2),
-              width: 1,
-            ),
+            border: Border.all(color: Colors.grey.withOpacity(0.2), width: 1),
           ),
           child: DropdownButtonFormField<String>(
             value: value,
@@ -2937,18 +2930,16 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
                 vertical: 12,
               ),
             ),
-            items: items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: TextStyle(
-                    fontFamily: 'G',
-                    fontSize: 14,
-                  ),
-                ),
-              );
-            }).toList(),
+            items:
+                items.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: TextStyle(fontFamily: 'G', fontSize: 14),
+                    ),
+                  );
+                }).toList(),
           ),
         ),
       ],
@@ -2960,102 +2951,110 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
       // Показать диалог подтверждения
       showDialog(
         context: context,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.25),
-                  blurRadius: 40,
-                  offset: const Offset(0, 15),
+        builder:
+            (context) => Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 40,
+                      offset: const Offset(0, 15),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.secondary,
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.check_circle_rounded,
+                          size: 40,
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
                       ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.check_circle_rounded,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Заявка отправлена!',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black87,
-                      fontFamily: 'G',
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Ваша заявка на обмен книги "${_bookTitleController.text}" будет рассмотрена в течение 24 часов.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[700],
-                      fontFamily: 'G',
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary],
+                      const SizedBox(height: 20),
+                      Text(
+                        'Заявка отправлена!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'G',
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _clearForm();
-                        },
-                        borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Center(
-                            child: Text(
-                              'Отлично',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                fontFamily: 'G',
+                      const SizedBox(height: 12),
+                      Text(
+                        'Ваша заявка на обмен книги "${_bookTitleController.text}" будет рассмотрена в течение 24 часов.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[700],
+                          fontFamily: 'G',
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.secondary,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              _clearForm();
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: Text(
+                                  'Отлично',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    fontFamily: 'G',
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
       );
     }
   }
