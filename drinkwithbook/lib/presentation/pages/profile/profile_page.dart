@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'settings_dialog.dart';
 import 'dart:ui';
 import '../../widgets/orders_modal.dart';
+import '../../widgets/notifications_modal.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final VoidCallback? onNavigateToClubs;
@@ -21,6 +21,7 @@ class ProfilePage extends ConsumerStatefulWidget {
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _user = Supabase.instance.client.auth.currentUser;
   String get adm => _user?.userMetadata?['name'] ?? '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +55,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             adm != 'Admin'
             ?Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.card_giftcard_outlined),
-                  iconSize: 27,
-                  onPressed: () => context.go('/loyalty'),
-                ),
                  IconButton(
                   icon: const Icon(Icons.settings),
                   iconSize: 27,
@@ -468,9 +464,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   }
 
   void _showNotificationSettings(BuildContext context) {
-    // TODO: Implement notification settings
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Настройки уведомлений - в разработке')),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const NotificationsModal(),
     );
   }
 

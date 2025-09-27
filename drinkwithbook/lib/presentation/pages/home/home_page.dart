@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../profile/profile_page.dart';
-import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
 import '../../widgets/active_order_card.dart';
 import '../../widgets/checkout_modal.dart';
@@ -156,14 +155,6 @@ class _HomeTab extends ConsumerWidget {
     required this.onNavigateToClubs,
   });
 
-  void _showNotificationsModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const NotificationsModal(),
-    );
-  }
 
   void _showBookAdModal(BuildContext context) {
     showModalBottomSheet(
@@ -246,8 +237,8 @@ class _HomeTab extends ConsumerWidget {
                 ),
                 IconButton(
                   iconSize: 27,
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () => _showNotificationsModal(context),
+                  icon: const Icon(Icons.card_giftcard_outlined),
+                  onPressed: () => context.go('/loyalty'),
                 ),
                 IconButton(
                   iconSize: 27,
