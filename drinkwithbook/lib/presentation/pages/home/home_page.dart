@@ -6,7 +6,6 @@ import '../menu/menu_page.dart';
 import '../clubs/clubs_page.dart';
 import '../profile/profile_page.dart';
 import '../admin/admin_panel.dart';
-import '../../widgets/notifications_modal.dart';
 import '../../widgets/book_ad_modal.dart';
 import '../../widgets/active_order_card.dart';
 import '../../widgets/checkout_modal.dart';
@@ -42,9 +41,44 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOutCubic,
     );
+  }
+
+  Widget _buildAnimatedIcon(
+    IconData inactiveIcon,
+    IconData activeIcon,
+    int index, {
+    bool isActive = false,
+  }) {
+    final isSelected = _currentIndex == index;
+    final theme = Theme.of(context);
+
+    return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutCubic,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color:
+                isSelected
+                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    : Colors.transparent,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: AnimatedScale(
+            scale: isSelected ? 1.1 : 1.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+            child: Icon(
+              isSelected ? activeIcon : inactiveIcon,
+              size: isSelected ? 26 : 24,
+            ),
+          ),
+        )
+        .animate()
+        .fadeIn(duration: 200.ms, delay: (index * 50).ms)
+        .slideY(begin: 0.3, end: 0, duration: 300.ms, delay: (index * 50).ms);
   }
 
   @override
@@ -52,10 +86,13 @@ class _HomePageState extends ConsumerState<HomePage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: false,
       body:
           adm != 'Admin'
               ? PageView(
                 controller: _pageController,
+                physics: const BouncingScrollPhysics(),
                 onPageChanged:
                     (index) => setState(() {
                       _currentIndex = index;
@@ -78,63 +115,127 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ],
               )
               : const AdminPanel(),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child:
-            adm != 'Admin'
-                ? BottomNavigationBar(
-                  currentIndex: _currentIndex,
-                  onTap: _onTabTapped,
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: theme.colorScheme.primary,
-                  unselectedItemColor: theme.colorScheme.onSurface.withOpacity(
-                    0.6,
+      bottomNavigationBar:
+          adm != 'Admin'
+              ? Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      theme.colorScheme.surface.withOpacity(0.8),
+                      theme.colorScheme.surface.withOpacity(0.9),
+                    ],
                   ),
-                  backgroundColor: theme.colorScheme.surface,
-                  elevation: 0,
-                  selectedLabelStyle: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'G', // Ваш шрифт
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(35),
+                    topRight: Radius.circular(35),
                   ),
-                  unselectedLabelStyle: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'G', // Ваш шрифт
+                  border: Border(
+                    top: BorderSide(
+                      color: theme.colorScheme.outline.withOpacity(0.1),
+                      width: 0.5,
+                    ),
                   ),
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home_outlined),
-                      activeIcon: Icon(Icons.home_outlined),
-                      label: 'Главная',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.menu_book_rounded),
-                      activeIcon: Icon(Icons.menu_book_rounded),
-                      label: 'Меню',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.groups_outlined),
-                      activeIcon: Icon(Icons.groups),
-                      label: 'Клубы',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person_outline),
-                      activeIcon: Icon(Icons.person),
-                      label: 'Профиль',
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, -5),
                     ),
                   ],
-                )
-                : SizedBox(),
-      ),
+                ),
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(35),
+                        topRight: Radius.circular(35),
+                      ),
+                      child: BottomNavigationBar(
+                        currentIndex: _currentIndex,
+                        onTap: _onTabTapped,
+                        type: BottomNavigationBarType.fixed,
+                        selectedItemColor: theme.colorScheme.primary,
+                        unselectedItemColor: theme.colorScheme.onSurface
+                            .withOpacity(0.6),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        selectedLabelStyle: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'G', // Ваш шрифт
+                        ),
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          fontFamily: 'G', // Ваш шрифт
+                        ),
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.home_outlined,
+                              Icons.home,
+                              0,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.home_outlined,
+                              Icons.home,
+                              0,
+                              isActive: true,
+                            ),
+                            label: 'Главная',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.menu_book_rounded,
+                              Icons.menu_book_rounded,
+                              1,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.menu_book_rounded,
+                              Icons.menu_book_rounded,
+                              1,
+                              isActive: true,
+                            ),
+                            label: 'Меню',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.groups_outlined,
+                              Icons.groups,
+                              2,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.groups_outlined,
+                              Icons.groups,
+                              2,
+                              isActive: true,
+                            ),
+                            label: 'Клубы',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: _buildAnimatedIcon(
+                              Icons.person_outline,
+                              Icons.person,
+                              3,
+                            ),
+                            activeIcon: _buildAnimatedIcon(
+                              Icons.person_outline,
+                              Icons.person,
+                              3,
+                              isActive: true,
+                            ),
+                            label: 'Профиль',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              : const SizedBox(),
     );
   }
 }
