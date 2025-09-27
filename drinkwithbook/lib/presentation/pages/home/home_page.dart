@@ -360,12 +360,14 @@ class _HomeTab extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: theme.colorScheme.onPrimary.withOpacity(
+                                0.2,
+                              ),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               Icons.menu_book_rounded,
-                              color: Colors.white,
+                              color: theme.colorScheme.onPrimary,
                               size: 32,
                             ),
                           ),
@@ -379,7 +381,7 @@ class _HomeTab extends ConsumerWidget {
                                   'Откройте мир книг',
                                   style: theme.textTheme.titleLarge?.copyWith(
                                     fontFamily: "G",
-                                    color: Colors.white,
+                                    color: theme.colorScheme.onPrimary,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -390,7 +392,8 @@ class _HomeTab extends ConsumerWidget {
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     fontFamily: "G",
                                     fontSize: 14,
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: theme.colorScheme.onPrimary
+                                        .withOpacity(0.9),
                                   ),
                                 ),
                               ],
@@ -399,7 +402,7 @@ class _HomeTab extends ConsumerWidget {
                           // Стрелка
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: Colors.white.withOpacity(0.8),
+                            color: theme.colorScheme.onPrimary.withOpacity(0.8),
                             size: 20,
                           ),
                         ],
@@ -625,7 +628,7 @@ class _DrinkCard extends StatelessWidget {
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontFamily: 'G',
                     fontSize: 22,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
                     shadows: [
                       Shadow(
@@ -643,7 +646,7 @@ class _DrinkCard extends StatelessWidget {
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontFamily: 'G',
                     fontSize: 18,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w500,
                     shadows: [
                       Shadow(
@@ -688,78 +691,78 @@ class _ActivityCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.groups, color: theme.colorScheme.primary),
               ),
-              child: Icon(Icons.groups, color: theme.colorScheme.primary),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    clubName,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontFamily: 'G',
-                      fontSize: 17,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      clubName,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontFamily: 'G',
+                        fontSize: 17,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    activity,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontFamily: 'G',
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[900],
+                    const SizedBox(height: 2),
+                    Text(
+                      activity,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontFamily: 'G',
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        time,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.5),
-                          fontFamily: 'G',
-                          fontSize: 12,
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Icon(
-                        Icons.people,
-                        size: 14,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '$participants участников',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.5),
-                          fontFamily: 'G',
-                          fontSize: 12,
+                        const SizedBox(width: 4),
+                        Text(
+                          time,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            fontFamily: 'G',
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const SizedBox(width: 12),
+                        Icon(
+                          Icons.people,
+                          size: 14,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$participants участников',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.5),
+                            fontFamily: 'G',
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -990,7 +993,7 @@ class _CartBottomSheet extends ConsumerWidget {
                       child: Text(
                         'Оформить заказ',
                         style: theme.textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'G',
                           fontSize: 17,
@@ -1273,7 +1276,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                             widget.item['name'],
                             style: theme.textTheme.displaySmall?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: theme.colorScheme.onPrimary,
                               fontFamily: 'G',
                               fontSize: 28,
                             ),
@@ -1282,7 +1285,9 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                           Text(
                             widget.item['description'],
                             style: theme.textTheme.titleLarge?.copyWith(
-                              color: Colors.white.withOpacity(0.8),
+                              color: theme.colorScheme.onPrimary.withOpacity(
+                                0.8,
+                              ),
                               fontFamily: 'G',
                               fontSize: 19,
                             ),
@@ -1426,9 +1431,9 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.add_circle_outline,
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                           size: 28,
                         ),
                         const SizedBox(width: 8),
@@ -1436,7 +1441,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                           '${_getCurrentPrice()} ₽',
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontFamily: 'G',
-                            color: Colors.white,
+                            color: theme.colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1484,7 +1489,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                       fontSize: 22,
                       color:
                           selectedSize == 'M'
-                              ? Colors.white
+                              ? theme.colorScheme.onPrimary
                               : theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1496,7 +1501,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                       fontSize: 16,
                       color:
                           selectedSize == 'M'
-                              ? Colors.white.withOpacity(1)
+                              ? theme.colorScheme.onPrimary.withOpacity(1)
                               : theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
@@ -1527,7 +1532,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                       fontSize: 22,
                       color:
                           selectedSize == 'L'
-                              ? Colors.white
+                              ? theme.colorScheme.onPrimary
                               : theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1539,7 +1544,7 @@ class _ItemDetailsBottomSheetState extends State<_ItemDetailsBottomSheet> {
                       fontSize: 16,
                       color:
                           selectedSize == 'L'
-                              ? Colors.white.withOpacity(1)
+                              ? theme.colorScheme.onPrimary.withOpacity(1)
                               : theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
@@ -1727,9 +1732,9 @@ Widget _buildSuggestions(ThemeData theme) {
                                 color: theme.colorScheme.primary,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.add_circle,
-                                color: Colors.white,
+                                color: theme.colorScheme.onPrimary,
                                 size: 28,
                               ),
                             ),

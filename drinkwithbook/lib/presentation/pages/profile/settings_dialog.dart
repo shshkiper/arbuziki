@@ -64,7 +64,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                           ),
                           child: Icon(
                             Icons.settings_rounded,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                             size: 24,
                           ),
                         ),
@@ -74,7 +74,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontFamily: 'G',
                             height: 1.1,
                           ),
@@ -93,7 +93,9 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                         ),
                         child: Icon(
                           Icons.close_rounded,
-                          color: Colors.white.withOpacity(0.7),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.7),
                           size: 20,
                         ),
                       ),
@@ -112,7 +114,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontFamily: 'G',
                       ),
                     ),
@@ -172,7 +174,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontFamily: 'G',
                       ),
                     ),
@@ -308,7 +310,10 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
-                                      color: Colors.white,
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                       fontFamily: 'G',
                                       letterSpacing: -0.2,
                                     ),
@@ -364,7 +369,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontFamily: 'G',
                 ),
               ),
@@ -372,7 +377,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
               Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 16,
-                color: Colors.white.withOpacity(0.6),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
             ],
           ),
@@ -412,7 +417,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w500,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
               fontFamily: 'G',
             ),
           ),
@@ -464,7 +469,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w500,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
               fontFamily: 'G',
             ),
           ),
@@ -535,7 +540,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               ),
                               child: Icon(
                                 Icons.email_rounded,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 size: 24,
                               ),
                             ),
@@ -545,7 +550,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -583,7 +588,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontFamily: 'G',
                           ),
                         ),
@@ -604,12 +609,14 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               fontFamily: 'G',
                               fontWeight: FontWeight.w500,
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'example@mail.com',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(18),
-                              hintStyle: const TextStyle(
-                                color: Colors.white70,
+                              hintStyle: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.7),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -648,7 +655,9 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -732,7 +741,8 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontFamily: 'G',
                                     letterSpacing: -0.2,
                                   ),
@@ -801,7 +811,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               ),
                               child: Icon(
                                 Icons.lock_rounded,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 size: 24,
                               ),
                             ),
@@ -811,7 +821,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -849,7 +859,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontFamily: 'G',
                           ),
                         ),
@@ -870,12 +880,14 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               fontFamily: 'G',
                               fontWeight: FontWeight.w500,
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'Минимум 6 символов',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(18),
-                              hintStyle: const TextStyle(
-                                color: Colors.white70,
+                              hintStyle: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.7),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -914,7 +926,9 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -1008,7 +1022,8 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontFamily: 'G',
                                     letterSpacing: -0.2,
                                   ),
@@ -1077,7 +1092,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               ),
                               child: Icon(
                                 Icons.person_rounded,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 size: 24,
                               ),
                             ),
@@ -1087,7 +1102,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -1125,7 +1140,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontFamily: 'G',
                           ),
                         ),
@@ -1145,12 +1160,14 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               fontFamily: 'G',
                               fontWeight: FontWeight.w500,
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'Ваше имя',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(18),
-                              hintStyle: const TextStyle(
-                                color: Colors.white70,
+                              hintStyle: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.7),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -1189,7 +1206,9 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -1273,7 +1292,8 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontFamily: 'G',
                                     letterSpacing: -0.2,
                                   ),
@@ -1339,7 +1359,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               ),
                               child: Icon(
                                 Icons.logout_rounded,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 size: 24,
                               ),
                             ),
@@ -1349,7 +1369,7 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontFamily: 'G',
                               ),
                             ),
@@ -1384,7 +1404,9 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.8),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.8),
                         fontFamily: 'G',
                       ),
                     ),
@@ -1419,7 +1441,9 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.8),
                                     fontFamily: 'G',
                                   ),
                                 ),
@@ -1468,7 +1492,8 @@ class _SettingsDialogState extends ConsumerState<SettingsDialog> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontFamily: 'G',
                                     letterSpacing: -0.2,
                                   ),
