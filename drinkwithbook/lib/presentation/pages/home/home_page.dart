@@ -150,15 +150,6 @@ class _HomeTab extends ConsumerWidget {
     required this.onNavigateToClubs,
   });
 
-  void _showNotificationsModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const NotificationsModal(),
-    );
-  }
-
   void _showBookAdModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -240,8 +231,8 @@ class _HomeTab extends ConsumerWidget {
                 ),
                 IconButton(
                   iconSize: 27,
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () => _showNotificationsModal(context),
+                  icon: const Icon(Icons.card_giftcard_outlined),
+                  onPressed: () => context.go('/loyalty'),
                 ),
                 IconButton(
                   iconSize: 27,
