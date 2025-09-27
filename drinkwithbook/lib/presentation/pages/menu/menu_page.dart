@@ -209,22 +209,77 @@ class _MenuPageState extends ConsumerState<MenuPage>
         children: [
           _MenuSection(items: _coffeeItems, onAddToCart: _addToCart),
           _MenuSection(items: _dessertItems, onAddToCart: _addToCart),
-          _MenuSection(items: _bookItems, onAddToCart: _addToCart),
+          _MenuSection(items: _bookItems, onAddToCart: _addToCart, isBooksSection: true),
         ],
       ),
     );
   }
 }
 
-class _MenuSection extends StatelessWidget {
+class _MenuSection extends StatefulWidget {
   final List<Map<String, dynamic>> items;
   final Function(Map<String, dynamic>) onAddToCart;
+  final bool isBooksSection;
 
-  const _MenuSection({required this.items, required this.onAddToCart});
+  const _MenuSection({
+    required this.items, 
+    required this.onAddToCart,
+    this.isBooksSection = false,
+  });
+
+  @override
+  State<_MenuSection> createState() => _MenuSectionState();
+}
+
+class _MenuSectionState extends State<_MenuSection> {
+  String? _nameFilter;
+  String? _authorFilter;
+  String? _genreFilter;
+  List<Map<String, dynamic>> _filteredItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredItems = widget.items;
+  }
+
+  void _applyFilter(String? name, String? author, String? genre) {
+    setState(() {
+      _nameFilter = name;
+      _authorFilter = author;
+      _genreFilter = genre;
+      
+      _filteredItems = widget.items.where((item) {
+        if (!widget.isBooksSection) return true;
+        
+        final nameMatch = _nameFilter == null || 
+            item['name'].toString().toLowerCase().contains(_nameFilter!.toLowerCase());
+        final authorMatch = _authorFilter == null || 
+            item['author'].toString().toLowerCase().contains(_authorFilter!.toLowerCase());
+        final genreMatch = _genreFilter == null || 
+            item['genre'].toString().toLowerCase().contains(_genreFilter!.toLowerCase());
+        
+        return nameMatch && authorMatch && genreMatch;
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
+    return Column(
+      children: [
+        // Фильтр только для книг
+        if (widget.isBooksSection)
+          BookFilterWidget(
+            onFilterChanged: _applyFilter,
+            currentNameFilter: _nameFilter,
+            currentAuthorFilter: _authorFilter,
+            currentGenreFilter: _genreFilter,
+          ),
+        
+        // Сетка товаров
+        Expanded(
+          child: GridView.builder(
       cacheExtent: 1000, // Кэшируем больше элементов для плавной прокрутки
       padding: const EdgeInsets.all(16),
       physics: const BouncingScrollPhysics(), // Более плавная прокрутка
@@ -234,11 +289,14 @@ class _MenuSection extends StatelessWidget {
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
-      itemCount: items.length,
+            itemCount: _filteredItems.length,
       itemBuilder: (context, index) {
-        final item = items[index];
-        return _MenuItem(item: item, onAddToCart: () => onAddToCart(item));
+              final item = _filteredItems[index];
+              return _MenuItem(item: item, onAddToCart: () => widget.onAddToCart(item));
       },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1400,6 +1458,8 @@ final _bookItems = [
   {
     'id': 'book_1',
     'name': 'Мастер и Маргарита',
+    'author': 'Михаил Булгаков',
+    'genre': 'Мистика',
     'description': 'Классический роман Михаила Булгакова',
     'price': 450,
     'image': 'book1.jpg',
@@ -1408,6 +1468,8 @@ final _bookItems = [
   {
     'id': 'book_2',
     'name': '1984',
+    'author': 'Джордж Оруэлл',
+    'genre': 'Антиутопия',
     'description': 'Антиутопия Джорджа Оруэлла',
     'price': 380,
     'image': 'book2.jpg',
@@ -1416,6 +1478,8 @@ final _bookItems = [
   {
     'id': 'book_3',
     'name': 'Гарри Поттер',
+    'author': 'Дж.К. Роулинг',
+    'genre': 'Фэнтези',
     'description': 'Магическая сага Дж.К. Роулинг',
     'price': 520,
     'image': 'book3.jpg',
@@ -1424,6 +1488,8 @@ final _bookItems = [
   {
     'id': 'book_4',
     'name': 'Преступление и наказание',
+    'author': 'Фёдор Достоевский',
+    'genre': 'Психологический роман',
     'description': 'Психологический роман Достоевского',
     'price': 420,
     'image': 'book4.jpg',
@@ -1432,6 +1498,8 @@ final _bookItems = [
   {
     'id': 'book_5',
     'name': 'Война и мир',
+    'author': 'Лев Толстой',
+    'genre': 'Классика',
     'description': 'Эпопея Льва Толстого',
     'price': 650,
     'image': 'book5.jpg',
@@ -1440,6 +1508,8 @@ final _bookItems = [
   {
     'id': 'book_6',
     'name': 'Анна Каренина',
+    'author': 'Лев Толстой',
+    'genre': 'Классика',
     'description': 'Роман о любви и судьбе',
     'price': 480,
     'image': 'book6.jpg',
@@ -1448,6 +1518,8 @@ final _bookItems = [
   {
     'id': 'book_7',
     'name': 'Собачье сердце',
+    'author': 'Михаил Булгаков',
+    'genre': 'Сатира',
     'description': 'Сатирическая повесть Булгакова',
     'price': 320,
     'image': 'book7.jpg',
@@ -1456,9 +1528,515 @@ final _bookItems = [
   {
     'id': 'book_8',
     'name': 'Евгений Онегин',
+    'author': 'Александр Пушкин',
+    'genre': 'Классика',
     'description': 'Роман в стихах Пушкина',
     'price': 350,
     'image': 'book8.jpg',
     'rating': 4.5,
   },
+  {
+    'id': 'book_9',
+    'name': 'Властелин колец',
+    'author': 'Дж.Р.Р. Толкин',
+    'genre': 'Фэнтези',
+    'description': 'Эпическая фэнтези-сага',
+    'price': 680,
+    'image': 'book9.jpg',
+    'rating': 4.9,
+  },
+  {
+    'id': 'book_10',
+    'name': 'Хоббит',
+    'author': 'Дж.Р.Р. Толкин',
+    'genre': 'Фэнтези',
+    'description': 'Приключенческая сказка',
+    'price': 420,
+    'image': 'book10.jpg',
+    'rating': 4.8,
+  },
+  {
+    'id': 'book_11',
+    'name': 'Игра престолов',
+    'author': 'Джордж Мартин',
+    'genre': 'Фэнтези',
+    'description': 'Эпическая сага о борьбе за власть',
+    'price': 550,
+    'image': 'book11.jpg',
+    'rating': 4.7,
+  },
+  {
+    'id': 'book_12',
+    'name': 'Дюна',
+    'author': 'Фрэнк Герберт',
+    'genre': 'Научная фантастика',
+    'description': 'Классика научной фантастики',
+    'price': 480,
+    'image': 'book12.jpg',
+    'rating': 4.8,
+  },
+  {
+    'id': 'book_13',
+    'name': 'Основание',
+    'author': 'Айзек Азимов',
+    'genre': 'Научная фантастика',
+    'description': 'Цикл романов о галактической империи',
+    'price': 450,
+    'image': 'book13.jpg',
+    'rating': 4.6,
+  },
+  {
+    'id': 'book_14',
+    'name': '451 градус по Фаренгейту',
+    'author': 'Рэй Брэдбери',
+    'genre': 'Антиутопия',
+    'description': 'Антиутопия о сжигании книг',
+    'price': 380,
+    'image': 'book14.jpg',
+    'rating': 4.7,
+  },
+  {
+    'id': 'book_15',
+    'name': 'Скотный двор',
+    'author': 'Джордж Оруэлл',
+    'genre': 'Сатира',
+    'description': 'Сатирическая повесть-притча',
+    'price': 320,
+    'image': 'book15.jpg',
+    'rating': 4.8,
+  },
+  {
+    'id': 'book_16',
+    'name': 'Лолита',
+    'author': 'Владимир Набоков',
+    'genre': 'Психологический роман',
+    'description': 'Спорный роман о запретной любви',
+    'price': 400,
+    'image': 'book16.jpg',
+    'rating': 4.5,
+  },
+  {
+    'id': 'book_17',
+    'name': 'Улисс',
+    'author': 'Джеймс Джойс',
+    'genre': 'Модернизм',
+    'description': 'Сложный модернистский роман',
+    'price': 520,
+    'image': 'book17.jpg',
+    'rating': 4.3,
+  },
+  {
+    'id': 'book_18',
+    'name': 'В поисках утраченного времени',
+    'author': 'Марсель Пруст',
+    'genre': 'Модернизм',
+    'description': 'Семитомный цикл романов',
+    'price': 750,
+    'image': 'book18.jpg',
+    'rating': 4.4,
+  },
+  {
+    'id': 'book_19',
+    'name': 'Сто лет одиночества',
+    'author': 'Габриэль Гарсиа Маркес',
+    'genre': 'Магический реализм',
+    'description': 'Эпическая семейная сага',
+    'price': 480,
+    'image': 'book19.jpg',
+    'rating': 4.8,
+  },
+  {
+    'id': 'book_20',
+    'name': 'Дон Кихот',
+    'author': 'Мигель де Сервантес',
+    'genre': 'Классика',
+    'description': 'Великий роман о рыцаре печального образа',
+    'price': 420,
+    'image': 'book20.jpg',
+    'rating': 4.6,
+  },
 ];
+
+// Виджет фильтра книг
+class BookFilterWidget extends StatefulWidget {
+  final Function(String?, String?, String?) onFilterChanged;
+  final String? currentNameFilter;
+  final String? currentAuthorFilter;
+  final String? currentGenreFilter;
+
+  const BookFilterWidget({
+    super.key,
+    required this.onFilterChanged,
+    this.currentNameFilter,
+    this.currentAuthorFilter,
+    this.currentGenreFilter,
+  });
+
+  @override
+  State<BookFilterWidget> createState() => _BookFilterWidgetState();
+}
+
+// Получаем уникальных авторов и жанры из книг
+List<String> get _uniqueAuthors {
+  return _bookItems
+      .map((book) => book['author'] as String?)
+      .where((author) => author != null)
+      .cast<String>()
+      .toSet()
+      .toList()..sort();
+}
+
+List<String> get _uniqueGenres {
+  return _bookItems
+      .map((book) => book['genre'] as String?)
+      .where((genre) => genre != null)
+      .cast<String>()
+      .toSet()
+      .toList()..sort();
+}
+
+class _BookFilterWidgetState extends State<BookFilterWidget> {
+  late TextEditingController _nameController;
+  String? _selectedAuthor;
+  String? _selectedGenre;
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.currentNameFilter ?? '');
+    _selectedAuthor = widget.currentAuthorFilter;
+    _selectedGenre = widget.currentGenreFilter;
+    
+    // Добавляем слушатель для автоматической фильтрации
+    _nameController.addListener(_onFilterChanged);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _onFilterChanged() {
+    widget.onFilterChanged(
+      _nameController.text.trim().isEmpty ? null : _nameController.text.trim(),
+      _selectedAuthor,
+      _selectedGenre,
+    );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _nameController.clear();
+      _selectedAuthor = null;
+      _selectedGenre = null;
+    });
+  }
+
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasActiveFilters = _nameController.text.isNotEmpty || 
+                           _selectedAuthor != null || 
+                           _selectedGenre != null;
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Заголовок фильтра
+          InkWell(
+            onTap: _toggleExpanded,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.filter_list,
+                        color: theme.colorScheme.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Фильтр книг',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: 'G',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (hasActiveFilters) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '${(_nameController.text.isNotEmpty ? 1 : 0) + (_selectedAuthor != null ? 1 : 0) + (_selectedGenre != null ? 1 : 0)}',
+                            style: TextStyle(
+                              fontFamily: 'G',
+                              fontSize: 10,
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      if (hasActiveFilters)
+                        IconButton(
+                          onPressed: _clearFilters,
+                          icon: Icon(
+                            Icons.clear,
+                            size: 18,
+                            color: theme.colorScheme.primary,
+                          ),
+                          constraints: const BoxConstraints(),
+                          padding: EdgeInsets.zero,
+                        ),
+                      Icon(
+                        _isExpanded ? Icons.expand_less : Icons.expand_more,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Выпадающие поля фильтрации
+          if (_isExpanded)
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Column(
+                children: [
+                  // Фильтр по названию
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Название книги',
+                      hintStyle: TextStyle(
+                        fontFamily: 'G',
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        fontSize: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.primary,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.book,
+                        size: 18,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'G',
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Выпадающий список авторов
+                  DropdownButtonFormField<String>(
+                    value: _selectedAuthor,
+                    decoration: InputDecoration(
+                      hintText: 'Выберите автора',
+                      hintStyle: TextStyle(
+                        fontFamily: 'G',
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        fontSize: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.primary,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.person,
+                        size: 18,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'G',
+                      fontSize: 14,
+                    ),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: null,
+                        child: Text(
+                          'Все авторы',
+                          style: TextStyle(
+                            fontFamily: 'G',
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                      ..._uniqueAuthors.map((author) => DropdownMenuItem<String>(
+                        value: author,
+                        child: Text(
+                          author,
+                          style: TextStyle(
+                            fontFamily: 'G',
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      )),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedAuthor = value;
+                      });
+                      _onFilterChanged();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Выпадающий список жанров
+                  DropdownButtonFormField<String>(
+                    value: _selectedGenre,
+                    decoration: InputDecoration(
+                      hintText: 'Выберите жанр',
+                      hintStyle: TextStyle(
+                        fontFamily: 'G',
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        fontSize: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.outline.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: theme.colorScheme.primary,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.category,
+                        size: 18,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'G',
+                      fontSize: 14,
+                    ),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: null,
+                        child: Text(
+                          'Все жанры',
+                          style: TextStyle(
+                            fontFamily: 'G',
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                      ..._uniqueGenres.map((genre) => DropdownMenuItem<String>(
+                        value: genre,
+                        child: Text(
+                          genre,
+                          style: TextStyle(
+                            fontFamily: 'G',
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      )),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedGenre = value;
+                      });
+                      _onFilterChanged();
+                    },
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
