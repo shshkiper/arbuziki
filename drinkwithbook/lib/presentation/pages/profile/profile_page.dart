@@ -17,11 +17,7 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _user = Supabase.instance.client.auth.currentUser;
-  late String adm;
-
-  myClass(_user) {
-    adm = _user?.userMetadata?['name'] ?? '';
-  }
+  String get adm => _user?.userMetadata?['name'] ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +46,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 13.0),
-            child: Row(
+            child: 
+            adm != 'Admin'
+            ?Row(
               children: [
                 IconButton(
                   icon: const Icon(Icons.card_giftcard_outlined),
@@ -63,7 +61,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   onPressed: () => _showSettingsDialog(context),
                 ),
               ],
-            ),
+            )
+            :
+            Row( 
+            )
           ),
         ],
       ),
