@@ -138,7 +138,6 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
                         ),
                       ],
                     ),
-<<<<<<< HEAD
                   ),
                   // TabBar
                   Expanded(
@@ -149,35 +148,6 @@ class _LoyaltyPageState extends ConsumerState<LoyaltyPage>
                         fontSize: 16.4,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'G',
-=======
-                    // TabBar
-                          Expanded(
-                            child: TabBar(
-                              dividerHeight: 0,
-                              controller: _tabController,
-                              isScrollable: false,
-                              tabAlignment: TabAlignment.fill,
-                              labelStyle: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'G'
-                              ),
-                              unselectedLabelStyle: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                fontFamily: 'G',
-                              ),
-                              tabs: const [
-                                Tab(text: 'Карта'),
-                                Tab(text: 'Подписки'),
-                                Tab(text: 'Награды'),
-                                Tab(text: 'Обмен'),
-                              ],
-                            ),
-                            
-                          ),
-                        ],
->>>>>>> 9d19afbb7c4fd73991e0c031dd22c5b1b8e06b7c
                       ),
                       unselectedLabelStyle: TextStyle(
                         fontSize: 16.4,
@@ -2475,9 +2445,6 @@ class _ModernUsedRewardCard extends StatelessWidget {
   }
 }
 
-<<<<<<< HEAD
-=======
-
 
 class _BookExchangeTab extends StatefulWidget {
   @override
@@ -3105,7 +3072,6 @@ class _BookExchangeTabState extends State<_BookExchangeTab> {
   }
 }
 
->>>>>>> 9d19afbb7c4fd73991e0c031dd22c5b1b8e06b7c
 // Данные для примера
 final _loyaltyTransactions = [
   {
