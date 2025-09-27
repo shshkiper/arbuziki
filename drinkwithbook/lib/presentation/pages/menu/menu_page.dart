@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../home/home_page.dart'; // Импортируем CartItem и провайдеры из home_page.dart
 import 'dart:ui';
 
@@ -1152,6 +1153,7 @@ class _CartBottomSheet extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+                        context.go('/checkout');
                       },
                       child: Text(
                         'Оформить заказ',
