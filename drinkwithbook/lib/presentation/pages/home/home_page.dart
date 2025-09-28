@@ -102,16 +102,26 @@ class _HomePageState extends ConsumerState<HomePage> {
                       }
                     }),
                 children: [
-                  _HomeTab(
-                    onNavigateToMenu: () => _onTabTapped(1),
-                    onNavigateToBooks:
-                        () => _onTabTapped(1, initialTabIndex: 2),
-                    onNavigateToClubs:
-                        (eventId) => _onTabTapped(2, eventId: eventId),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 80.0), // Отступ для нижней менюшки
+                    child: _HomeTab(
+                      onNavigateToMenu: () => _onTabTapped(1),
+                      onNavigateToBooks: () => _onTabTapped(1, initialTabIndex: 2),
+                      onNavigateToClubs: (eventId) => _onTabTapped(2, eventId: eventId),
+                    ),
                   ),
-                  MenuPage(initialTabIndex: _menuInitialTabIndex),
-                  ClubsPage(eventId: _clubsEventId),
-                  ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 100.0), // Отступ для нижней менюшки
+                    child: MenuPage(initialTabIndex: _menuInitialTabIndex),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 85.0), // Отступ для нижней менюшки
+                    child: ClubsPage(eventId: _clubsEventId),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 85.0), // Отступ для нижней менюшки
+                    child: ProfilePage(onNavigateToClubs: () => _onTabTapped(2)),
+                  ),
                 ],
               )
               : const AdminPanel(),
